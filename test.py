@@ -10,3 +10,7 @@ def test():
         print("No")
     else:
         print("Yes")
+    
+print(test())
+        
+
