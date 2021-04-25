@@ -2,6 +2,7 @@ import pygame
 #this is a test to see whether if the change is applied to github
 #test part 2    
 
+screen = pygame.display.set_mode((1000,1000 ))
 running = True
 while running:
     screen.fill((255, 255, 255)) #the colour
