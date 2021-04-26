@@ -1,4 +1,4 @@
-import pygame
+import pygame, sys
 pygame.init()
 
 
@@ -9,32 +9,63 @@ white = (255,255,255)
 Black = (0,0,0)
 
 print(pygame.font.match_font('impact'))
+    
+ 
+MenuKey = pygame.key.get_pressed()
+click = False
 
-    
-    
-#textfont = pygame.font.Font(r'C:\Users\user\Desktop\Computer Science\impact.ttf',32)
-#top_input_text = textfont
+screen = pygame.display.set_mode((1280,1024 ))
+running = True  
+def testMenu():
+    running = True
+    while running:
+        screen.fill(white)
+        button2 = pygame.draw.rect(screen, Black,(100,100,50,50))
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT: # Did the user click the window close button?
+                running = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    running = False
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                click = True
+        pygame.display.update()
+        
 
 
-#top_text = textfont.render(top_input_text, True, Black) 
-    
-    
-    
-screen = pygame.display.set_mode((1000,1000 ))
-running = True
 while running:
     screen.fill(white) #the colour
     #screen.blit(top_text, (250, 250))
-    pygame.draw.rect(screen, Black,(200,500,20,500))
+    button1 = pygame.draw.rect(screen, Black,(200,500,20,500))
+    mousex, mousey = pygame.mouse.get_pos()
+    if button1.collidepoint(mousex,mousey):
+        if click == True:
+            testMenu()
+            click = False
+            
+    
+    
+    
     
     for event in pygame.event.get():
         if event.type == pygame.QUIT: # Did the user click the window close button?
-            running = False
+            pygame.quit()
+            sys.exit()
+        if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    pygame.quit()
+                    sys.exit()
+            
+            
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            click = True
     pygame.display.update()
-#Menu
 
-    
-    
+
+
+
+
 def test():
     thing = 1
     if thing == 0:
