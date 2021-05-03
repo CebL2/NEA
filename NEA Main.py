@@ -2,7 +2,7 @@ import pygame, sys
 pygame.init()
 
 
-#since i cant put multiple text lines at once, i'll instead use images and put texts on it instead
+#since i cant put multiple text lines at once with indentations, i'll instead use images and put texts on it
 
 
 White = (255,255,255)
@@ -11,7 +11,7 @@ screenx = 1280
 screeny = 1024
 
 
-border = .1
+border = 1
 
 print(pygame.font.match_font('impact'))
 print(pygame.font.get_fonts())
@@ -24,6 +24,10 @@ screen = pygame.display.set_mode((screenx,screeny))
 running = True
 
 
+
+
+def grid():
+    return None
 
 
 
@@ -62,22 +66,27 @@ def game():
         keypressed = pygame.key.get_pressed()
         if keypressed[pygame.K_DOWN] and spawny < screeny:
             spawny += border
+        if keypressed[pygame.K_LEFT] and spawnx > border:
+            spawnx -= border
+        if keypressed[pygame.K_RIGHT] and spawnx <  screenx :
+            spawnx += border
+        if keypressed[pygame.K_UP] and spawny > border:
+            spawny -= border
+       
         
         for event in pygame.event.get():
             if event.type == pygame.QUIT: # Did the user click the window close button?
                 running = False
                 sys.exit()
-            #if event.type == pygame.KEYDOWN:
-             #   if spawny < screeny:
-              #      spawny += border
+        
                     
+            if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
                 click = True
         pygame.display.update()
         
-
 
 while running:
     screen.fill(White) #the colour
@@ -97,7 +106,7 @@ while running:
             click = False
             
     
-    
+
     
     
     for event in pygame.event.get():
