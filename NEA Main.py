@@ -27,10 +27,12 @@ running = True
 
 
 def grid():
-    return None
-
-
-
+    pygame.draw.rect(screen, Black, (0,0,1280,10))
+    pygame.draw.rect(screen, Black, (0,0, 10,1280))
+    pygame.draw.rect(screen, Black, (1270,0,10,1280))
+    pygame.draw.rect(screen, Black, (0,1014, 1280,10))
+    
+  
 def option():
     running = True
     while running:
@@ -60,7 +62,7 @@ def game():
     
     while running:
         screen.fill(White)
-        
+        grid()
         pygame.draw.circle(screen, Black, (spawnx,spawny) ,34)
         
         keypressed = pygame.key.get_pressed()
@@ -97,6 +99,7 @@ while running:
     if button1.collidepoint(mousex,mousey):
         if click == True:
             game()
+            
             click = False
     button2 = pygame.draw.rect(screen, Black,(100,100,100,50))
     screen.blit(textfont.render("Options", True, White), (100,100))
