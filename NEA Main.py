@@ -22,8 +22,15 @@ click = False
 test = textfont.render("test", True, White)
 screen = pygame.display.set_mode((screenx,screeny))
 running = True
+runtime = 0
 
 
+
+def EnemySpawn():
+    enemy = "*"
+    if runtime > 0:
+        screen.blit(textfont.render(enemy,True,Black))
+                    
 
 
 def grid():
@@ -31,6 +38,9 @@ def grid():
     pygame.draw.rect(screen, Black, (0,0, 10,1280))
     pygame.draw.rect(screen, Black, (1270,0,10,1280))
     pygame.draw.rect(screen, Black, (0,1014, 1280,10))
+    
+    
+    
     
   
 def option():
