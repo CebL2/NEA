@@ -14,7 +14,7 @@ screeny = 1024
 border = 1
 
 print(pygame.font.match_font('impact'))
-print(pygame.font.get_fonts())
+#print(pygame.font.get_fonts())
 
 textfont = pygame.font.Font(r'C:\Windows\Fonts\georgia.ttf', 16 )
  
@@ -22,14 +22,37 @@ click = False
 test = textfont.render("test", True, White)
 screen = pygame.display.set_mode((screenx,screeny))
 running = True
-runtime = 0
 
 
 
-def EnemySpawn():
+
+
+#procedural generation
+#
+
+
+
+def Spawn():
     enemy = "*"
-    if runtime > 0:
-        screen.blit(textfont.render(enemy,True,Black))
+    runtime = pygame.time.get_ticks()
+    testspawn = "4"
+    spawninterval = 4000
+    if runtime > spawninterval:
+        
+        screen.blit(textfont.render(testspawn,True,Black),(200,200))
+        runtime = 0
+        
+                    
+
+
+    
+    
+
+
+# def EnemySpawn():
+#     enemy = "*"
+#     if runtime > 0:
+#         screen.blit(textfont.render(enemy,True,Black))
                     
 
 
@@ -74,10 +97,10 @@ def game():
         screen.fill(White)
         grid()
         pygame.draw.circle(screen, Black, (spawnx,spawny) ,34)
-        
+        Spawn()
         keypressed = pygame.key.get_pressed()
-        if keypressed[pygame.K_DOWN] and spawny < screeny:
-            spawny += border
+        #if keypressed[pygame.K_DOWN] and spawny < screeny:
+         #   spawny += border
         if keypressed[pygame.K_LEFT] and spawnx > border:
             spawnx -= border
         if keypressed[pygame.K_RIGHT] and spawnx <  screenx :
@@ -92,6 +115,9 @@ def game():
                 sys.exit()
         
                     
+            # if event.type == pygame.KEYDOWN:
+            #     if event.key == pygame.K_DOWN:
+            #         spawny += border #if ever the free movement doesnt seem to work, this is an example code that only allows one short movement with one click 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     running = False
@@ -109,7 +135,6 @@ while running:
     if button1.collidepoint(mousex,mousey):
         if click == True:
             game()
-            
             click = False
     button2 = pygame.draw.rect(screen, Black,(100,100,100,50))
     screen.blit(textfont.render("Options", True, White), (100,100))
