@@ -42,34 +42,52 @@ spawnamount_hard = random.randint(9,12)
 
 #a lot of random generated types will be used here
 
-def Spawn(difficulty):
-    enemy = "#"
-    if difficulty == 0:
-        return None
-    if difficulty == 1:
-        for i in range(0,spawnamount_easy):
-            screen.blit(textfont.render(enemy, True, Black ), (random.randint(1280),random.randint(1080)))
-    if difficulty == 2:
-        for i in range(0, spawnamount_medium):
-            screen.blit(textfont.render(enemy, True, Black ), (random.randint(1280),random.randint(1080)))
-    else:
-        for i in range(0, spawnamount_hard):
-            screen.blit(textfont.render(enemy, True, Black ), (random.randint(1280),random.randint(1080)))
+
+
+
+class Enemy:
+    def __init__(self,enemy,playerx,playery):
+        self.enemy = enemy
+        self.posx = playerx
+        self.posy = playery
+        enemyx, enemyy = (random.randint(20,1000), random.randint(20,1000))
+        enemylist = []
+        #lets make the enemy spawn a list 
+        def Spawn(self,difficulty):
+            if difficulty == 0:
+               return None
+            if difficulty == 1:
+                
+                    
+                
+        #def Move(self):
+            
+            
+        
+    
+     #will have to implement this in the main one i think, it needs its own separate screen
+
+    #if difficulty == 2:
+    #    for i in range( pawnamount_medium):
+    #        screen.blit(textfont.render(enemy, True, Black ), (random.randint(0,1280),random.randint(0,1080)))
+    #else:
+     #   for i in range(spawnamount_hard): 
+      #      screen.blit(textfont.render(enemy, True, Black ), (random.randint(0,1280),random.randint(0,1080)))
     
 
 
 #when the user goes to another room (edge of border), EnterRoom gets called as its True
 #EnterRoom then checks if the parameter is true, if it is, then spawn in that current screen
 #for testing purposes, amount spawned will be based on run time of game
-
+#the way how rooms will be generated with have some sort of grid to it, where it will spawn in built in objects that will be implemented, structure is always ranodm
+#the current issue is that enemies do spawn when the player moves to the next room, but it only lasts for 1 frame and they are isntantly removed
 
 
 def EnterRoom(RoomEnter):
     runtime = pygame.time.get_ticks()
-    if RoomEnter == True:
-        
-        Spawn(random.randint(0,1))
-       
+    #if RoomEnter == True:
+      #  Spawn(1)
+    #return None
    # enemy = "*"
     #runtime = pygame.time.get_ticks()
     #if runtime > 600000:
@@ -108,6 +126,9 @@ def option():
 #TODO
 #Room to room movement - when the player goes to the border limit, it puts them into a new room 
 def game():
+    
+    
+    #enemy = Enemy("#")
     nextroom = False
     power_level = 0 #to indicated the player's power level 
     running = True
@@ -115,7 +136,7 @@ def game():
     spawny = 200
     border = 2
     while running:
-        screen.fill(White)
+        screen.fill(White) #its getting constnatly updated therefore the spawns are getting hidden by the 
         
         left_top_to_right = pygame.draw.rect(screen, Black, (0,0,1280,10))
         left_top_to_bot = pygame.draw.rect(screen, Black, (0,0, 10,1280))
@@ -136,6 +157,8 @@ def game():
         
         
         
+        #Spawn(1)
+        
         
         ##################################
         #                                #
@@ -143,31 +166,35 @@ def game():
         #                                #
         ##################################  
         
-        if left_bot_to_right.collidepoint(spawnx, spawny):
+        if left_bot_to_right.collidepoint(spawnx, spawny): 
             nextroom = True
             spawnx = screenx/2
-            spawny = 0
-            EnterRoom(nextroom)
-            nextroom = False
-        if left_top_to_right.collidepoint(spawnx, spawny):
+            spawny = 50
+            #EnterRoom(nextroom)
+            
+            
+        if left_top_to_right.collidepoint(spawnx, spawny): 
             nextroom = True
             spawnx = screenx/2
-            spawny = screeny
-            EnterRoom(nextroom)
-            nextroom = False
+            spawny = screeny-50
+            
+            #EnterRoom(nextroom)
+        
         if right_top_to_bot.collidepoint(spawnx, spawny):
             nextroom = True
-            spawnx = screenx
+            spawnx = 50
             spawny = screeny/2
-            nextroom = False
-            EnterRoom(nextroom)
+            
+            #EnterRoom(nextroom)
+            
         if left_top_to_bot.collidepoint(spawnx, spawny):
             nextroom = True
-            spawnx = screenx/2
-            spawny = screeny
-            nextroom = False
-            EnterRoom(nextroom)
-            nextroom = False
+            spawnx = screenx-50
+            spawny = screeny/2
+         
+            #EnterRoom(nextroom)
+            
+            
         for event in pygame.event.get():
             if event.type == pygame.QUIT: # Did the user click the window close button?
                 running = False
@@ -182,6 +209,7 @@ def game():
                     running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
                 click = True
+       
         pygame.display.update()
         
 
