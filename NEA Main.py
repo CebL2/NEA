@@ -94,6 +94,7 @@ class Enemy:
 
         
         self.enemylist = enemylist
+        print("test")
         
         #lets make the enemy spawn a list 
         
