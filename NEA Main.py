@@ -260,7 +260,7 @@ def game():
                 #  once enemy count is down to 0 (maybe using a list, and if the list is empty), exit room statement can be converted into true
                 #  repeat the process and roll a random number to determine if the room will contain enemies or not
             
-            
+             
             if left_top_to_right.collidepoint(spawnx, spawny): 
             
                 spawnx = screenx/2
