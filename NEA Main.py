@@ -79,9 +79,12 @@ class Spells:
 #the way how rooms will be generated with have some sort of grid to it, where it will spawn in built in objects that will be implemented, structure is always random
 #the current issue is that enemies do spawn when the player moves to the next room, but it only lasts for 1 frame and they are isntantly removed
 
+
+
+
 class Attack:
     def __init__(self):
-        self.Projectile 
+        self.Projectile = 0
         
 
 
@@ -94,7 +97,6 @@ class Enemy:
 
         
         self.enemylist = enemylist
-        print("test")
         
         #lets make the enemy spawn a list 
         
@@ -145,7 +147,7 @@ def option():
 #TODO
 #Room to room movement - when the player goes to the border limit, it puts them into a new room 
 class Player(pygame.sprite.Sprite):
-    player_image = pygame.image.load("test sprite.jpg").convert()
+    player_image = pygame.image.load("spritegroup//test sprite.jpg").convert()
     def __init__(self):
             pygame.sprite.Sprite.__init__(self)
             self.image = Player.player_image
@@ -184,9 +186,33 @@ class Player(pygame.sprite.Sprite):
 #               enemystate = False
 
 
-def game():
+def characterCreation():
+    while running:
+        screen.fill(White)
+        screen.blit(textfont.render("Choose your class"))
+        right = pygame.draw.rect(screen, Black,(300,300,100,100))
+        c = textfont.render("Warrior", True, White), (50,50)
+        screen.blit(c)
+        mousex, mousey = pygame.mouse.get_pos()
+        if right.collidepoint(mousex,mousey):
+            c = textfont.render("Mage",True,White),(50,50)
+            screen.blit(c,(50,50))
+        if right.collidepoint(mousex,mousey):
+            c = textfont.render("Warrior",True,White)
+            
+            
+        
+        
     
+
+
+
+def game(charclass):
     
+    #if charclass = warrior
+    #give special skill1
+    #if charclass = mage
+    #give special skill2
     enemylist = []
     enemy = Enemy("#",enemylist)
   
@@ -202,7 +228,6 @@ def game():
     while running:
         
          #its getting constnatly updated therefore the spawns are getting hidden by the 
-        
         
         screen.fill(White)
         
@@ -302,6 +327,7 @@ def game():
         
         pygame.display.update()
         
+        
 
 while running:
     screen.fill(White) #the colour
@@ -311,6 +337,7 @@ while running:
     mousex, mousey = pygame.mouse.get_pos()
     if button1.collidepoint(mousex,mousey):
         if click == True:
+            characterCreation()
             game()
             click = False
     button2 = pygame.draw.rect(screen, Black,(100,100,100,50))
