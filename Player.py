@@ -1,6 +1,8 @@
 import pygame 
 
-
+screenx = 1280
+screeny = 1024
+screen = pygame.display.set_mode((screenx,screeny))
 class Player(pygame.sprite.Sprite):
     player_image = pygame.image.load("spritegroup//test sprite.jpg").convert()
     def __init__(self):
@@ -8,20 +10,9 @@ class Player(pygame.sprite.Sprite):
         self.image = Player.player_image
         self.rect = self.image.get_rect()
         self.rect.center = (1280/2, 1024/2)
-        self.spawnx = 200
-        self.spawny = 200
         self.border = 2
             
-    # def update(self):
-    #     keypressed = pygame.key.get_pressed()
-    #     if keypressed[pygame.K_s] and self.rect.y < screeny:
-    #         self.rect.y += self.border
-    #     if keypressed[pygame.K_a] and self.rect.x > self.border:
-    #         self.rect.x -= self.border
-    #     if keypressed[pygame.K_d] and self.rect.x <  screenx :
-    #         self.rect.x += self.border
-    #     if keypressed[pygame.K_w] and self.rect.y > self.border:
-    #         self.rect.y -= self.border
+
     def moveright(self):
         self.rect.x += self.border
     def moveleft(self):

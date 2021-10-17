@@ -1,10 +1,13 @@
-import pygame, sys, random, os, Enemy, Player
+import pygame, sys, random, os
+from Player import Player
+from Enemy import Enemy
+
 
 pygame.init()
 
 #since i cant put multiple text lines at once with indentations, i'll instead use images and put texts on it
 
-
+print
 White = (255,255,255)
 Black = (0,0,0)
 screenx = 1280
@@ -97,7 +100,11 @@ def option():
                 click = True
         pygame.display.update()
         
-class Attack:
+class Attack(pygame.sprite.Sprite):
+    projectileup = pygame.image.load("spritegroup//arrow up.png").convert()
+    projectiledown = pygame.image.load("spritegroup//arrow down.png").convert()
+    projectileright = pygame.image.load("spritegroup//arrow right.png").convert()
+    projectileleft = pygame.image.load("spritegroup//arrow.png").convert()
     def __init__(self):
         self.Projectile = 0
         
@@ -119,18 +126,24 @@ def game():
     #give special skill1
     #if charclass = mage
     #give special skill2
-    enemylist = []
-    enemy = Enemy("#",enemylist)
-    enemies.add(enemy)
+  
+    
     #nextroom = False
     #power_level = 0 #to indicated the player's power level 
     running = True
-    enemystate = True
-    spawnx = 200
-    spawny = 200
+    enemystate = False
     border_gap = 0
+    
     player = Player()
     sprites.add(player)
+    
+    for i in range(0,3):
+        #enemy = Enemy() #put coords as a input see if it works 
+        enemies.add(Enemy())
+   
+        
+    
+
     while running:
         
         screen.fill(White)
@@ -149,8 +162,11 @@ def game():
         #                                #
         #                                #
         ##################################  
-        sprites.update()
         sprites.draw(screen)
+
+        enemies.draw(screen)
+        
+        
         
         
        
@@ -162,48 +178,55 @@ def game():
         #if enemystate = true:
         #player rect x and rect y will constantly be forced in the room
         #speed becomes 0 when bumped into a wall or some sort
-        if enemystate == False:    
+           
         
-            if left_bot_to_right.collidepoint(player.rect.x, player.rect.y): 
+        if left_bot_to_right.collidepoint(player.rect.x, player.rect.y): 
                 
-                player.rect.x = screenx/2 - 100
-                player.rect.y = 50
+            player.rect.x = screenx/2 - 100
+            player.rect.y = 50
                 #spawn enemy algorithm here
                 #print(player.rect.x)
-                enemies.draw(screen)
+            
+            for i in range(2):
+                enemies.add(enemy)
+            
+            
+            
+            
+                
                 #if collision(player,enemies) == True:
                     
                 #be in a state where when the player goes through a room, it is not allowed to leave until the enemy count is 0.
-                #if player goes into room
+                #if player goes into r oom
                 #  exit room will not be allowed, false no matter what
                 #  exit room statement will always be false while there are still enemies in the room
                 #  once enemy count is down to 0 (maybe using a list, and if the list is empty), exit room statement can be converted into true
                 #  repeat the process and roll a random number to determine if the room will contain enemies or not
             
              
-            if left_top_to_right.collidepoint(spawnx, spawny): 
+        if left_top_to_right.collidepoint(player.rect.x, player.rect.y): 
+        
+            player.rect.x = screenx/2
+            player.rect.y = screeny-50
+           
+        #spawn enemy algorithm here
+        
+        if right_top_to_bot.collidepoint(player.rect.x, player.rect.y):
+        
+            player.rect.x = 50
+            player.rect.y = screeny/2
+        
+        #spawn enemy algorithm here
             
-                spawnx = screenx/2
-                spawny = screeny-50
-                enemy.SpawnEnemy(1)
-            #spawn enemy algorithm here
-            
-            if right_top_to_bot.collidepoint(spawnx, spawny):
-            
-                spawnx = 50
-                spawny = screeny/2
-                enemy.SpawnEnemy(1)
-            #spawn enemy algorithm here
-                
-            if left_top_to_bot.collidepoint(spawnx, spawny):
-            
-                spawnx = screenx-50
-                spawny = screeny/2
-                enemy.SpawnEnemy(1)
-            #spawn enemy algorithm here
-        elif enemystate == True:
-            border_gap = 200
-            
+        if left_top_to_bot.collidepoint(player.rect.x, player.rect.y):
+        
+            player.rect.x = screenx-50
+            player.rect.y = screeny/2
+           
+        #spawn enemy algorithm here
+        #elif enemystate == True:
+        #    border_gap = 200
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT: # Did the user click the window close button?
                 running = False
