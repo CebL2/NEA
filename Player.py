@@ -11,7 +11,6 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (1280/2, 1024/2)
         self.border = 2
-            
 
     def moveright(self):
         self.rect.x += self.border

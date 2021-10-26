@@ -27,7 +27,8 @@ spawnamount_easy = random.randint(0,4)
 spawnamount_medium = random.randint(5,8)
 spawnamount_hard = random.randint(9,12)
 enemies = pygame.sprite.Group()
-sprites = pygame.sprite.Group()
+playersp = pygame.sprite.Group()
+allsprites = pygame.sprite.Group()
 
 #procedural generation
 
@@ -101,6 +102,7 @@ def option():
         pygame.display.update()
         
 class Attack(pygame.sprite.Sprite):
+    
     projectileup = pygame.image.load("spritegroup//arrow up.png").convert()
     projectiledown = pygame.image.load("spritegroup//arrow down.png").convert()
     projectileright = pygame.image.load("spritegroup//arrow right.png").convert()
@@ -116,8 +118,32 @@ class Attack(pygame.sprite.Sprite):
 #Room to room movement - when the player goes to the border limit, it puts them into a new room 
 
 
+def RoomLayout():
+    Rooms = []
+    for i in range(3):
+        Rooms.append([])
+        for j in range(3):
+            passorno = random.randint(1,2)
+            print(passorno)
+            if passorno == 1:
+                Rooms[i].append("P")
+            else:
+                Rooms[i].append("N")
+    #room will be 3x3 for now 
+    #[['P', 'P', 'P'],
+    # ['N', 'N', 'N'], 
+    # ['P', 'N', 'N']]
+    #directions = [(0,0),(0,1),()]
+    # player is put into one of the rooms    
+    # i = random.randint(0,2)
+    # j = random.randint(0,2)
+    #roomstate = Rooms[i][j]
+    #if roomstate == "N" 
+    
+
 def collision(player,enemies): #player is player, enemies is the spritegroup
-    hit = pygame.sprite.spritecollideany(player,enemies, True  )
+    hit = pygame.sprite.spritecollideany(player,enemies, True )
+    hitx = pygame.sprite.spritecollideany()
     if hit:
         return True  #checks collision between the sprite group enemies and the sprite player, which is in another sprite group
 
@@ -135,15 +161,18 @@ def game():
     border_gap = 0
     
     player = Player()
-    sprites.add(player)
-    
+    playersp.add(player)
+    allsprites.add(player)
     for i in range(0,3):
         #enemy = Enemy() #put coords as a input see if it works 
-        enemies.add(Enemy())
+        e = Enemy()
+        enemies.add(e)
+        allsprites.add(e)
+        
    
         
     
-
+    
     while running:
         
         screen.fill(White)
@@ -162,11 +191,14 @@ def game():
         #                                #
         #                                #
         ##################################  
-        sprites.draw(screen)
+        playersp.draw(screen)
 
         enemies.draw(screen)
         
-        
+        #for enemy in enemies(sprite group)
+        #if collision(playerbullet, enemy, True, False)
+        #remove enemy (.kill())
+
         
         
        
@@ -187,8 +219,8 @@ def game():
                 #spawn enemy algorithm here
                 #print(player.rect.x)
             
-            for i in range(2):
-                enemies.add(enemy)
+            #for i in range(2):
+                #enemies.add(enemy)
             
             
             
@@ -226,7 +258,7 @@ def game():
         #spawn enemy algorithm here
         #elif enemystate == True:
         #    border_gap = 200
-
+        enemies.update()
         for event in pygame.event.get():
             if event.type == pygame.QUIT: # Did the user click the window close button?
                 running = False
