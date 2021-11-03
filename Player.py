@@ -1,5 +1,8 @@
+
+from Attack import Attack
 import pygame 
 
+projectilegroup = pygame.sprite.Group()
 screenx = 1280
 screeny = 1024
 screen = pygame.display.set_mode((screenx,screeny))
@@ -11,7 +14,9 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (1280/2, 1024/2)
         self.border = 2
-
+    
+    
+    
     def moveright(self):
         self.rect.x += self.border
     def moveleft(self):
@@ -20,6 +25,16 @@ class Player(pygame.sprite.Sprite):
         self.rect.y -= self.border
     def movedown(self):
         self.rect.y += self.border
+        
+    def shoot(self):
+        projectile = Attack(player.rect.x,player.rect.y)
+        projectile.rect.y -= projectile.speed
+        projectilegroup.add(projectile)
+    
+        
+        
+
+        
         
 #def enemystate(collide)
 # if collide is true:

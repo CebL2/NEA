@@ -12,7 +12,6 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.center = ((random.randint(0,1280),(random.randint(0,1024))))    
         self.enemylist = []
         
-
     
         #self.screen = screen
         #self.spritegroup = spritegroup
