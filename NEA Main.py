@@ -12,12 +12,10 @@ pygame.init()
 #in order to save, we need to dump or write binary data with binary write 
 #with open("filename.txt",'wb') as file 
 #file.dump(data) with the pickle module?
-
-
 projectilegroup = pygame.sprite.Group()
 
-
-
+clock = pygame.time.Clock()
+     
 White = (255,255,255) #preset values for colour and resolution
 Black = (0,0,0)
 screenx = 1280
@@ -44,7 +42,7 @@ allsprites = pygame.sprite.Group()
 class Player(pygame.sprite.Sprite):
     player_image = pygame.image.load("spritegroup//test sprite.jpg").convert()
     def __init__(self,screenx,screeny,border_gap):
-        pygame.sprite.Sprite.__init__(self)
+        super().__init__()
         self.image = Player.player_image
         self.rect = self.image.get_rect()
         self.rect.center = (1280/2, 1024/2)
@@ -157,8 +155,6 @@ def exitmenu():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 click = True
-      
-    
     
  
 def save():
@@ -167,7 +163,6 @@ def save():
         #def Move(self):
 
 #Room to room movement - when the player goes to the border limit, it puts them into a new room 
-
 
 def RoomLayout():
     Rooms = []
@@ -189,16 +184,13 @@ def RoomLayout():
     # i = random.randint(0,2)
     # j = random.randint(0,2)
     #roomstate = Rooms[i][j]
-    #if roomstate == "N" 
-    
-    
+    #if roomstate == "N"   
 
 def collision(player,enemies): #player is player, enemies is the spritegroup
     hit = pygame.sprite.spritecollideany(player,enemies, True )
     hitx = pygame.sprite.spritecollideany()
     if hit:
         return True  #checks collision between the sprite group enemies and the sprite player, which is in another sprite group
-
 def game():
     #if charclass = warrior
     #give special skill1
@@ -249,8 +241,6 @@ def game():
         #if collision(playerbullet, enemy, True, False)
         #remove enemy (.kill())
 
-        
-        
        
         left_top_to_right = pygame.draw.rect(screen, Black, (0,0,1280,10))
         left_top_to_bot = pygame.draw.rect(screen, Black, (0,0, 10,1280))
@@ -316,7 +306,9 @@ def game():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 click = True
         
-        pygame.display.flip()
+        
+        pygame.display.update()
+        
         
         
 

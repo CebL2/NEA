@@ -13,11 +13,9 @@ class Attack(pygame.sprite.Sprite):
         self.speed = 10
     
     def update(self):
-        keypressed = pygame.key.get_pressed()
-        if keypressed[pygame.K_DOWN]:
-            self.rect.y -= self.speed
-            if self.rect.y < 0:
-                self.kill()
+        self.rect.y -= self.speed
+        if self.rect.y < 0:
+            self.kill()
 
         # if keypressed[pygame.K_a]
         #     player.moveleft()
