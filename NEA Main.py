@@ -9,6 +9,7 @@ import pygame, sys, random, os
 #from Player import Player
 from Enemy import Enemy
 from Attack import Attack
+from AttackDown import AttackDown
 #import pickle
 
 #json to save files
@@ -74,10 +75,14 @@ class Player(pygame.sprite.Sprite):
         if keypressed[pygame.K_w] and self.rect.y > self.gap:
             self.rect.y -= self.border
 
-    def shoot(self):
-        projectile = Attack(self.rect.x,self.rect.y)
-        projectilegroup.add(projectile)
-        allsprites.add(projectile)
+    def shootdown(self):
+        projectileup = Attack(self.rect.x,self.rect.y)
+        projectilegroup.add(projectileup)
+        allsprites.add(projectileup)
+    def shootup(self):
+        projectiledown = AttackDown(self.rect.x,self.rect.y)
+        projectilegroup.add(projectiledown)
+        allsprites.add(projectiledown)
 #procedural generation
 
 #when the player goes to a new room so some kind of condition that acknowledges that the player has moved into a new room or region
@@ -145,14 +150,18 @@ def option():
 def exitmenu():
     print("does this reach")
     running = True
+    click = False
     while running:
-        click = False
+        
         screen.fill(White)
-        exitbutton = pygame.draw.rect(screen, Black,(50,50,50,50))
+        exitbutton = pygame.draw.rect(screen, Black,(100,200,200,200))
         mousex, mousey = pygame.mouse.get_pos()
+    
         if exitbutton.collidepoint(mousex,mousey):
             if click == True:
-                running = False         
+                print("reach?")
+                running = False 
+                click = False        
         for event in pygame.event.get():
             if event.type == pygame.QUIT: # Did the user click the window close button?
                 pygame.quit()
@@ -163,7 +172,32 @@ def exitmenu():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 click = True
         pygame.display.update()
-        
+#while running:
+#     screen.fill(White) #the colour
+#     button1 = pygame.draw.rect(screen, Black,(50,50,50,50))
+#     screen.blit(textfont.render("Play", True, White), (50,50))
+#     mousex, mousey = pygame.mouse.get_pos()
+#     if button1.collidepoint(mousex,mousey):
+#         if click == True:
+#             #characterCreation()
+#             game()
+#             click = False             
+#     button2 = pygame.draw.rect(screen, Black,(100,100,100,50))
+#     screen.blit(textfont.render("Options", True, White), (100,100))
+#     if button2.collidepoint(mousex,mousey):
+#         if click == True:
+#             option()
+#             click = False
+#     for event in pygame.event.get():
+#         if event.type == pygame.QUIT: # Did the user click the window close button?
+#             pygame.quit()
+#             sys.exit()
+#         if event.type == pygame.KEYDOWN:
+#             if event.key == pygame.K_ESCAPE:
+#                 pygame.quit()
+#         if event.type == pygame.MOUSEBUTTONDOWN:
+#             click = True
+#     pygame.display.update()     
  
 def save():
     pass
@@ -221,17 +255,17 @@ def game():
     
     while running:
         screen.fill(White)
-        keypressed = pygame.key.get_pressed()
-    
         ##################################
         #                                #
         #                                #
         #                                #
         ##################################
-        #for enemy in enemies(sprite group)
-        #if collision(playerbullet, enemy, True, False)
-        #remove enemy (.kill())
-       
+        
+        for projectile in projectilegroup:
+            pygame.sprite.spritecollide(projectile, enemies, True, None)
+                #enemy.kill()
+                   #    
+        
         left_top_to_right = pygame.draw.rect(screen, Black, (0,0,1280,10))
         left_top_to_bot = pygame.draw.rect(screen, Black, (0,0, 10,1280))
         right_top_to_bot = pygame.draw.rect(screen, Black, (1270,0,10,1280))
@@ -264,8 +298,8 @@ def game():
         projectilegroup.update()
         playersp.update()
         playersp.draw(screen)
-        if keypressed[pygame.K_DOWN]:
-            player.shoot()
+        # if keypressed[pygame.K_DOWN]:
+        #     player.shoot()
         #consider usint pygame.event toget key presses?
         #keypressed is useful for continuous movement
         #events are useful for one time states
@@ -284,17 +318,20 @@ def game():
                 if event.key == pygame.K_ESCAPE:
                     #running = False
                     exitmenu()               
+                if event.key == pygame.K_DOWN:
+                    player.shootdown()
+                if event.key == pygame.K_UP:
+                    player.shootup()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 click = True
                 
         pygame.display.update()        
   
 keypressed = pygame.key.get_pressed()     
-    
+
 while running:
     screen.fill(White) #the colour
     button1 = pygame.draw.rect(screen, Black,(50,50,50,50))
-    
     screen.blit(textfont.render("Play", True, White), (50,50))
     mousex, mousey = pygame.mouse.get_pos()
     if button1.collidepoint(mousex,mousey):
