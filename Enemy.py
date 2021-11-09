@@ -4,15 +4,17 @@ screenx = 1280
 screeny = 1024
 screen = pygame.display.set_mode((screenx,screeny))
 class Enemy(pygame.sprite.Sprite):
-    enemy  = pygame.image.load("spritegroup//test enemy.png").convert()
+    enemy  = pygame.Surface((200,200)) #pygame.image.load("spritegroup//test enemy.png").convert()
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.image = Enemy.enemy
         self.rect = self.image.get_rect()
         self.rect.center = ((random.randint(0,1280),(random.randint(0,1024))))    
-        self.enemylist = []
+    
         
     
+    def update(self):
+        pass
         #self.screen = screen
         #self.spritegroup = spritegroup
         #self.spritegroup.add()

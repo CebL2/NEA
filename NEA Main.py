@@ -1,9 +1,15 @@
+#TO DO
+#Implement Projectiles
+#Room traversal with restrictiosn
+#Enemy spawn
+#Room modifications (obstacles)
+#Character creation with built in speical abilities for different classes
+
 import pygame, sys, random, os
 #from Player import Player
 from Enemy import Enemy
 from Attack import Attack
 #import pickle
-
 
 #json to save files
 pygame.init()
@@ -12,15 +18,17 @@ pygame.init()
 #in order to save, we need to dump or write binary data with binary write 
 #with open("filename.txt",'wb') as file 
 #file.dump(data) with the pickle module?
-projectilegroup = pygame.sprite.Group()
-
+# with open ('test.txt', 'w') as file:
+#     file.write("this is a test")
+#     file.close()
+    
 clock = pygame.time.Clock()
-     
 White = (255,255,255) #preset values for colour and resolution
 Black = (0,0,0)
 screenx = 1280
 screeny = 1024
 
+clock.tick()
 display = pygame.display.set_mode((300,200))
 #print(pygame.font.get_fonts())
 
@@ -34,13 +42,17 @@ running = True
 spawnamount_easy = random.randint(0,4)
 spawnamount_medium = random.randint(5,8)
 spawnamount_hard = random.randint(9,12)
+projectilegroup = pygame.sprite.Group()
 enemies = pygame.sprite.Group()
 playersp = pygame.sprite.Group()
 allsprites = pygame.sprite.Group()
 
-        
+#delay = pygame.time()
+
+#when d
+
 class Player(pygame.sprite.Sprite):
-    player_image = pygame.image.load("spritegroup//test sprite.jpg").convert()
+    player_image = pygame.Surface((100,200))
     def __init__(self,screenx,screeny,border_gap):
         super().__init__()
         self.image = Player.player_image
@@ -65,6 +77,7 @@ class Player(pygame.sprite.Sprite):
     def shoot(self):
         projectile = Attack(self.rect.x,self.rect.y)
         projectilegroup.add(projectile)
+        allsprites.add(projectile)
 #procedural generation
 
 #when the player goes to a new room so some kind of condition that acknowledges that the player has moved into a new room or region
@@ -73,8 +86,6 @@ class Player(pygame.sprite.Sprite):
 #room generation
 #based on the player's power level or such
 #put obstacles/secrets accordingly
-
-
 #a lot of random generated types will be used here
 
 #have multiple huds/menus and parse it through the class
@@ -82,9 +93,7 @@ class Player(pygame.sprite.Sprite):
 class Hud:
     def __init__(self, Menu1,Menu2):
         self.Player = Menu1
-        self.Options = Menu2
-            
-        
+        self.Options = Menu2    
 
 class Spells:
     def __init__(self,Fire, Water, Earth):
@@ -108,13 +117,11 @@ class Spells:
 #     if runtime > 0:
 #         screen.blit(textfont.render(enemy,True,Black))
 
-
 #when the user goes to another room (edge of border), EnterRoom gets called as its True
 #EnterRoom then checks if the parameter is true, if it is, then spawn in that current screen
 #for testing purposes, amount spawnesd will be based on run time of game
 #the way how rooms will be generated with have some sort of grid to it, where it will spawn in built in objects that will be implemented, structure is always random
 #the current issue i
-
 def option():
     running = True
     while running:
@@ -135,35 +142,35 @@ def option():
                 click = True
         pygame.display.update()
         
-
 def exitmenu():
+    print("does this reach")
     running = True
     while running:
         click = False
-        screen.fill(Black)
+        screen.fill(White)
         exitbutton = pygame.draw.rect(screen, Black,(50,50,50,50))
         mousex, mousey = pygame.mouse.get_pos()
         if exitbutton.collidepoint(mousex,mousey):
             if click == True:
-                running = False
-                return False
-            
-            
+                running = False         
         for event in pygame.event.get():
             if event.type == pygame.QUIT: # Did the user click the window close button?
                 pygame.quit()
                 sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
                 click = True
-    
+        pygame.display.update()
+        
  
 def save():
     pass
                 
         #def Move(self):
 
-#Room to room movement - when the player goes to the border limit, it puts them into a new room 
-
+#Room to room movement - when the player goes to the border limit, it puts them into a new room
 def RoomLayout():
     Rooms = []
     for i in range(3):
@@ -185,7 +192,6 @@ def RoomLayout():
     # j = random.randint(0,2)
     #roomstate = Rooms[i][j]
     #if roomstate == "N"   
-
 def collision(player,enemies): #player is player, enemies is the spritegroup
     hit = pygame.sprite.spritecollideany(player,enemies, True )
     hitx = pygame.sprite.spritecollideany()
@@ -203,7 +209,6 @@ def game():
     running = True
     enemystate = False
     border_gap = 0
-    
     player = Player(screenx,screeny,border_gap)
     playersp.add(player)
     allsprites.add(player)
@@ -215,32 +220,17 @@ def game():
     
     
     while running:
-        
         screen.fill(White)
         keypressed = pygame.key.get_pressed()
-      
-        if keypressed[pygame.K_DOWN]:
-            player.shoot()
-            
-            
-        
+    
         ##################################
         #                                #
         #                                #
         #                                #
         ##################################
-        
-        projectilegroup.draw(screen)
-        projectilegroup.update()
-        
-        playersp.update()
-        playersp.draw(screen)
-        #enemies.draw(screen)
-        
         #for enemy in enemies(sprite group)
         #if collision(playerbullet, enemy, True, False)
         #remove enemy (.kill())
-
        
         left_top_to_right = pygame.draw.rect(screen, Black, (0,0,1280,10))
         left_top_to_bot = pygame.draw.rect(screen, Black, (0,0, 10,1280))
@@ -249,69 +239,58 @@ def game():
         #def function (enemystate)
         #if enemystate = true:
         #player rect x and rect y will constantly be forced in the room
-        #speed becomes 0 when bumped into a wall or some sort
-           
-        
+        #speed becomes 0 when bumped into a wall 
         if left_bot_to_right.collidepoint(player.rect.x, player.rect.y): 
-                
             player.rect.x = screenx/2 - 100
             player.rect.y = 50
                 #spawn enemy algorithm here
                 #print(player.rect.x)
             
-            #for i in range(2):
-                #enemies.add(enemy)
-            
-                
-                #if collision(player,enemies) == True:
-                    
-                #be in a state where when the player goes through a room, it is not allowed to leave until the enemy count is 0.
-                #if player goes into r oom
-                #  exit room will not be allowed, false no matter what
-                #  exit room statement will always be false while there are still enemies in the room
-                #  once enemy count is down to 0 (maybe using a list, and if the list is empty), exit room statement can be converted into true
-                #  repeat the process and roll a random number to determine if the room will contain enemies or not
-            
         if left_top_to_right.collidepoint(player.rect.x, player.rect.y): 
-        
             player.rect.x = screenx/2
             player.rect.y = screeny-50
-           
-        #spawn enemy algorithm here
         
         if right_top_to_bot.collidepoint(player.rect.x, player.rect.y):
-        
             player.rect.x = 50
             player.rect.y = screeny/2
-        
-        #spawn enemy algorithm here
             
         if left_top_to_bot.collidepoint(player.rect.x, player.rect.y):
-        
             player.rect.x = screenx-50
             player.rect.y = screeny/2
-           
-        #spawn enemy algorithm here
-        #elif enemystate == True:
-        #    border_gap = 200
+            
+        enemies.draw(screen)
         enemies.update()
+        projectilegroup.draw(screen)
+        projectilegroup.update()
+        playersp.update()
+        playersp.draw(screen)
+        if keypressed[pygame.K_DOWN]:
+            player.shoot()
+        #consider usint pygame.event toget key presses?
+        #keypressed is useful for continuous movement
+        #events are useful for one time states
+        
+        
+        #game is running in the main loop
+        #if game run is false, then it returns back to the main loop (main menu)
+        #hiearchy should be:
+        #main -> game -> exit     (exit loops back to game if the run is false)
+        #          |\  <-
         for event in pygame.event.get():
             if event.type == pygame.QUIT: # Did the user click the window close button?
                 running = False
-                sys.exit()       
+                sys.exit()  
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    exitmenu()
-                    running = False
+                    #running = False
+                    exitmenu()               
             if event.type == pygame.MOUSEBUTTONDOWN:
                 click = True
-        
-        
-        pygame.display.update()
-        
-        
-        
-
+                
+        pygame.display.update()        
+  
+keypressed = pygame.key.get_pressed()     
+    
 while running:
     screen.fill(White) #the colour
     button1 = pygame.draw.rect(screen, Black,(50,50,50,50))
@@ -322,15 +301,13 @@ while running:
         if click == True:
             #characterCreation()
             game()
-            
-            click = False
+            click = False             
     button2 = pygame.draw.rect(screen, Black,(100,100,100,50))
     screen.blit(textfont.render("Options", True, White), (100,100))
     if button2.collidepoint(mousex,mousey):
         if click == True:
             option()
             click = False
-            
     for event in pygame.event.get():
         if event.type == pygame.QUIT: # Did the user click the window close button?
             pygame.quit()

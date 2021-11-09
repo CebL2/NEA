@@ -5,34 +5,24 @@ import random
 
 Rooms = []
 
-# for i in range(3):
-#     Rooms.append([])
-#     for j in range(3):
-#         passorno = random.randint(1,2)
-#         #print(passorno)
-#         if passorno == 1:
-#             Rooms[i].append("P")
-#         else:
-#             Rooms[i].append("N")
-#if top bar is touched AND i is NOT 0 AND roomstate[i-i][j] is NOT 'N':
-#roomstate = room[i-1][j] 
-#if right bar and j is not length of the sublist
-#same as above
-#if left, and j is not 0
-#same as above
-#if down and x is not legnth of list
-#same as above
+for i in range(4):
+    Rooms.append([])
+    for _ in range(5):
+        passorno = random.randint(1,2)
+        if passorno == 1:
+            Rooms[i].append("P")
+        else:
+            Rooms[i].append("N")
 
 #IF player is in room[i][j]
 #check whether if the direction
-
-room = [['N','N','P']]
-directions = [(0,0),(0,1),(1,0),(1,1)]
-i = random.randint(0,len(room)-1)
-j = random.randint(0,len(room[0])-1)
+for i in Rooms:
+    print(i)
+#directions = [(0,0),(0,1),(1,0),(1,1)]
+i = random.randint(0,len(Rooms)-1)
+j = random.randint(0,len(Rooms[0])-1)
 #print(i,j)
-def checkifN(room,i,j):
-    
+def checkifN(room,i,j):  
 #what if i = 1 and j =2?
     roomstate = room[i][j]
     new_i = random.randint(0,len(room)-1)
@@ -43,7 +33,7 @@ def checkifN(room,i,j):
         return roomstate,i,j
         
     
-print(checkifN(room,i,j))
+print(checkifN(Rooms,i,j))  
       # if  i == len(room)-1 and j == len(room[0])-1 and room[row][col] == 'N': #if i = 1 and j =2
                     #     roomstate = room[row-x][col-y] 
                     #     checkifN(room,i,j)
