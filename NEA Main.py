@@ -179,26 +179,16 @@ def save():
         #def Move(self):
 
 #Room to room movement - when the player goes to the border limit, it puts them into a new room
-# def RoomLayout(Rooms):
-#     for i in range(3):
-#         Rooms.append([])
-#         for _ in range(3):
-#             passorno = random.randint(1,2)
-#             if passorno == 1:
-#                 Rooms[i].append("P")
-#             else:
-#                 Rooms[i].append("N")
-#     return Rooms
-    #room will be 3x3 for now 
-    #[['P', 'P', 'P'],
-    # ['N', 'N', 'N'], 
-    # ['P', 'N', 'N']]
-    #directions = [(0,0),(0,1),()]
-    # player is put into one of the rooms    
-    # i = random.randint(0,2)
-    # j = random.randint(0,2)
-    #roomstate = Rooms[i][j]
-    #if roomstate == "N"  
+def RoomLayout(Rooms):
+    for i in range(3):
+        Rooms.append([])
+        for _ in range(3):
+            passorno = random.randint(1,2)
+            if passorno == 1:
+                Rooms[i].append("P")
+            else:
+                Rooms[i].append("N")
+    return Rooms
 def checkifN(room,i,j):  
 #what if i = 1 and j =2?
     roomstate = room[i][j]
@@ -223,7 +213,7 @@ def game():
     player = Player(screenx,screeny,border_gap)
     playersp.add(player)
     allsprites.add(player)
-    Rooms = []
+    #Rooms = []
     for i in range(0,3):
         #enemy = Enemy() #put coords as a input see if it works 
         e = Enemy()
@@ -234,23 +224,26 @@ def game():
    
 
     #i = random.randint(0,len(Rooms)-1)
-    #j = random.randint(0,len(Rooms[0])-1) 
-        
+   # j = random.randint(0,len(Rooms[0])-1) 
+    #    
     #roomstates = checkifN(Rooms,i,j)
     #i_value = roomstates[1]
     #j_value = roomstates[2]
+    i = 0
+    j = 1
     #playerpos = (i_value,j_value)
-    directions = [(0,1),(1,0)]
+    playerpos = (i,j)
     Rooms = [['N','P','N'],
              ['N','P','P'],
              ['P','P','N']]
-    i = 0
-    j = 1
-    playerpos = (i,j)
+    
+    #playerpos = (i_value,j_value)
+    #for i in Rooms:
+     #   print(i)
     print(playerpos[0])
     print(playerpos[1])
-    print(Rooms[playerpos[0]-1][playerpos[1]])
-    print(len(Rooms))
+    #print(Rooms[playerpos[0]-1][playerpos[1]])
+    print(len(Rooms)-1)
     
     
     while running:
@@ -275,18 +268,20 @@ def game():
         #if enemystate = true:
         #player rect x and rect y will constantly be forced in the room
         #speed becomes 0 when bumped into a wall 
-        if Down.collidepoint(player.rect.x, player.rect.y) and Rooms[playerpos[0]+1][playerpos[1]] == 'P' and playerpos[0] != len(Rooms)-1: 
-            player.rect.x = screenx/2 - 100
-            player.rect.y = 50
-            playerpos = (playerpos[0]+1,playerpos[1])
-            print(playerpos)
+        if Down.collidepoint(player.rect.x, player.rect.y) and playerpos[0] != len(Rooms)-1:   #problem is the second statement
+            if Rooms[playerpos[0]+1][playerpos[1]] == 'P' :
+                player.rect.x = screenx/2 - 100
+                player.rect.y = 50
+                playerpos = (playerpos[0]+1,playerpos[1])
+                print(playerpos)
                 #spawn enemy algorithm here
                 #print(player.rect.x)
-        if Top.collidepoint(player.rect.x, player.rect.y) and Rooms[playerpos[0]-1][playerpos[1]] == 'P' and playerpos[0] != 0: 
-            player.rect.x = screenx/2
-            player.rect.y = screeny-50
-            playerpos = (playerpos[0]-1,playerpos[1])
-            print(playerpos)
+        if Top.collidepoint(player.rect.x, player.rect.y)  and playerpos[0] != 0: 
+            if Rooms[playerpos[0]-1][playerpos[1]] == 'P':
+                player.rect.x = screenx/2
+                player.rect.y = screeny-50
+                playerpos = (playerpos[0]-1,playerpos[1])
+                print(playerpos)
         if Right.collidepoint(player.rect.x, player.rect.y)and Rooms[playerpos[0]][playerpos[1]+1] == 'P' and playerpos[1] != len(Rooms[0]) -1: 
             player.rect.x = 50
             player.rect.y = screeny/2
