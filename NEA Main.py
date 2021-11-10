@@ -10,6 +10,7 @@ import pygame, sys, random, os
 from Enemy import Enemy
 from Attack import Attack
 from AttackDown import AttackDown
+from TESTINGFILE import Room
 #import pickle
 
 #json to save files
@@ -172,50 +173,22 @@ def exitmenu():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 click = True
         pygame.display.update()
-#while running:
-#     screen.fill(White) #the colour
-#     button1 = pygame.draw.rect(screen, Black,(50,50,50,50))
-#     screen.blit(textfont.render("Play", True, White), (50,50))
-#     mousex, mousey = pygame.mouse.get_pos()
-#     if button1.collidepoint(mousex,mousey):
-#         if click == True:
-#             #characterCreation()
-#             game()
-#             click = False             
-#     button2 = pygame.draw.rect(screen, Black,(100,100,100,50))
-#     screen.blit(textfont.render("Options", True, White), (100,100))
-#     if button2.collidepoint(mousex,mousey):
-#         if click == True:
-#             option()
-#             click = False
-#     for event in pygame.event.get():
-#         if event.type == pygame.QUIT: # Did the user click the window close button?
-#             pygame.quit()
-#             sys.exit()
-#         if event.type == pygame.KEYDOWN:
-#             if event.key == pygame.K_ESCAPE:
-#                 pygame.quit()
-#         if event.type == pygame.MOUSEBUTTONDOWN:
-#             click = True
-#     pygame.display.update()     
- 
+    
 def save():
-    pass
-                
+    pass                
         #def Move(self):
 
 #Room to room movement - when the player goes to the border limit, it puts them into a new room
-def RoomLayout():
-    Rooms = []
-    for i in range(3):
-        Rooms.append([])
-        for j in range(3):
-            passorno = random.randint(1,2)
-            print(passorno)
-            if passorno == 1:
-                Rooms[i].append("P")
-            else:
-                Rooms[i].append("N")
+# def RoomLayout(Rooms):
+#     for i in range(3):
+#         Rooms.append([])
+#         for _ in range(3):
+#             passorno = random.randint(1,2)
+#             if passorno == 1:
+#                 Rooms[i].append("P")
+#             else:
+#                 Rooms[i].append("N")
+#     return Rooms
     #room will be 3x3 for now 
     #[['P', 'P', 'P'],
     # ['N', 'N', 'N'], 
@@ -225,12 +198,16 @@ def RoomLayout():
     # i = random.randint(0,2)
     # j = random.randint(0,2)
     #roomstate = Rooms[i][j]
-    #if roomstate == "N"   
-def collision(player,enemies): #player is player, enemies is the spritegroup
-    hit = pygame.sprite.spritecollideany(player,enemies, True )
-    hitx = pygame.sprite.spritecollideany()
-    if hit:
-        return True  #checks collision between the sprite group enemies and the sprite player, which is in another sprite group
+    #if roomstate == "N"  
+def checkifN(room,i,j):  
+#what if i = 1 and j =2?
+    roomstate = room[i][j]
+    new_i = random.randint(0,len(room)-1)
+    new_j = random.randint(0,len(room[0])-1)
+    if roomstate == 'N':
+        return checkifN(room,new_i,new_j)
+    else:
+        return roomstate,i,j 
 def game():
     #if charclass = warrior
     #give special skill1
@@ -246,11 +223,34 @@ def game():
     player = Player(screenx,screeny,border_gap)
     playersp.add(player)
     allsprites.add(player)
+    Rooms = []
     for i in range(0,3):
         #enemy = Enemy() #put coords as a input see if it works 
         e = Enemy()
         enemies.add(e)
         allsprites.add(e)
+
+    #Rooms = RoomLayout(Rooms)
+   
+
+    #i = random.randint(0,len(Rooms)-1)
+    #j = random.randint(0,len(Rooms[0])-1) 
+        
+    #roomstates = checkifN(Rooms,i,j)
+    #i_value = roomstates[1]
+    #j_value = roomstates[2]
+    #playerpos = (i_value,j_value)
+    directions = [(0,1),(1,0)]
+    Rooms = [['N','P','N'],
+             ['N','P','P'],
+             ['P','P','N']]
+    i = 0
+    j = 1
+    playerpos = (i,j)
+    print(playerpos[0])
+    print(playerpos[1])
+    print(Rooms[playerpos[0]-1][playerpos[1]])
+    print(len(Rooms))
     
     
     while running:
@@ -261,55 +261,54 @@ def game():
         #                                #
         ##################################
         
+        #Rooms 
         for projectile in projectilegroup:
             pygame.sprite.spritecollide(projectile, enemies, True, None)
                 #enemy.kill()
                    #    
         
-        left_top_to_right = pygame.draw.rect(screen, Black, (0,0,1280,10))
-        left_top_to_bot = pygame.draw.rect(screen, Black, (0,0, 10,1280))
-        right_top_to_bot = pygame.draw.rect(screen, Black, (1270,0,10,1280))
-        left_bot_to_right = pygame.draw.rect(screen, Black, (0,1014, 1280,10))
+        Top = pygame.draw.rect(screen, Black, (0,0,1280,10))
+        Left = pygame.draw.rect(screen, Black, (0,0, 10,1280))
+        Right = pygame.draw.rect(screen, Black, (1270,0,10,1280))
+        Down = pygame.draw.rect(screen, Black, (0,1014, 1280,10))
         #def function (enemystate)
         #if enemystate = true:
         #player rect x and rect y will constantly be forced in the room
         #speed becomes 0 when bumped into a wall 
-        if left_bot_to_right.collidepoint(player.rect.x, player.rect.y): 
+        if Down.collidepoint(player.rect.x, player.rect.y) and Rooms[playerpos[0]+1][playerpos[1]] == 'P' and playerpos[0] != len(Rooms)-1: 
             player.rect.x = screenx/2 - 100
             player.rect.y = 50
+            playerpos = (playerpos[0]+1,playerpos[1])
+            print(playerpos)
                 #spawn enemy algorithm here
                 #print(player.rect.x)
-            
-        if left_top_to_right.collidepoint(player.rect.x, player.rect.y): 
+        if Top.collidepoint(player.rect.x, player.rect.y) and Rooms[playerpos[0]-1][playerpos[1]] == 'P' and playerpos[0] != 0: 
             player.rect.x = screenx/2
             player.rect.y = screeny-50
-        
-        if right_top_to_bot.collidepoint(player.rect.x, player.rect.y):
+            playerpos = (playerpos[0]-1,playerpos[1])
+            print(playerpos)
+        if Right.collidepoint(player.rect.x, player.rect.y)and Rooms[playerpos[0]][playerpos[1]+1] == 'P' and playerpos[1] != len(Rooms[0]) -1: 
             player.rect.x = 50
             player.rect.y = screeny/2
-            
-        if left_top_to_bot.collidepoint(player.rect.x, player.rect.y):
+            playerpos = (playerpos[0],playerpos[1]+1)
+            print(playerpos)
+        if Left.collidepoint(player.rect.x, player.rect.y)and Rooms[playerpos[0]][playerpos[1]-1] == 'P' and playerpos[1] != 0: 
             player.rect.x = screenx-50
-            player.rect.y = screeny/2
-            
+            player.rect.y = screeny/2   
+            playerpos = (playerpos[0],playerpos[1]-1) 
+            print(playerpos)
         enemies.draw(screen)
         enemies.update()
         projectilegroup.draw(screen)
         projectilegroup.update()
         playersp.update()
         playersp.draw(screen)
-        # if keypressed[pygame.K_DOWN]:
-        #     player.shoot()
+       
         #consider usint pygame.event toget key presses?
         #keypressed is useful for continuous movement
         #events are useful for one time states
         
-        
-        #game is running in the main loop
-        #if game run is false, then it returns back to the main loop (main menu)
-        #hiearchy should be:
-        #main -> game -> exit     (exit loops back to game if the run is false)
-        #          |\  <-
+    
         for event in pygame.event.get():
             if event.type == pygame.QUIT: # Did the user click the window close button?
                 running = False

@@ -2,38 +2,56 @@ import random
 
 
 
-
-Rooms = []
-
-for i in range(4):
-    Rooms.append([])
-    for _ in range(5):
-        passorno = random.randint(1,2)
-        if passorno == 1:
-            Rooms[i].append("P")
+def Room(Rooms):
+    #
+    for i in range(4):
+        Rooms.append([])
+        for _ in range(5):
+            passorno = random.randint(1,2)
+            if passorno == 1:
+                Rooms[i].append("P")
+            else:
+                Rooms[i].append("N")
+    return Rooms
+    #print(i,j)
+def checkifN(room,i,j):  
+    #what if i = 1 and j =2?
+        roomstate = room[i][j]
+        new_i = random.randint(0,len(room)-1)
+        new_j = random.randint(0,len(room[0])-1)
+        if roomstate == 'N':
+            return checkifN(room,new_i,new_j)
         else:
-            Rooms[i].append("N")
-
+            return roomstate,i,j
 #IF player is in room[i][j]
 #check whether if the direction
-for i in Rooms:
-    print(i)
-#directions = [(0,0),(0,1),(1,0),(1,1)]
-i = random.randint(0,len(Rooms)-1)
-j = random.randint(0,len(Rooms[0])-1)
-#print(i,j)
-def checkifN(room,i,j):  
-#what if i = 1 and j =2?
-    roomstate = room[i][j]
-    new_i = random.randint(0,len(room)-1)
-    new_j = random.randint(0,len(room[0])-1)
-    if roomstate == 'N':
-        return checkifN(room,new_i,new_j)
-    else:
-        return roomstate,i,j
-        
-    
-print(checkifN(Rooms,i,j))  
+
+directions = [(1,0),(0,1)]
+Rooms = []
+Rooms = Room(Rooms)
+#i = random.randint(0,len(Rooms)-1)
+#j = random.randint(0,len(Rooms[0])-1) 
+
+#roomstates = checkifN(Rooms,i,j)
+#print(roomstates)
+#print(roomstates[1])
+#i_value = roomstates[1]
+#j_value = roomstates[2]
+
+i = 0 
+j = 1
+Rooms =     [['N','P','N'],
+             ['N','P','P'],
+             ['P','P','N']]
+playerpos = (i,j)
+playerpos = (playerpos[0],playerpos[1]+3)
+
+
+print(Rooms[-1][1])
+
+#j_value = roomstates.index(j)
+
+#print(i_value,j_value)
       # if  i == len(room)-1 and j == len(room[0])-1 and room[row][col] == 'N': #if i = 1 and j =2
                     #     roomstate = room[row-x][col-y] 
                     #     checkifN(room,i,j)
