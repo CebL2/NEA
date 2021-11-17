@@ -10,7 +10,10 @@ import pygame, sys, random, os
 from Enemy import Enemy
 from Attack import Attack
 from AttackDown import AttackDown
-from TESTINGFILE import Room
+from AttackLeft import AttackLeft
+from AttackRight import AttackRight
+
+#from TESTINGFILE import Room
 #import pickle
 
 #json to save files
@@ -23,7 +26,8 @@ pygame.init()
 # with open ('test.txt', 'w') as file:
 #     file.write("this is a test")
 #     file.close()
-    
+#what can i make random
+
 clock = pygame.time.Clock()
 White = (255,255,255) #preset values for colour and resolution
 Black = (0,0,0)
@@ -52,36 +56,100 @@ allsprites = pygame.sprite.Group()
 #delay = pygame.time()
 
 #when d
+def CharacterCreation():
+    running = True
+    charclass = ["Warrior","Mage","Paladin"]
+    ability = ["Melee","Magic","Heal"]
+    stats = ['Speed','Melee damage','Spell damage','Health','Constitution']
+    mousex, mousey = pygame.mouse.get_pos()
+    i = 0
+    while running:
+        
+        screen.fill(White)
+        next = pygame.draw.rect(screen, Black,(500,500,100,100))
+        prev = pygame.draw.rect(screen, Black,(250,500,100,100))
+        screen.blit(textfont.render("Choose your class", True, Black), (50,50))
+        screen.blit(textfont.render("Next", True, White), (500,500))
+        screen.blit(textfont.render("Prev", True, White), (250,500))
+        screen.blit(textfont.render("Randomise", True, Black), (375,700))
+        pygame.draw.rect(screen, Black,(375,500,100,100))
+        screen.blit(textfont.render(charclass[i],True,White),(375,500))
+        if i == len(charclass)-1:
+             if next.collidepoint(mousex,mousey) and click == True:
+                pygame.draw.rect(screen, Black,(375,500,100,100))
+                screen.blit(textfont.render(charclass[0],True,White),(375,500))
+                i = 0
+        if i < -len(charclass):
+            if prev.collidepoint(mousex,mousey) and click == True:
+                pygame.draw.rect(screen, Black,(375,500,100,100))
+                screen.blit(textfont.render(charclass[i-1],True,Black),(375,500))
+                i = len(charclass) -1
+        if next.collidepoint(mousex,mousey) and click == True:
+            print("reach 1")
+            pygame.draw.rect(screen, Black,(375,500,100,100))
+            screen.blit(textfont.render(charclass[i+1],True,Black),(375,500))
+            i += 1
+        if prev.collidepoint(mousex,mousey) and click == True:
+            print("reach 2")
+            pygame.draw.rect(screen, Black,(375,500,100,100))
+            screen.blit(textfont.render(charclass[i-1],True,Black),(375,500))
+            i -= 1
+              
+        
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT: # Did the user click the window close button?
+                running = False
+                sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    running = False
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                click = True
+        pygame.display.update()
+
+        
 
 class Player(pygame.sprite.Sprite):
     player_image = pygame.Surface((100,200))
-    def __init__(self,screenx,screeny,border_gap):
+    def __init__(self,screenx,screeny,border_gap,charclass):
         super().__init__()
         self.image = Player.player_image
         self.rect = self.image.get_rect()
         self.rect.center = (1280/2, 1024/2)
-        self.border = 2
-        self.x = screenx
-        self.y = screeny
+        self.speed = 1
         self.gap = border_gap
+        self.char = charclass
+        self.screenx = screenx
+        self.screeny = screeny
     
     def update(self):
+        #print(self.rect.x)
+        #print(self.gap)
+        #print(self.rect.centerx)
         keypressed = pygame.key.get_pressed()
-        if keypressed[pygame.K_s] and self.rect.y < self.y - self.gap :
-            self.rect.y += self.border
+        if keypressed[pygame.K_s] and self.rect.y < self.screeny - self.gap :
+            self.rect.y += self.speed
         if keypressed[pygame.K_a] and self.rect.x > self.gap :
-            self.rect.x -= self.border
-        if keypressed[pygame.K_d] and self.rect.x <  self.x -self.gap:
-            self.rect.x += self.border
+            self.rect.x -= self.speed
+        if keypressed[pygame.K_d] and self.rect.x <  self.screenx -self.gap:
+            self.rect.x += self.speed
         if keypressed[pygame.K_w] and self.rect.y > self.gap:
-            self.rect.y -= self.border
+            self.rect.y -= self.speed
 
     def shootdown(self):
-        projectileup = Attack(self.rect.x,self.rect.y)
+        projectileup = Attack(self.rect.centerx,self.rect.centery+100)
         projectilegroup.add(projectileup)
         allsprites.add(projectileup)
     def shootup(self):
-        projectiledown = AttackDown(self.rect.x,self.rect.y)
+        projectiledown = AttackDown(self.rect.centerx,self.rect.centery-100)
+        projectilegroup.add(projectiledown)
+        allsprites.add(projectiledown)
+    def shootright(self):
+        projectiledown = AttackRight(self.rect.centerx+50,self.rect.centery)
+        projectilegroup.add(projectiledown)
+        allsprites.add(projectiledown)
+    def shootleft(self):
+        projectiledown = AttackLeft(self.rect.centerx-50,self.rect.centery)
         projectilegroup.add(projectiledown)
         allsprites.add(projectiledown)
 #procedural generation
@@ -125,15 +193,16 @@ class Spells:
 
 #when the user goes to another room (edge of border), EnterRoom gets called as its True
 #EnterRoom then checks if the parameter is true, if it is, then spawn in that current screen
-#for testing purposes, amount spawnesd will be based on run time of game
 #the way how rooms will be generated with have some sort of grid to it, where it will spawn in built in objects that will be implemented, structure is always random
-#the current issue i
+
+
+#enemy AI
+#
+
 def option():
     running = True
-    while running:
-        
+    while running: 
         screen.fill(Black)
-        
         screen.blit(textfont.render("options",True, Black), (200,50))
         button3 = pygame.draw.rect(screen, Black,(100,100,50,50))
         screen.blit(test, (50,50))
@@ -157,7 +226,6 @@ def exitmenu():
         screen.fill(White)
         exitbutton = pygame.draw.rect(screen, Black,(100,200,200,200))
         mousex, mousey = pygame.mouse.get_pos()
-    
         if exitbutton.collidepoint(mousex,mousey):
             if click == True:
                 print("reach?")
@@ -198,7 +266,7 @@ def checkifN(room,i,j):
         return checkifN(room,new_i,new_j)
     else:
         return roomstate,i,j 
-def game():
+def game(charclass):
     #if charclass = warrior
     #give special skill1
     #if charclass = mage
@@ -210,7 +278,8 @@ def game():
     running = True
     enemystate = False
     border_gap = 0
-    player = Player(screenx,screeny,border_gap)
+    print(charclass)
+    player = Player(screenx,screeny,border_gap,charclass)
     playersp.add(player)
     allsprites.add(player)
     #Rooms = []
@@ -240,10 +309,10 @@ def game():
     #playerpos = (i_value,j_value)
     #for i in Rooms:
      #   print(i)
-    print(playerpos[0])
-    print(playerpos[1])
+    #print(playerpos[0])
+    #print(playerpos[1])
     #print(Rooms[playerpos[0]-1][playerpos[1]])
-    print(len(Rooms)-1)
+    #print(len(Rooms)-1)
     
     
     while running:
@@ -256,7 +325,8 @@ def game():
         
         #Rooms 
         for projectile in projectilegroup:
-            pygame.sprite.spritecollide(projectile, enemies, True, None)
+            if pygame.sprite.spritecollide(projectile, enemies, True, None):
+                projectile.kill()
                 #enemy.kill()
                    #    
         
@@ -303,7 +373,6 @@ def game():
         #keypressed is useful for continuous movement
         #events are useful for one time states
         
-    
         for event in pygame.event.get():
             if event.type == pygame.QUIT: # Did the user click the window close button?
                 running = False
@@ -316,6 +385,10 @@ def game():
                     player.shootdown()
                 if event.key == pygame.K_UP:
                     player.shootup()
+                if event.key == pygame.K_RIGHT:
+                    player.shootright()
+                if event.key == pygame.K_LEFT:
+                    player.shootleft()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 click = True
                 
@@ -324,21 +397,20 @@ def game():
 keypressed = pygame.key.get_pressed()     
 
 while running:
+    mouse = pygame.mouse.get_pressed()
     screen.fill(White) #the colour
     button1 = pygame.draw.rect(screen, Black,(50,50,50,50))
     screen.blit(textfont.render("Play", True, White), (50,50))
     mousex, mousey = pygame.mouse.get_pos()
-    if button1.collidepoint(mousex,mousey):
-        if click == True:
-            #characterCreation()
-            game()
-            click = False             
+    if button1.collidepoint(mousex,mousey) and click == True:
+        charac = CharacterCreation()
+        game(charac)
+        click = False             
     button2 = pygame.draw.rect(screen, Black,(100,100,100,50))
     screen.blit(textfont.render("Options", True, White), (100,100))
-    if button2.collidepoint(mousex,mousey):
-        if click == True:
-            option()
-            click = False
+    if button2.collidepoint(mousex,mousey) and click == True:
+        option()
+        click = False
     for event in pygame.event.get():
         if event.type == pygame.QUIT: # Did the user click the window close button?
             pygame.quit()
@@ -347,5 +419,6 @@ while running:
             if event.key == pygame.K_ESCAPE:
                 pygame.quit()
         if event.type == pygame.MOUSEBUTTONDOWN:
-            click = True
+           click = True
+        ##   click = False
     pygame.display.update()

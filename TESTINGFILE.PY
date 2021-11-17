@@ -2,18 +2,138 @@ import random
 
 
 
+#we have the map of the room, now we need to focus on the contents of it
 def Room(Rooms):
-    #
+   # directions = [(1,0),(0,1)]
     for i in range(4):
         Rooms.append([])
-        for _ in range(5):
-            passorno = random.randint(1,2)
-            if passorno == 1:
-                Rooms[i].append("P")
-            else:
-                Rooms[i].append("N")
+        for _ in range(4):
+            Rooms[i].append(" ")
+    RoomCount = random.randint(6,(len(Rooms)*len(Rooms[0])-3)) 
+    print(RoomCount)
+    direction = random.randint(0,3)
+    i = random.randint(0, len(Rooms)-1)
+    j = random.randint(0, len(Rooms[0])-1)
+    Rooms[i][j] = 'P'
+    for i_index, i_val in enumerate(Rooms):
+        for j_index, j_val in enumerate(i_val):
+            while RoomCount > 0:
+                if j_val == 'P' and i_index == 0:
+                    RoomsToAdd = random.randint(0,4)
+                    for _ in range(0,RoomsToAdd):
+                        Rooms[i_index][j_index+1] = "P"
+                        
+                
+                
+            
+            #if j_index == 0:
+                
+            
+            
+            
+            #print(j_index)
+           # current = Rooms[i][j]
+    
+    
+    #if i == 0:
+    
+        
     return Rooms
-    #print(i,j)
+
+
+Rooms = []
+Rooms = Room(Rooms)
+
+for i in Rooms:
+    print(i)
+
+#index = random.randint(0,len(Rooms)) 
+#for i in Rooms:
+    
+        
+#room generator
+#choose a index to append P based on condition
+#if you meet a wall, go back one step or add a room adjacently depending on probability
+#
+#print()
+
+
+#print(len(Rooms)*len(Rooms[0]))
+
+#if corners are popped, then the adjacent ones CANNOT be popped
+#
+
+
+
+# def checkifAdja(Rooms):
+#     print(len(Rooms))
+#     convertcount = 0
+#     for i in range(len(Rooms)-1):
+#         for j in range(len(Rooms[0])-1):
+#             if i == 0 and j == 0:
+#                 if Rooms[i][j] == "N" and Rooms[i+1][j] == "P"  and Rooms[i][j+1] == "P":
+#                     #passable = random.randint(1,2)
+#                     #if passable == 1:
+#                         Rooms[i][j] = "P"
+#                         convertcount += 1
+#                     #else:
+#                        # Rooms[i][j+1] = "P"
+#             if i == 0:
+#                 if Rooms[i][j] == "P" and Rooms[i+1][j] == "N":           
+            
+#             if i == 0 and j == len(Rooms[0])-1:
+#                 if Rooms[i][j] == "N" and Rooms[i+1][j] == "P"  and Rooms[i][j-1] == "P":
+#                    # passable = random.randint(1,2)
+#                    # if passable == 1:
+#                         Rooms[i][j] = "P"
+#                    # else:
+#                       #  Rooms[i][j-1] = "P"
+#             if i == len(Rooms)-1 and j == 0:
+#                 if Rooms[i][j] == "N" and Rooms[i-1][j] == "P"  and Rooms[i][j+1] == "P":
+#                     #passable = random.randint(1,2)
+#                     #if passable == 1:
+#                         Rooms[i][j] = "P"
+#                    # else:
+#                        # Rooms[i][j-1] = "P"
+#             if i == len(Rooms)-1 and j == len(Rooms[0])-1:
+#                 if Rooms[i][j] == "N" and Rooms[i-1][j] == "P"  and Rooms[i][j-1] == "P":
+#                     #passable = random.randint(1,2)
+#                     #if passable == 1:
+#                         Rooms[i][j] = "P"
+#                    # else:
+#                     #    Rooms[i][j-1] = "P"
+            
+#                     #passable = random.randint(1,4)
+
+
+#                     if Rooms[i][j-1] == "N":
+                            
+#                     if Rooms[i+1][j] == "N":
+                            
+#                     if   Rooms[i][j+1] == "N":
+                        
+#                             Rooms[i+1][j] = "P"
+                        
+#                             Rooms[i][j-1] = "P"
+                        
+#                             Rooms[i-1][j] = "P"
+                        
+#                             Rooms[i][j] = "P"
+
+ #print(i,j)
+   
+Rooms = []
+
+
+#for i in new:
+ #   print(i)
+i = 0 
+j = 1 
+    #from the position of hte current P, get position of adjacent N and compare it to the (i+1,j+1), (i-1,j+1), (i-1,j-1), (i+1,j-1) position in the listq
+    
+    #if current position is P AND there isn't at least one P in 4 directions:
+#choose a random adjacent N and make it P
+    
 def checkifN(room,i,j):  
     #what if i = 1 and j =2?
         roomstate = room[i][j]
@@ -26,28 +146,18 @@ def checkifN(room,i,j):
 #IF player is in room[i][j]
 #check whether if the direction
 
-directions = [(1,0),(0,1)]
-Rooms = []
-Rooms = Room(Rooms)
-#i = random.randint(0,len(Rooms)-1)
-#j = random.randint(0,len(Rooms[0])-1) 
-
-#roomstates = checkifN(Rooms,i,j)
-#print(roomstates)
-#print(roomstates[1])
-#i_value = roomstates[1]
-#j_value = roomstates[2]
-
-i = 0 
-j = 1
-Rooms =     [['N','P','N'],
-             ['N','P','P'],
-             ['P','P','N']]
-playerpos = (i,j)
-playerpos = (playerpos[0],playerpos[1]+3)
 
 
-print(Rooms[-1][1])
+
+
+
+
+
+#test = [1,2,3,4]
+
+
+
+
 
 #j_value = roomstates.index(j)
 

@@ -9,11 +9,14 @@ class Enemy(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.image = Enemy.enemy
         self.rect = self.image.get_rect()
-        self.rect.center = ((random.randint(0,1280),(random.randint(0,1024))))    
+        self.rect.center = ((random.randint(0,1280),(random.randint(0,1024))))   
+        self.x = self.rect.x
+        self.y = self.rect.y 
     
         
     
     def update(self):
+        
         pass
         #self.screen = screen
         #self.spritegroup = spritegroup
