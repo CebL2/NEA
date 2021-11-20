@@ -5,6 +5,7 @@
 #Room modifications (obstacles)
 #Character creation with built in speical abilities for different classes
 
+import numpy as np
 import pygame, sys, random, os
 #from Player import Player
 from Enemy import Enemy
@@ -12,6 +13,7 @@ from Attack import Attack
 from AttackDown import AttackDown
 from AttackLeft import AttackLeft
 from AttackRight import AttackRight
+
 pygame.init()
 #from TESTINGFILE import Room
 #import pickle
@@ -152,11 +154,6 @@ class Spells:
 #     if runtime > 0:
 #         screen.blit(textfont.render(enemy,True,Black))
 #enemy AI
-#
-
-
-
-    
 
 class Player(pygame.sprite.Sprite):
     player_image = pygame.Surface((100,200))
@@ -244,47 +241,226 @@ class Game():
     #i = random.randint(0,len(Rooms)-1)
    # j = random.randint(0,len(Rooms[0])-1) 
     #    
-    #roomstates = checkifN(Rooms,i,j)
-    #i_value = roomstates[1]
-    #j_value = roomstates[2]
-        i = 0
-        j = 1
-        #playerpos = (i_value,j_value)
-        self.playerpos = (i,j)
-        self.Rooms =[['N','P','N'],
-                    ['N','P','P'],
-                    ['P','P','N']]
-        
-    #playerpos = (i_value,j_value)
-    #for i in Rooms:
-     #   print(i)
-    #print(playerpos[0])
-    #print(playerpos[1])
-    #print(Rooms[playerpos[0]-1][playerpos[1]])
-    #print(len(Rooms)-1)
     
+          
+    def isBorder(self,i, i_length, j, j_length):
+        if i == 0 or i == i_length or j== 0 or j == j_length:
+            return True
+
+    def isCorner(self,i, i_length, j, j_length):
+        if i == 0 and j == 0 or i == 0 and j == j_length or i == i_length and j == 0 or i == i_length and j == j_length:
+            return True 
+
+
+    def GenerateRooms(self):
+        Rooms = []
+
+        for i in range(4):
+            Rooms.append([])
+            for _ in range(4):
+                Rooms[i].append(" ")
+        RoomsToAdd = random.randint(6,(len(Rooms)*len(Rooms[0])-3))
+        #print(RoomCount)
+        #direction = random.randint(0,3)
+        randi = random.randint(0, len(Rooms)-1)
+        randj = random.randint(0, len(Rooms[0])-1)
+        Rooms[randi][randj] = "P"
+        #print(i,j)
+        #list = ['up','down','left','right']
+        #print(np.random.choice(list,p=[1/4,1/4,]))
+        i = randi
+        j = randj
+        
+        while RoomsToAdd > 0:
+        
+            dir = [-1,1]
+            directions = ['up','down','left','right']
+            RoomDirection = np.random.choice(directions,p=[0.25,0.25,0.25,0.25])
+            
+            if not self.isBorder(i, len(Rooms)-1,j,len(Rooms[0])-1):
+                #not border
+                if RoomDirection == 'up' and Rooms[i-1][j] != "P":   #checks the dircection given and whether if there is already a P inside the grid
+                    Rooms[i-1][j] = "P"
+                    i-= 1
+                #statements with i/j have to be kept in here, as it will add the "P" regardless of what hte value of i and j is
+                elif RoomDirection == 'down' and Rooms[i+1][j] != "P":
+                    Rooms[i+1][j] = "P"
+                    i+=1
+                    
+                elif RoomDirection == 'right' and Rooms[i][j+1] != "P" :
+                    Rooms[i][j+1] = "P"
+                    j+= 1
+                    
+                elif RoomDirection == 'left' and Rooms[i][j-1] != "P":
+                    Rooms[i][j-1] = "P"   
+                    j-=1
+                
+            else: #is border
+                if not self.isCorner(i,len(Rooms)-1, j,len(Rooms[0])-1):
+                    #not corner
+                    if i == 0 and RoomDirection == 'up':
+                        RoomDirection = np.random.choice(directions,p=[0,1/3,1/3,1/3]) # directions = ['up','down','left','right']
+                        if RoomDirection == 'down' and Rooms[i+1][j] != "P":
+                                Rooms[i+1][j] = "P"
+                                i+=1
+                            
+                        elif j == len(Rooms[0])-1 and RoomDirection == 'right' and Rooms[i][j+1] != "P":
+                            Rooms[i][j+1] = "P"
+                            j+=1
+                        
+                        elif j == 0 and RoomDirection == 'left' and Rooms[i][j+1] != "P":
+                            #RoomDirection == 'left' and Rooms[i][j-1] != "P" :
+                            Rooms[i][j-1] = "P"
+                            j-= 1
+                    elif i == len(Rooms)-1 and RoomDirection == 'down':
+                        RoomDirection = np.random.choice(directions,p=[1/3,0,1/3,1/3]) # directions = ['up','down','left','right']
+                        if RoomDirection == 'down' and Rooms[i+1][j] != "P":
+                                Rooms[i+1][j] = "P"
+                                i+=1
+                            
+                        elif j == len(Rooms[0])-1 and RoomDirection == 'right' and Rooms[i][j+1] != "P":
+                            Rooms[i][j+1] = "P"
+                            j+=1
+                        
+                        elif j == 0 and RoomDirection == 'left' and Rooms[i][j+1] != "P":
+                            #RoomDirection == 'left' and Rooms[i][j-1] != "P" :
+                            Rooms[i][j-1] = "P"
+                            j-= 1
+                            
+                    elif j == 0 and RoomDirection == 'left':
+                        RoomDirection = np.random.choice(directions,p=[1/3,1/3,0,1/3]) # directions = ['up','down','left','right']
+                        if RoomDirection == 'down' and Rooms[i+1][j] != "P":
+                            Rooms[i+1][j] = "P"
+                            i+=1
+                            
+                        elif j == len(Rooms[0])-1 and RoomDirection == 'right' and Rooms[i][j+1] != "P":
+                            Rooms[i][j+1] = "P"
+                            j+=1
+                        
+                        elif j == 0 and RoomDirection == 'left' and Rooms[i][j+1] != "P":
+                            #RoomDirection == 'left' and Rooms[i][j-1] != "P" :
+                            Rooms[i][j-1] = "P"
+                            j-= 1
+                        
+                    elif j == len(Rooms[0])-1 and RoomDirection == 'right':  # directions = ['up','down','left','right']
+                        RoomDirection = np.random.choice(directions,p=[1/3,1/3,1/3,0]) 
+                        if RoomDirection == 'down' and Rooms[i+1][j] != "P":
+                            Rooms[i+1][j] = "P"
+                            i+=1
+                            
+                        elif j == len(Rooms[0])-1 and RoomDirection == 'right' and Rooms[i][j+1] != "P":
+                            Rooms[i][j+1] = "P"
+                            j+=1
+                            
+                        elif j == 0 and RoomDirection == 'left' and Rooms[i][j+1] != "P":
+                            #RoomDirection == 'left' and Rooms[i][j-1] != "P" :
+                            Rooms[i][j-1] = "P"
+                            j-= 1
+                    else:  
+                        if RoomDirection == 'up' and Rooms[i-1][j] != "P":   #checks the dircection given and whether if there is already a P inside the grid
+                            Rooms[i-1][j] = "P"
+                            i-= 1
+                        #statements with i/j have to be kept in here, as it will add the "P" regardless of what hte value of i and j is
+                        elif RoomDirection == 'down' and Rooms[i+1][j] != "P":
+                            Rooms[i+1][j] = "P"
+                            i+=1
+                            
+                        elif RoomDirection == 'right' and Rooms[i][j+1] != "P" :
+                            Rooms[i][j+1] = "P"
+                            j+= 1
+                            
+                        elif RoomDirection == 'left' and Rooms[i][j-1] != "P":
+                            Rooms[i][j-1] = "P"   
+                            j-=1        
+                else:
+                    #is corner       
+                    if i == 0 and j == 0:
+                        if RoomDirection == 'left' or RoomDirection == 'up':   # directions = ['up','down','left','right']
+                            RoomDirection = np.random.choice(directions,p=[0,1/2,0,1/2])
+                            if RoomDirection == 'down':
+                                Rooms[i+1][j] = "P"
+                                i+= 1
+                            else:
+                                Rooms[i][j+1] = "P"
+                                j+= 1
+                    elif i == 0 and j == len(Rooms[0])-1 :
+                        if RoomDirection == 'right' or RoomDirection == 'up':   # directions = ['up','down','left','right']
+                            RoomDirection = np.random.choice(directions,p=[0,1/2,1/2,0])
+                            if RoomDirection == 'down':
+                                Rooms[i+1][j] = "P"
+                                i+= 1
+                            else:
+                                Rooms[i][j-1] = "P"
+                                j-= 1
+                    elif i == len(Rooms)-1 and j == 0 :
+                        if  RoomDirection == 'left' or RoomDirection == 'down':   # directions = ['up','down','left','right']
+                            RoomDirection = np.random.choice(directions,p=[1/2,0,0,1/2])
+                            if RoomDirection == 'up':
+                                Rooms[i-1][j] = "P"
+                                i-= 1
+                            else:
+                                Rooms[i][j+1] = "P"
+                                j+= 1
+                    elif i == len(Rooms)-1 and j == len(Rooms)-1 :
+                        if RoomDirection == 'right' or RoomDirection == 'down':   # directions = ['up','down','left','right']
+                            RoomDirection = np.random.choice(directions,p=[1/2,0,1/2,0])
+                            if RoomDirection == 'up':
+                                Rooms[i-1][j] = "P"
+                                i-= 1
+                            else:
+                                Rooms[i][j-1] = "P"
+                                j-= 1
+                        
+                    else:
+                        if RoomDirection == 'up' and Rooms[i-1][j] != "P":   #checks the dircection given and whether if there is already a P inside the grid
+                            Rooms[i-1][j] = "P"
+                            i-= 1
+                        #statements with i/j have to be kept in here, as it will add the "P" regardless of what hte value of i and j is
+                        elif RoomDirection == 'down' and Rooms[i+1][j] != "P":
+                            Rooms[i+1][j] = "P"
+                            i+=1
+                    
+                        elif RoomDirection == 'right' and Rooms[i][j+1] != "P" :
+                            Rooms[i][j+1] = "P"
+                            j+= 1
+                        
+                        elif RoomDirection == 'left' and Rooms[i][j-1] != "P":
+                            Rooms[i][j-1] = "P"   
+                            j-=1                                    
+            RoomsToAdd -= 1
+        return Rooms
+
     def RunGame(self):
+        self.Rooms = self.GenerateRooms()
+        Roomi = random.randint(0,len(self.Rooms)-1)
+        Roomj = random.randint(0,len(self.Rooms[0])-1)
+        roompos = self.checkifRoom(self.Rooms,Roomi,Roomj)
+        i = roompos[0]
+        j = roompos[1]
+        print(roompos)
+        playerpos = (i,j)
+        print(playerpos)
+        
+            #Rooms 
+        for i in self.Rooms:
+            print(i)
         while self.running:
             screen.fill(White)
             ##############      ##############
             #                                #
-                
+        
                                         
             #                                #
             ##############      ##############
-            
-            #Rooms 
             
             for projectile in self.player.projectilegroup:
                 if pygame.sprite.spritecollide(projectile, self.enemies, True, None):
                     projectile.kill()
                     #enemy.kill()
                     #    
-            
-            
+        
             # Topleft 
             # Topright
-            
             
             Top = pygame.draw.rect(screen, Black, (0,0,1280,10))
             Left = pygame.draw.rect(screen, Black, (0,0, 10,1280))
@@ -294,32 +470,32 @@ class Game():
             #if enemystate = true:
             #player rect x and rect y will constantly be forced in the room
             #speed becomes 0 when bumped into a wall 
-            if Down.collidepoint(self.player.rect.x, self.player.rect.y) and self.playerpos[0] != len(self.Rooms)-1:   #problem is the second statement
-                if self.Rooms[self.playerpos[0]+1][self.playerpos[1]] == 'P' :
+            if Down.collidepoint(self.player.rect.x, self.player.rect.y) and playerpos[0] != len(self.Rooms)-1:   #problem is the second statement
+                if self.Rooms[playerpos[0]+1][playerpos[1]] == 'P' :
                     self.player.rect.x = screenx/2 - 100
                     self.player.rect.y = 50
-                    self.playerpos = (self.playerpos[0]+1,self.playerpos[1])
-                    print(self.playerpos)
+                    playerpos = (playerpos[0]+1,playerpos[1])
+                    print(playerpos)
                     #spawn enemy algorithm here
                     #print(player.rect.x)
-            if Top.collidepoint(self.player.rect.x, self.player.rect.y)  and self.playerpos[0] != 0: 
-                if self.Rooms[self.playerpos[0]-1][self.playerpos[1]] == 'P':
+            if Top.collidepoint(self.player.rect.x, self.player.rect.y)  and playerpos[0] != 0: 
+                if self.Rooms[playerpos[0]-1][playerpos[1]] == 'P':
                     self.player.rect.x = screenx/2
                     self.player.rect.y = screeny-50
-                    self.playerpos = (self.playerpos[0]-1,self.playerpos[1])
-                    print(self.playerpos)
-            if Right.collidepoint(self.player.rect.x, self.player.rect.y)and  self.playerpos[1] != len(self.Rooms[0]) -1: 
-                if self.Rooms[self.playerpos[0]][self.playerpos[1]+1] == 'P':
+                    playerpos = (playerpos[0]-1,playerpos[1])
+                    print(playerpos)
+            if Right.collidepoint(self.player.rect.x, self.player.rect.y)and  playerpos[1] != len(self.Rooms[0]) -1: 
+                if self.Rooms[playerpos[0]][playerpos[1]+1] == 'P':
                     self.player.rect.x = 50
                     self.player.rect.y = screeny/2
-                    self.playerpos = (self.playerpos[0],self.playerpos[1]+1)
-                    print(self.playerpos)
-            if Left.collidepoint(self.player.rect.x, self.player.rect.y)and self.playerpos[1] != 0: 
-                if self.Rooms[self.playerpos[0]][self.playerpos[1]-1] == 'P':
+                    playerpos = (playerpos[0],playerpos[1]+1)
+                    print(playerpos)
+            if Left.collidepoint(self.player.rect.x, self.player.rect.y)and playerpos[1] != 0: 
+                if self.Rooms[playerpos[0]][playerpos[1]-1] == 'P':
                     self.player.rect.x = screenx-50
                     self.player.rect.y = screeny/2   
-                    self.playerpos = (self.playerpos[0],self.playerpos[1]-1) 
-                    print(self.playerpos)
+                    playerpos = (playerpos[0],playerpos[1]-1) 
+                    print(playerpos)
             self.enemies.draw(screen)
             self.enemies.update()
             self.player.projectilegroup.draw(screen)
@@ -333,7 +509,7 @@ class Game():
             
             for event in pygame.event.get():
                 if event.type == pygame.QUIT: # Did the user click the window close button?
-                    running = False
+                    self.running = False
                     sys.exit()  
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
@@ -348,10 +524,8 @@ class Game():
                     if event.key == pygame.K_LEFT:
                         self.player.shootleft()
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    click = True
-                    
+                    self.click = True       
             pygame.display.update()        
-    
     keypressed = pygame.key.get_pressed()     
 
     def exitmenu():
@@ -396,9 +570,8 @@ class Game():
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     self.click = True
             pygame.display.update()
-        
+                  
     def MainMenu(self):
-
         click = False
         while running:
             mouse = pygame.mouse.get_pressed()
@@ -441,14 +614,15 @@ class Game():
                 else:
                     self.Rooms[i].append("N")
         return Rooms
-    def checkifN(self,room,i,j):  
+    def checkifRoom(self,room,i,j):  
     #what if i = 1 and j =2?
         roomstate = room[i][j]
         new_i = random.randint(0,len(room)-1)
         new_j = random.randint(0,len(room[0])-1)
-        if roomstate == 'N':
-            return self.checkifN(room,new_i,new_j)
+        if roomstate == ' ':
+            return self.checkifRoom(room,new_i,new_j)
         else:
-            return roomstate,i,j 
+            return i,j 
+        
 if __name__ == "__main__":
     Main()

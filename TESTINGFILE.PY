@@ -2,38 +2,7 @@ import random
 
 import numpy as np
 
-#we have the map of the room, now we need to focus on the contents of it
-
-def isBorder(i, i_length, j, j_length):
-    if i == 0 or i == i_length or j== 0 or j == j_length:
-        return True
-
-def isCorner(i, i_length, j, j_length):
-    if i == 0 and j == 0 or i == 0 and j == j_length or i == i_length and j == 0 or i == i_length and j == j_length:
-        return True 
-
-
-def Room(Rooms):
-    #Rooms = []
-   # directions = [(1,0),(0,1)]
-    # for i in range(4):
-    #     Rooms.append([])
-    #     for _ in range(4):
-    #         Rooms[i].append(" ")
-    RoomsToAdd = random.randint(6,(len(Rooms)*len(Rooms[0])-3))
-    #print(RoomCount)
-    #direction = random.randint(0,3)
-    randi = random.randint(0, len(Rooms)-1)
-    randj = random.randint(0, len(Rooms[0])-1)
-    Rooms[randi][randj] = "P"
-    #print(i,j)
-    #list = ['up','down','left','right']
-    #print(np.random.choice(list,p=[1/4,1/4,]))
-    i = randi
-    j = randj
-    
-    while RoomsToAdd > 0:
-        #if direction is up:
+   #if direction is up:
         #add a room upwards and decrease i by 1
         #but what if i is 0? i.e at the top
         #get a new direction with a probability of getting up to be 0
@@ -60,6 +29,38 @@ def Room(Rooms):
         #add a room in that direction 
         #this statement should be at the top to make things simpler and for code to run efficiently
         
+#we have the map of the room, now we need to focus on the contents of it
+
+def isBorder(i, i_length, j, j_length):
+    if i == 0 or i == i_length or j== 0 or j == j_length:
+        return True
+
+def isCorner(i, i_length, j, j_length):
+    if i == 0 and j == 0 or i == 0 and j == j_length or i == i_length and j == 0 or i == i_length and j == j_length:
+        return True 
+
+
+def Room(Rooms):
+    Rooms = []
+
+    for i in range(4):
+        Rooms.append([])
+        for _ in range():
+            Rooms[i].append(" ")
+    RoomsToAdd = random.randint(6,(len(Rooms)*len(Rooms[0])-3))
+    #print(RoomCount)
+    #direction = random.randint(0,3)
+    randi = random.randint(0, len(Rooms)-1)
+    randj = random.randint(0, len(Rooms[0])-1)
+    Rooms[randi][randj] = "P"
+    #print(i,j)
+    #list = ['up','down','left','right']
+    #print(np.random.choice(list,p=[1/4,1/4,]))
+    i = randi
+    j = randj
+    
+    while RoomsToAdd > 0:
+     
         dir = [-1,1]
         directions = ['up','down','left','right']
         RoomDirection = np.random.choice(directions,p=[0.25,0.25,0.25,0.25])
@@ -86,7 +87,7 @@ def Room(Rooms):
             if not isCorner(i,len(Rooms)-1, j,len(Rooms[0])-1):
                 #not corner
                 if i == 0 and RoomDirection == 'up':
-                    RoomDirection = np.random.choice(directions,p=[0,1/3,1/3,1/3])
+                    RoomDirection = np.random.choice(directions,p=[0,1/3,1/3,1/3]) # directions = ['up','down','left','right']
                     if RoomDirection == 'down' and Rooms[i+1][j] != "P":
                             Rooms[i+1][j] = "P"
                             i+=1
@@ -99,8 +100,6 @@ def Room(Rooms):
                         #RoomDirection == 'left' and Rooms[i][j-1] != "P" :
                         Rooms[i][j-1] = "P"
                         j-= 1
-                    
-
                 elif i == len(Rooms)-1 and RoomDirection == 'down':
                     RoomDirection = np.random.choice(directions,p=[1/3,0,1/3,1/3]) # directions = ['up','down','left','right']
                     if RoomDirection == 'down' and Rooms[i+1][j] != "P":
@@ -117,7 +116,7 @@ def Room(Rooms):
                         j-= 1
                         
                 elif j == 0 and RoomDirection == 'left':
-                    RoomDirection = np.random.choice(directions,p=[0,1/3,1/3,1/3])
+                    RoomDirection = np.random.choice(directions,p=[1/3,1/3,0,1/3]) # directions = ['up','down','left','right']
                     if RoomDirection == 'down' and Rooms[i+1][j] != "P":
                         Rooms[i+1][j] = "P"
                         i+=1
@@ -131,8 +130,8 @@ def Room(Rooms):
                         Rooms[i][j-1] = "P"
                         j-= 1
                     
-                elif j == 0 and RoomDirection == 'left':
-                    RoomDirection = np.random.choice(directions,p=[0,1/3,1/3,1/3])
+                elif j == len(Rooms[0])-1 and RoomDirection == 'right':  # directions = ['up','down','left','right']
+                    RoomDirection = np.random.choice(directions,p=[1/3,1/3,1/3,0]) 
                     if RoomDirection == 'down' and Rooms[i+1][j] != "P":
                         Rooms[i+1][j] = "P"
                         i+=1
@@ -145,14 +144,22 @@ def Room(Rooms):
                         #RoomDirection == 'left' and Rooms[i][j-1] != "P" :
                         Rooms[i][j-1] = "P"
                         j-= 1
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
+                else:  
+                    if RoomDirection == 'up' and Rooms[i-1][j] != "P":   #checks the dircection given and whether if there is already a P inside the grid
+                        Rooms[i-1][j] = "P"
+                        i-= 1
+                    #statements with i/j have to be kept in here, as it will add the "P" regardless of what hte value of i and j is
+                    elif RoomDirection == 'down' and Rooms[i+1][j] != "P":
+                        Rooms[i+1][j] = "P"
+                        i+=1
+                        
+                    elif RoomDirection == 'right' and Rooms[i][j+1] != "P" :
+                        Rooms[i][j+1] = "P"
+                        j+= 1
+                        
+                    elif RoomDirection == 'left' and Rooms[i][j-1] != "P":
+                        Rooms[i][j-1] = "P"   
+                        j-=1        
             else:
                 #is corner       
                 if i == 0 and j == 0:
@@ -207,26 +214,19 @@ def Room(Rooms):
                     
                     elif RoomDirection == 'left' and Rooms[i][j-1] != "P":
                         Rooms[i][j-1] = "P"   
-                        j-=1
-                    
-                
-                
+                        j-=1                                    
         RoomsToAdd -= 1
     return Rooms
-
 #print(1)
-Rooms = [[' ',' ',' ',' '],
-         [' ',' ',' ',' '],
-         [' ',' ',' ',' '],
-         [' ',' ',' ',' ']]
+Rooms = []
 #print(len(Rooms))
 #print(len(Rooms[0]))
 
 Rooms = Room(Rooms)
 
-
 for i in Rooms:
     print(i)
+
 # i = 3
 # j = 2
 # if not isCorner(i,len(Rooms)-1,j,len(Rooms[0])-1):
@@ -479,7 +479,7 @@ def checkifN(room,i,j):
         if roomstate == 'N':
             return checkifN(room,new_i,new_j)
         else:
-            return roomstate,i,j
+            return i,j
 #IF player is in room[i][j]
 #check whether if the direction
 
