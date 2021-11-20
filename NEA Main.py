@@ -251,9 +251,9 @@ class Game():
         j = 1
         #playerpos = (i_value,j_value)
         self.playerpos = (i,j)
-        self.Rooms = [['N','P','N'],
-                ['N','P','P'],
-                ['P','P','N']]
+        self.Rooms =[['N','P','N'],
+                    ['N','P','P'],
+                    ['P','P','N']]
         
     #playerpos = (i_value,j_value)
     #for i in Rooms:
@@ -308,16 +308,18 @@ class Game():
                     self.player.rect.y = screeny-50
                     self.playerpos = (self.playerpos[0]-1,self.playerpos[1])
                     print(self.playerpos)
-            if Right.collidepoint(self.player.rect.x, self.player.rect.y)and self.Rooms[self.playerpos[0]][self.playerpos[1]+1] == 'P' and self.playerpos[1] != len(self.Rooms[0]) -1: 
-                self.player.rect.x = 50
-                self.player.rect.y = screeny/2
-                self.playerpos = (self.playerpos[0],self.playerpos[1]+1)
-                print(self.playerpos)
-            if Left.collidepoint(self.player.rect.x, self.player.rect.y)and self.Rooms[self.playerpos[0]][self.playerpos[1]-1] == 'P' and self.playerpos[1] != 0: 
-                self.player.rect.x = screenx-50
-                self.player.rect.y = screeny/2   
-                self.playerpos = (self.playerpos[0],self.playerpos[1]-1) 
-                print(self.playerpos)
+            if Right.collidepoint(self.player.rect.x, self.player.rect.y)and  self.playerpos[1] != len(self.Rooms[0]) -1: 
+                if self.Rooms[self.playerpos[0]][self.playerpos[1]+1] == 'P':
+                    self.player.rect.x = 50
+                    self.player.rect.y = screeny/2
+                    self.playerpos = (self.playerpos[0],self.playerpos[1]+1)
+                    print(self.playerpos)
+            if Left.collidepoint(self.player.rect.x, self.player.rect.y)and self.playerpos[1] != 0: 
+                if self.Rooms[self.playerpos[0]][self.playerpos[1]-1] == 'P':
+                    self.player.rect.x = screenx-50
+                    self.player.rect.y = screeny/2   
+                    self.playerpos = (self.playerpos[0],self.playerpos[1]-1) 
+                    print(self.playerpos)
             self.enemies.draw(screen)
             self.enemies.update()
             self.player.projectilegroup.draw(screen)
