@@ -17,7 +17,7 @@ class Enemy(pygame.sprite.Sprite):
     
     def update(self):
         
-        pass   
+        pass
         #enemy AI
         #get position of the player center x and y
         #default is to run towards the player if its melee

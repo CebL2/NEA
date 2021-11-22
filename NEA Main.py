@@ -7,15 +7,14 @@
 
 import numpy as np
 import pygame, sys, random, os
-#from Player import Player
 from Enemy import Enemy
 from Attack import Attack
 from AttackDown import AttackDown
 from AttackLeft import AttackLeft
 from AttackRight import AttackRight
-
+from GridGenerator import GridGenerator
 pygame.init()
-#from TESTINGFILE import Room
+
 #import pickle
 
 clock = pygame.time.Clock()
@@ -26,7 +25,6 @@ screeny = 1024
 
 clock.tick()
 display = pygame.display.set_mode((300,200))
-#print(pygame.font.get_fonts())
 textfont = pygame.font.Font(r'C:\Windows\Fonts\georgia.ttf', 16 ) 
  
 click = False
@@ -37,9 +35,8 @@ running = True
 spawnamount_easy = random.randint(0,4)
 spawnamount_medium = random.randint(5,8)
 spawnamount_hard = random.randint(9,12)
+
 #json to save files
-
-
 #write is save
 #read is load 
 #in order to save, we need to dump or write binary data with binary write 
@@ -49,71 +46,18 @@ spawnamount_hard = random.randint(9,12)
 #     file.write("this is a test")
 #     file.close()
 
-#what can i make random
-
 
 
 def Main():
     
-    Run = Game(screenx,screeny)
-    Run.MainMenu()
+    MainGame = Game(screenx,screeny)
+    MainGame.MainMenu()
 
 
 
 #delay = pygame.time()
 
 #when d
-def CharacterCreation():
-    running = True
-    charclass = ["Warrior","Mage","Paladin"]
-    ability = ["Melee","Magic","Heal"]
-    stats = ['Speed','Melee damage','Spell damage','Health','Constitution']
-    mousex, mousey = pygame.mouse.get_pos()
-    i = 0
-    while running:
-        
-        screen.fill(White)
-        next = pygame.draw.rect(screen, Black,(500,500,100,100))
-        prev = pygame.draw.rect(screen, Black,(250,500,100,100))
-        screen.blit(textfont.render("Choose your class", True, Black), (50,50))
-        screen.blit(textfont.render("Next", True, White), (500,500))
-        screen.blit(textfont.render("Prev", True, White), (250,500))
-        screen.blit(textfont.render("Randomise", True, Black), (375,700))
-        pygame.draw.rect(screen, Black,(375,500,100,100))
-        screen.blit(textfont.render(charclass[i],True,White),(375,500))
-        if i == len(charclass)-1:
-             if next.collidepoint(mousex,mousey) and click == True:
-                pygame.draw.rect(screen, Black,(375,500,100,100))
-                screen.blit(textfont.render(charclass[0],True,White),(375,500))
-                i = 0
-        if i < -len(charclass):
-            if prev.collidepoint(mousex,mousey) and click == True:
-                pygame.draw.rect(screen, Black,(375,500,100,100))
-                screen.blit(textfont.render(charclass[i-1],True,Black),(375,500))
-                i = len(charclass) -1
-        if next.collidepoint(mousex,mousey) and click == True:
-            print("reach 1")
-            pygame.draw.rect(screen, Black,(375,500,100,100))
-            screen.blit(textfont.render(charclass[i+1],True,Black),(375,500))
-            i += 1
-        if prev.collidepoint(mousex,mousey) and click == True:
-            print("reach 2")
-            pygame.draw.rect(screen, Black,(375,500,100,100))
-            screen.blit(textfont.render(charclass[i-1],True,Black),(375,500))
-            i -= 1
-              
-        
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT: # Did the user click the window close button?
-                running = False
-                sys.exit()
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    running = False
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                click = True
-        pygame.display.update()
-
 
 
 #procedural generation
@@ -121,44 +65,54 @@ def CharacterCreation():
 #when the player goes to a new room so some kind of condition that acknowledges that the player has moved into a new room or region
 #spawn enemies and enemy types accordingly 
 
+
 #room generation
 #based on the player's power level or such
 #put obstacles/secrets accordingly
 #a lot of random generated types will be used here
 
+
 #have multiple huds/menus and parse it through the class
 #if a button is pressed, call the specific function 
 class Hud:
-    def __init__(self, Menu1,Menu2):
-        self.Player = Menu1
-        self.Options = Menu2    
+    def __init__(self, screenx,screeny):
+        pass
+        
+    def Health(self):
+        pass
+    
+    def Inventory(self):
+        pass
+
 
 class Spells:
-    def __init__(self,Fire, Water, Earth):
-        self.Fire = Fire
-        self.Water = Water
-        self.Earth = Earth
-# def EnterRoom(RoomEnter):
-#     runtime = pygame.time.get_ticks()
-#     #if RoomEnter == True:
-      #  Spawn(1)
-    #return None
-   # enemy = "*"
-    #runtime = pygame.time.get_ticks()
-    #if runtime > 600000:
+    def __init__(self):
+        pass
+    
+class Warrior:
+    def __init__(self):
+        pass
+    
+    
+class Mage:
+    def __init__(self):
+        pass
+class Paladin:
+    def __init__(self):
+        pass
+class Rogue:
+    def __init__(self):
+        pass
         
-    #testspawn = "4"
 
-# def EnemySpawn():
-#     enemy = "*"
-#     if runtime > 0:
-#         screen.blit(textfont.render(enemy,True,Black))
-#enemy AI
+#if playerclass = warrior:
+#
+
 
 class Player(pygame.sprite.Sprite):
-    player_image = pygame.Surface((100,200))
-    def __init__(self,screenx,screeny):
-        super().__init__()
+    player_image = pygame.Surface((100,200)) 
+    def __init__(self,screenx,screeny):      
+        super().__init__() 
         self.image = Player.player_image
         self.rect = self.image.get_rect()
         self.rect.center = (1280/2, 1024/2)
@@ -167,12 +121,25 @@ class Player(pygame.sprite.Sprite):
         self.screeny = screeny
         self.gap = 0 
         self.projectilegroup = pygame.sprite.Group()
+        # self.charClass = charclass
+        # self.statblock = statblock
+        # self.charlist = charclasslist
+        
     def PlayerClass(self):
-        pass
+        if self.charClass == self.charlist[0]:#warrior #charclass = ["Warrior","Mage","Paladin","Rogue"]
+            bonuses = Warrior()
+        elif self.charclass == self.charlist[1]:
+            bonuses = Mage()
+        elif self.charclass == self.charlist[2]:
+            bonuses = Paladin()    
+        else:
+            bonuses = Rogue()     #add bonuses to statblock
+            
+    def Spell(self,charclass,charlist):
+        thing = Spells()
+            
     def update(self):
-        #print(self.rect.x)
-        #print(self.gap)
-        #print(self.rect.centerx)
+    
         keypressed = pygame.key.get_pressed()
         if keypressed[pygame.K_s] and self.rect.y < self.screeny > self.gap :
             self.rect.y += self.speed
@@ -203,15 +170,13 @@ class Player(pygame.sprite.Sprite):
         
         
 class Game():
-    #we're gonna try to convert the functions to classes to see if its more organised
     
     def __init__(self,screenx,screeny):
-        #self.projectilegroup = pygame.sprite.Group()
         self.enemies = pygame.sprite.Group()
         self.playersp = pygame.sprite.Group()
         self.allsprites = pygame.sprite.Group()
         self.charclass = 0
-        
+        self.Grid = []
 #def game(charclass):
     #if charclass = warrior
     #give special skill1
@@ -221,7 +186,6 @@ class Game():
         self.badluck = 0 
     #nextroom = False
     #power_level = 0 #to indicated the player's power level 
-        self.running = True
         self.enemystate = False
         self.border_gap = 0
        # print(charclass)
@@ -231,9 +195,9 @@ class Game():
         #Rooms = []
         for i in range(0,3):
         #enemy = Enemy() #put coords as a input see if it works 
-            e = Enemy()
-            self.enemies.add(e)
-            self.allsprites.add(e)
+            enemy= Enemy()
+            self.enemies.add(enemy)
+            self.allsprites.add(enemy)
 
     #Rooms = RoomLayout(Rooms)
    
@@ -241,210 +205,38 @@ class Game():
     #i = random.randint(0,len(Rooms)-1)
    # j = random.randint(0,len(Rooms[0])-1) 
     #    
+    def GenerateGrid(self):
+        self.Grid = GridGenerator()
+        return self.Grid.Layout()
     
           
-    def isBorder(self,i, i_length, j, j_length):
-        if i == 0 or i == i_length or j== 0 or j == j_length:
-            return True
-
-    def isCorner(self,i, i_length, j, j_length):
-        if i == 0 and j == 0 or i == 0 and j == j_length or i == i_length and j == 0 or i == i_length and j == j_length:
-            return True 
 
 
-    def GenerateRooms(self):
-        Rooms = []
-
-        for i in range(4):
-            Rooms.append([])
-            for _ in range(4):
-                Rooms[i].append(" ")
-        RoomsToAdd = random.randint(6,(len(Rooms)*len(Rooms[0])-3))
-        #print(RoomCount)
-        #direction = random.randint(0,3)
-        randi = random.randint(0, len(Rooms)-1)
-        randj = random.randint(0, len(Rooms[0])-1)
-        Rooms[randi][randj] = "P"
-        #print(i,j)
-        #list = ['up','down','left','right']
-        #print(np.random.choice(list,p=[1/4,1/4,]))
-        i = randi
-        j = randj
-        
-        while RoomsToAdd > 0:
-        
-            dir = [-1,1]
-            directions = ['up','down','left','right']
-            RoomDirection = np.random.choice(directions,p=[0.25,0.25,0.25,0.25])
+   
+    def GenerateWalls(self,Rooms):
+        for i in len(Rooms)-1:
+            for j in len(i):
+                print(j)
             
-            if not self.isBorder(i, len(Rooms)-1,j,len(Rooms[0])-1):
-                #not border
-                if RoomDirection == 'up' and Rooms[i-1][j] != "P":   #checks the dircection given and whether if there is already a P inside the grid
-                    Rooms[i-1][j] = "P"
-                    i-= 1
-                #statements with i/j have to be kept in here, as it will add the "P" regardless of what hte value of i and j is
-                elif RoomDirection == 'down' and Rooms[i+1][j] != "P":
-                    Rooms[i+1][j] = "P"
-                    i+=1
-                    
-                elif RoomDirection == 'right' and Rooms[i][j+1] != "P" :
-                    Rooms[i][j+1] = "P"
-                    j+= 1
-                    
-                elif RoomDirection == 'left' and Rooms[i][j-1] != "P":
-                    Rooms[i][j-1] = "P"   
-                    j-=1
-                
-            else: #is border
-                if not self.isCorner(i,len(Rooms)-1, j,len(Rooms[0])-1):
-                    #not corner
-                    if i == 0 and RoomDirection == 'up':
-                        RoomDirection = np.random.choice(directions,p=[0,1/3,1/3,1/3]) # directions = ['up','down','left','right']
-                        if RoomDirection == 'down' and Rooms[i+1][j] != "P":
-                                Rooms[i+1][j] = "P"
-                                i+=1
-                            
-                        elif j == len(Rooms[0])-1 and RoomDirection == 'right' and Rooms[i][j+1] != "P":
-                            Rooms[i][j+1] = "P"
-                            j+=1
-                        
-                        elif j == 0 and RoomDirection == 'left' and Rooms[i][j+1] != "P":
-                            #RoomDirection == 'left' and Rooms[i][j-1] != "P" :
-                            Rooms[i][j-1] = "P"
-                            j-= 1
-                    elif i == len(Rooms)-1 and RoomDirection == 'down':
-                        RoomDirection = np.random.choice(directions,p=[1/3,0,1/3,1/3]) # directions = ['up','down','left','right']
-                        if RoomDirection == 'down' and Rooms[i+1][j] != "P":
-                                Rooms[i+1][j] = "P"
-                                i+=1
-                            
-                        elif j == len(Rooms[0])-1 and RoomDirection == 'right' and Rooms[i][j+1] != "P":
-                            Rooms[i][j+1] = "P"
-                            j+=1
-                        
-                        elif j == 0 and RoomDirection == 'left' and Rooms[i][j+1] != "P":
-                            #RoomDirection == 'left' and Rooms[i][j-1] != "P" :
-                            Rooms[i][j-1] = "P"
-                            j-= 1
-                            
-                    elif j == 0 and RoomDirection == 'left':
-                        RoomDirection = np.random.choice(directions,p=[1/3,1/3,0,1/3]) # directions = ['up','down','left','right']
-                        if RoomDirection == 'down' and Rooms[i+1][j] != "P":
-                            Rooms[i+1][j] = "P"
-                            i+=1
-                            
-                        elif j == len(Rooms[0])-1 and RoomDirection == 'right' and Rooms[i][j+1] != "P":
-                            Rooms[i][j+1] = "P"
-                            j+=1
-                        
-                        elif j == 0 and RoomDirection == 'left' and Rooms[i][j+1] != "P":
-                            #RoomDirection == 'left' and Rooms[i][j-1] != "P" :
-                            Rooms[i][j-1] = "P"
-                            j-= 1
-                        
-                    elif j == len(Rooms[0])-1 and RoomDirection == 'right':  # directions = ['up','down','left','right']
-                        RoomDirection = np.random.choice(directions,p=[1/3,1/3,1/3,0]) 
-                        if RoomDirection == 'down' and Rooms[i+1][j] != "P":
-                            Rooms[i+1][j] = "P"
-                            i+=1
-                            
-                        elif j == len(Rooms[0])-1 and RoomDirection == 'right' and Rooms[i][j+1] != "P":
-                            Rooms[i][j+1] = "P"
-                            j+=1
-                            
-                        elif j == 0 and RoomDirection == 'left' and Rooms[i][j+1] != "P":
-                            #RoomDirection == 'left' and Rooms[i][j-1] != "P" :
-                            Rooms[i][j-1] = "P"
-                            j-= 1
-                    else:  
-                        if RoomDirection == 'up' and Rooms[i-1][j] != "P":   #checks the dircection given and whether if there is already a P inside the grid
-                            Rooms[i-1][j] = "P"
-                            i-= 1
-                        #statements with i/j have to be kept in here, as it will add the "P" regardless of what hte value of i and j is
-                        elif RoomDirection == 'down' and Rooms[i+1][j] != "P":
-                            Rooms[i+1][j] = "P"
-                            i+=1
-                            
-                        elif RoomDirection == 'right' and Rooms[i][j+1] != "P" :
-                            Rooms[i][j+1] = "P"
-                            j+= 1
-                            
-                        elif RoomDirection == 'left' and Rooms[i][j-1] != "P":
-                            Rooms[i][j-1] = "P"   
-                            j-=1        
-                else:
-                    #is corner       
-                    if i == 0 and j == 0:
-                        if RoomDirection == 'left' or RoomDirection == 'up':   # directions = ['up','down','left','right']
-                            RoomDirection = np.random.choice(directions,p=[0,1/2,0,1/2])
-                            if RoomDirection == 'down':
-                                Rooms[i+1][j] = "P"
-                                i+= 1
-                            else:
-                                Rooms[i][j+1] = "P"
-                                j+= 1
-                    elif i == 0 and j == len(Rooms[0])-1 :
-                        if RoomDirection == 'right' or RoomDirection == 'up':   # directions = ['up','down','left','right']
-                            RoomDirection = np.random.choice(directions,p=[0,1/2,1/2,0])
-                            if RoomDirection == 'down':
-                                Rooms[i+1][j] = "P"
-                                i+= 1
-                            else:
-                                Rooms[i][j-1] = "P"
-                                j-= 1
-                    elif i == len(Rooms)-1 and j == 0 :
-                        if  RoomDirection == 'left' or RoomDirection == 'down':   # directions = ['up','down','left','right']
-                            RoomDirection = np.random.choice(directions,p=[1/2,0,0,1/2])
-                            if RoomDirection == 'up':
-                                Rooms[i-1][j] = "P"
-                                i-= 1
-                            else:
-                                Rooms[i][j+1] = "P"
-                                j+= 1
-                    elif i == len(Rooms)-1 and j == len(Rooms)-1 :
-                        if RoomDirection == 'right' or RoomDirection == 'down':   # directions = ['up','down','left','right']
-                            RoomDirection = np.random.choice(directions,p=[1/2,0,1/2,0])
-                            if RoomDirection == 'up':
-                                Rooms[i-1][j] = "P"
-                                i-= 1
-                            else:
-                                Rooms[i][j-1] = "P"
-                                j-= 1
-                        
-                    else:
-                        if RoomDirection == 'up' and Rooms[i-1][j] != "P":   #checks the dircection given and whether if there is already a P inside the grid
-                            Rooms[i-1][j] = "P"
-                            i-= 1
-                        #statements with i/j have to be kept in here, as it will add the "P" regardless of what hte value of i and j is
-                        elif RoomDirection == 'down' and Rooms[i+1][j] != "P":
-                            Rooms[i+1][j] = "P"
-                            i+=1
-                    
-                        elif RoomDirection == 'right' and Rooms[i][j+1] != "P" :
-                            Rooms[i][j+1] = "P"
-                            j+= 1
-                        
-                        elif RoomDirection == 'left' and Rooms[i][j-1] != "P":
-                            Rooms[i][j-1] = "P"   
-                            j-=1                                    
-            RoomsToAdd -= 1
-        return Rooms
-
     def RunGame(self):
-        self.Rooms = self.GenerateRooms()
-        Roomi = random.randint(0,len(self.Rooms)-1)
-        Roomj = random.randint(0,len(self.Rooms[0])-1)
-        roompos = self.checkifRoom(self.Rooms,Roomi,Roomj)
-        i = roompos[0]
-        j = roompos[1]
-        print(roompos)
-        playerpos = (i,j)
+        Grid = self.GenerateGrid()
+       
+        Roomi = random.randint(0,len(Grid)-1)
+        Roomj = random.randint(0,len(Grid[0])-1)
+        print("above")
+        roompos = self.checkifRoom(Grid,Roomi,Roomj)
+        print("below")
+        
+        
+        Grid[roompos[0]][roompos[1]] = "#"
+        playerpos = (roompos[0],roompos[1])
         print(playerpos)
         
-            #Rooms 
-        for i in self.Rooms:
+        for i in Grid:
             print(i)
-        while self.running:
+    
+        running = True
+        while running:
             screen.fill(White)
             ##############      ##############
             #                                #
@@ -470,32 +262,49 @@ class Game():
             #if enemystate = true:
             #player rect x and rect y will constantly be forced in the room
             #speed becomes 0 when bumped into a wall 
-            if Down.collidepoint(self.player.rect.x, self.player.rect.y) and playerpos[0] != len(self.Rooms)-1:   #problem is the second statement
-                if self.Rooms[playerpos[0]+1][playerpos[1]] == 'P' :
+            if Down.collidepoint(self.player.rect.x, self.player.rect.y) and playerpos[0] != len(Grid)-1:   #problem is the second statement
+                if Grid[playerpos[0]+1][playerpos[1]] == 'R' :
+                    
                     self.player.rect.x = screenx/2 - 100
                     self.player.rect.y = 50
+                    Grid[playerpos[0]][playerpos[1]] = 'R'
+                    Grid[playerpos[0]+1][playerpos[1]] = '#'
                     playerpos = (playerpos[0]+1,playerpos[1])
                     print(playerpos)
+                    for i in Grid:
+                        print(i)
                     #spawn enemy algorithm here
                     #print(player.rect.x)
             if Top.collidepoint(self.player.rect.x, self.player.rect.y)  and playerpos[0] != 0: 
-                if self.Rooms[playerpos[0]-1][playerpos[1]] == 'P':
+                if Grid[playerpos[0]-1][playerpos[1]] == 'R':
                     self.player.rect.x = screenx/2
                     self.player.rect.y = screeny-50
+                    Grid[playerpos[0]][playerpos[1]] = 'R'
+                    Grid[playerpos[0]-1][playerpos[1]] = '#'
                     playerpos = (playerpos[0]-1,playerpos[1])
                     print(playerpos)
-            if Right.collidepoint(self.player.rect.x, self.player.rect.y)and  playerpos[1] != len(self.Rooms[0]) -1: 
-                if self.Rooms[playerpos[0]][playerpos[1]+1] == 'P':
+                    for i in Grid:
+                        print(i)    
+            if Right.collidepoint(self.player.rect.x, self.player.rect.y)and  playerpos[1] != len(Grid[0]) -1: 
+                if Grid[playerpos[0]][playerpos[1]+1] == 'R':
                     self.player.rect.x = 50
                     self.player.rect.y = screeny/2
+                    Grid[playerpos[0]][playerpos[1]] = 'R'
+                    Grid[playerpos[0]][playerpos[1]+1] = '#'
                     playerpos = (playerpos[0],playerpos[1]+1)
                     print(playerpos)
+                    for i in Grid:
+                        print(i)
             if Left.collidepoint(self.player.rect.x, self.player.rect.y)and playerpos[1] != 0: 
-                if self.Rooms[playerpos[0]][playerpos[1]-1] == 'P':
+                if Grid[playerpos[0]][playerpos[1]-1] == 'R':
                     self.player.rect.x = screenx-50
-                    self.player.rect.y = screeny/2   
+                    self.player.rect.y = screeny/2 
+                    Grid[playerpos[0]][playerpos[1]] = 'R'
+                    Grid[playerpos[0]][playerpos[1]-1] = '#'  
                     playerpos = (playerpos[0],playerpos[1]-1) 
                     print(playerpos)
+                    for i in Grid:
+                        print(i)
             self.enemies.draw(screen)
             self.enemies.update()
             self.player.projectilegroup.draw(screen)
@@ -509,12 +318,12 @@ class Game():
             
             for event in pygame.event.get():
                 if event.type == pygame.QUIT: # Did the user click the window close button?
-                    self.running = False
+                    running = False
                     sys.exit()  
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         #running = False
-                        self.exitmenu()               
+                        self.Pause()               
                     if event.key == pygame.K_DOWN:
                         self.player.shootdown()
                     if event.key == pygame.K_UP:
@@ -525,15 +334,13 @@ class Game():
                         self.player.shootleft()
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     self.click = True       
-            pygame.display.update()        
-    keypressed = pygame.key.get_pressed()     
+            pygame.display.update()         
 
-    def exitmenu():
+    def Pause(self):
         print("does this reach")
         running = True
         click = False
         while running:
-            
             screen.fill(White)
             exitbutton = pygame.draw.rect(screen, Black,(100,200,200,200))
             mousex, mousey = pygame.mouse.get_pos()
@@ -554,40 +361,122 @@ class Game():
             pygame.display.update()
     
     def option(self):
-        self.running = True
-        while self.running: 
+        running = True
+        while running: 
             screen.fill(Black)
             screen.blit(textfont.render("options",True, Black), (200,50))
             button3 = pygame.draw.rect(screen, Black,(100,100,50,50))
             screen.blit(test, (50,50))
             for event in pygame.event.get():
                 if event.type == pygame.QUIT: # Did the user click the window close button?
-                    self.running = False
+                    running = False
                     sys.exit()
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
-                        self.running = False
+                        running = False
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     self.click = True
             pygame.display.update()
-                  
+    def CharacterCreation(self):
+        running = True
+        charclass = ["Warrior","Mage","Paladin","Rogue"]
+        ability = ["Melee","Magic","Heal"]
+        stats = ['Speed','Damage','Spell damage','Health']
+        
+        i = 0
+        click = False
+       
+        while running:
+            
+            #print(click)
+            screen.fill(White)
+            mousex, mousey = pygame.mouse.get_pos()
+            next = pygame.draw.rect(screen, Black,(700,100,100,100))
+            prev = pygame.draw.rect(screen, Black,(350,100,100,100))
+            screen.blit(textfont.render("Choose your class", True, Black), (575,100))
+            screen.blit(textfont.render("Next", True, White), (700,100))
+            screen.blit(textfont.render("Prev", True, White), (350,100))
+            screen.blit(textfont.render("Randomise", True, Black), (575,200))
+            play = pygame.draw.rect(screen, Black,(375,900,100,100))
+            
+            
+            
+            # (pos),(size)
+            pygame.draw.rect(screen, Black,(500,300,100,100))
+            pygame.draw.rect(screen, Black,(500,400,100,100))
+            pygame.draw.rect(screen, Black,(500,500,100,100))
+            pygame.draw.rect(screen, Black,(500,600,100,100))
+            screen.blit(textfont.render("Speed", True, White), (500,300))
+            screen.blit(textfont.render("Damage", True, White), (500,400))
+            screen.blit(textfont.render("Spell Damage", True, White), (500, 500))
+            screen.blit(textfont.render("Health", True, White), (500,600))
+         
+            
+            pygame.draw.rect(screen, Black,(375,500,100,100))
+            screen.blit(textfont.render(charclass[i],True,White),(375,500))
+            if i == len(charclass)-1:
+                if next.collidepoint(mousex,mousey) and click == True:
+                    pygame.draw.rect(screen, Black,(375,500,100,100))
+                    screen.blit(textfont.render(charclass[0],True,White),(375,500))
+                    i = 0
+            if i < -len(charclass):
+                if prev.collidepoint(mousex,mousey) and click == True:
+                    pygame.draw.rect(screen, Black,(375,500,100,100))
+                    screen.blit(textfont.render(charclass[i-1],True,Black),(375,500))
+                    i = len(charclass) -1
+                
+            if next.collidepoint(mousex,mousey) and click == True:
+               
+                pygame.draw.rect(screen, Black,(375,500,100,100))
+                screen.blit(textfont.render(charclass[i+1],True,Black),(375,500))
+                i += 1
+                #print(charclass[i])
+                #click = False
+            if prev.collidepoint(mousex,mousey) and click == True: #if click == true and false the moment the mouse button comes up 
+                #print("reach 2")
+                pygame.draw.rect(screen, Black,(375,500,100,100))
+                screen.blit(textfont.render(charclass[i-1],True,Black),(375,500))
+                i -= 1 
+            if play.collidepoint(mousex,mousey) and click == True:
+                running = False
+                return charclass[i],stats
+            
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT: # Did the user click the window close button?
+                    running = False
+                    sys.exit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        running = False
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    click = True
+                
+                    #click = False
+                    
+                #if event.type == pygame.MOUSEBUTTONUP:
+                    #click = False
+                   # continue
+               
+            pygame.display.update()   
     def MainMenu(self):
         click = False
         while running:
-            mouse = pygame.mouse.get_pressed()
+            
             screen.fill(White) #the colour
             button1 = pygame.draw.rect(screen, Black,(50,50,50,50))
             screen.blit(textfont.render("Play", True, White), (50,50))
             mousex, mousey = pygame.mouse.get_pos()
-            if button1.collidepoint(mousex,mousey) and click == True:
+            if button1.collidepoint(mousex,mousey) and event.type == pygame.MOUSEBUTTONDOWN:
+                print("click reach")
                 #charac = CharacterCreation()
+                self.CharacterCreation()
                 self.RunGame()
-                click = False             
+                           
             button2 = pygame.draw.rect(screen, Black,(100,100,100,50))
             screen.blit(textfont.render("Options", True, White), (100,100))
-            if button2.collidepoint(mousex,mousey) and click == True:
+            if button2.collidepoint(mousex,mousey) and event.type == pygame.MOUSEBUTTONDOWN:
                 self.option()
-                click = False
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT: # Did the user click the window close button?
                     pygame.quit()
@@ -595,31 +484,23 @@ class Game():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         pygame.quit()
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    click = True
-                ##   click = False
+                # if event.type == pygame.MOUSEBUTTONDOWN:
+                #     click = True
+                #     print("click reach")
+               
             pygame.display.update()
     def save():
         pass                
         #def Move(self):
 
 #Room to room movement - when the player goes to the border limit, it puts them into a new room
-    def RoomLayout(self,Rooms):
-        for i in range(3):
-            Rooms.append([])
-            for _ in range(3):
-                passorno = random.randint(1,2)
-                if passorno == 1:
-                    self.Rooms[i].append("P")
-                else:
-                    self.Rooms[i].append("N")
-        return Rooms
+    
     def checkifRoom(self,room,i,j):  
     #what if i = 1 and j =2?
         roomstate = room[i][j]
         new_i = random.randint(0,len(room)-1)
         new_j = random.randint(0,len(room[0])-1)
-        if roomstate == ' ':
+        if roomstate != 'R':
             return self.checkifRoom(room,new_i,new_j)
         else:
             return i,j 
