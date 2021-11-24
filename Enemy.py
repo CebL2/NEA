@@ -4,15 +4,18 @@ screenx = 1280
 screeny = 1024
 screen = pygame.display.set_mode((screenx,screeny))
 class Enemy(pygame.sprite.Sprite):
-    enemy  = pygame.Surface((200,200)) #pygame.image.load("spritegroup//test enemy.png").convert()
+    Enemy  = pygame.Surface((200,200)) #pygame.image.load("spritegroup//test enemy.png").convert()
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.image = Enemy.enemy
+        self.playerx = 1
+        self.playery = 1
+        self.image = Enemy.Enemy
         self.rect = self.image.get_rect()
         self.rect.center = ((random.randint(0,1280),(random.randint(0,1024))))   
         self.x = self.rect.x
         self.y = self.rect.y 
-    
+        self.speed = 1
+        
         
     
     def update(self):
@@ -51,8 +54,8 @@ class Enemy(pygame.sprite.Sprite):
                     
                     #screen.fill(White)
         
-                
-    
+    def MoveToPlayer(self):  
+        pass
     #if difficulty == 2:
     #    for i in range( pawnamount_medium):
     #        screen.blit(textfont.render(enemy, True, Black ), (random.randint(0,1280),random.randint(0,1080)))

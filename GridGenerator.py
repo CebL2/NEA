@@ -2,34 +2,6 @@ import random
 
 import numpy as np
 
-   #if direction is up:
-        #add a room upwards and decrease i by 1
-        #but what if i is 0? i.e at the top
-        #get a new direction with a probability of getting up to be 0
-        #then add a room in the new direction and increment/decrease i/j accordingly
-        
-        #if direction is down:
-        #add a room downwards and increase i by 1
-        #if i is the length of the grid
-        #new direction with the probability of getting down to be 0
-        
-        #if direction is right:
-        #add a room to the right and increase j by 1
-        #if j is length of sublist
-        #new direction with the probability of getting right to be 0
-        
-        
-        #if direction is left:
-        #add a room to the left and decrease j by 1 
-        #if j is 0
-        #new direction with the probability of getting left to be 0
-        #else
-        
-        #if direction is whatever
-        #add a room in that direction 
-        #this statement should be at the top to make things simpler and for code to run efficiently
-        
-#we have the map of the room, now we need to focus on the contents of it
 class GridGenerator:
     def __init__(self):
         pass
@@ -45,13 +17,13 @@ class GridGenerator:
     def Layout(self):
         Rooms = []
 
-        for i in range(40):
+        for i in range(20):
             Rooms.append([])
-            for _ in range(39):
+            for _ in range(19):
                 Rooms[i].append(" ")
         print(len(Rooms))
         print(len(Rooms[0]))
-        RoomsToAdd = random.randint(100,((len(Rooms))-30)*(len(Rooms[0])-19))
+        RoomsToAdd = random.randint(100,((len(Rooms))-10)*(len(Rooms[0])-9))
         
         #print(RoomCount)
         #direction = random.randint(0,3)
@@ -77,8 +49,6 @@ class GridGenerator:
         probleft = 0.25
         probright = 0.25
         while RoomsToAdd > 0:
-            #print(upcount,downcount,leftcount,rightcount)
-            #print(RoomsToAdd)
             if upcount >3:
                 probup = 1/10
                 probdown = 3/10
@@ -102,9 +72,7 @@ class GridGenerator:
                 probdown = 3/10
                 probleft = 3/10
                 probright = 1/10
-                rightcount = 0
-           # print(probup,probdown,probleft,probright)
-                        
+                rightcount = 0                 
             directions = ['up','down','left','right']
             RoomDirection = np.random.choice(directions,p=[probup,probdown,probleft,probright])
             
@@ -242,7 +210,6 @@ class GridGenerator:
                             Rooms[i+1][j] = "R"
                             i+=1
                             downcount =0
-                            
                         elif RoomDirection == 'up' and Rooms[i-1][j] == "R":
                             i-= 1
                             upcount +=1

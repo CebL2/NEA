@@ -12,7 +12,7 @@ class AttackRight(pygame.sprite.Sprite):
         self.image = AttackRight.projectile
         self.rect = self.image.get_rect()
         self.rect.center = (x,y)
-        self.speed = 1
+        self.speed = 10
     
     def update(self):
         self.rect.x += self.speed

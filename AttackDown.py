@@ -12,9 +12,9 @@ class AttackDown(pygame.sprite.Sprite):
         self.image = AttackDown.projectile
         self.rect = self.image.get_rect()
         self.rect.center = (x,y)
-        self.speed = 1
+        self.speed = 10
     
     def update(self):
-        self.rect.y -= self.speed
+        self.rect.y += self.speed
         if self.rect.y > screeny:
             self.kill()

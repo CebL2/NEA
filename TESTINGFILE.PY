@@ -1,42 +1,23 @@
 import random
-#print(1)
+print(1)
 
-#[' ', ' ', ' ', ' ']
-#[' ', ' ', ' ', ' ']
-#[' ', 'P', ' ', ' ']
-#[' ', 'P', 'P', ' ']
-
-
-Layout = Rooms.Layout()
-for i in Layout:
-    print(i)
+List = [[' ', ' ', ' ', ' '],
+[' ', ' ', ' ', ' '],
+[' ', 'P', ' ', ' '],
+[' ', 'P', 'P', ' ']]
 
 
 
-def checkifN(room,i,j):
-    #what if i = 1 and j =2?
-        roomstate = room[i][j]
-        new_i = random.randint(0,len(room)-1)
-        new_j = random.randint(0,len(room[0])-1)
-        if roomstate != 'P':
-            return checkifN(room,new_i,new_j)
-        else:
-            return i,j
-        
+
 def test():
     one = 1
-    two = 2
-    three = 3
-    if one == 2:
-        print(1)
-    elif two == 2:
-        print(2)
-    if three == 3:
-        print(3)
-
-list = [1,2,3]
+    fl = 1.0
+    if one == 1:
+        fl+= 0.5
+    return fl
 
 
+print(test())
 # IF player is in room[i][j]
 #check whether if the direction
 
