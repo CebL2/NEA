@@ -12,18 +12,28 @@ class GridGenerator:
     def isCorner(self,i, i_length, j, j_length):
         if i == 0 and j == 0 or i == 0 and j == j_length or i == i_length and j == 0 or i == i_length and j == j_length:
             return True 
-
+    def GenerateEnemyRoom(self,layout):
+        for i in range(0,len(layout)-1):
+            for j in range(0,i):
+               # print(j)
+                if layout[i][j] == 'R':
+                    chance = random.randint(0,1)
+                    #print(chance)
+                    if chance == 1:
+                        layout[i][j] = 'E'
+        return layout
+                    
 
     def Layout(self):
         Rooms = []
 
-        for i in range(20):
+        for i in range(15):
             Rooms.append([])
-            for _ in range(19):
+            for _ in range(15):
                 Rooms[i].append(" ")
         print(len(Rooms))
         print(len(Rooms[0]))
-        RoomsToAdd = random.randint(100,((len(Rooms))-10)*(len(Rooms[0])-9))
+        RoomsToAdd = random.randint(25,75)
         
         #print(RoomCount)
         #direction = random.randint(0,3)
@@ -425,7 +435,10 @@ class GridGenerator:
                                 leftcount =0                         
             RoomsToAdd -= 1
         return Rooms
+    
+    
 Grid = GridGenerator()
 layout = Grid.Layout()
-for i in layout:
+newroom = Grid.GenerateEnemyRoom(layout)
+for i in newroom:
     print(i)
