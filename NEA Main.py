@@ -15,7 +15,7 @@ from Attack import Attack
 from AttackDown import AttackDown
 from AttackLeft import AttackLeft
 from AttackRight import AttackRight
-from GridGenerator import GridGenerator
+from GridGenerator import *
 from Stats import *
 
 #import pickle
@@ -174,7 +174,7 @@ class Game():
         self.playersp = pygame.sprite.Group()
         self.allsprites = pygame.sprite.Group()
         self.charclass = 0
-        self.Grid = []
+        self.Map = []
         self.luck = 0 
         self.badluck = 0 
         self.enemystate = False
@@ -182,12 +182,8 @@ class Game():
         self.player = Player(screenx,screeny)
         self.playersp.add(self.player)
         self.allsprites.add(self.player)
-    
-        for i in range(0,3):
-        #enemy = Enemy() #put coords as a input see if it works 
-            enemy= Enemy()
-            self.enemies.add(enemy)
-            self.allsprites.add(enemy)
+        
+        
 
     #Rooms = RoomLayout(Rooms)
    
@@ -195,9 +191,11 @@ class Game():
     #i = random.randint(0,len(Rooms)-1)
    # j = random.randint(0,len(Rooms[0])-1) 
     # 
-    def GenerateGrid(self):
-        self.Grid = GridGenerator()
-        return self.Grid.Layout()
+    def GenerateMap(self):
+        Grid = GridGenerator()
+        Rooms = Grid.Layout()
+        Map = Grid.GenerateEnemyRoom(Rooms)
+        return Map
     
           
 
@@ -207,25 +205,31 @@ class Game():
                 print(j)
             
     def RunGame(self):
-        Grid = self.GenerateGrid()
+        Map = self.GenerateMap()
        
-        Roomi = random.randint(0,len(Grid)-1)
-        Roomj = random.randint(0,len(Grid[0])-1)
+        Roomi = random.randint(0,len(Map)-1)
+        Roomj = random.randint(0,len(Map[0])-1)
         
-        roompos = self.checkifRoom(Grid,Roomi,Roomj)
+        roompos = self.checkifRoom(Map,Roomi,Roomj)
 
         
-        
-        Grid[roompos[0]][roompos[1]] = "#"
+        enemy = Enemy()
+        Map[roompos[0]][roompos[1]] = "#"
         
        
         playerpos = (roompos[0],roompos[1])
         
         EnemyInRoom = False
+        EnemyBattle = False
         
-        for i in Grid:
+        
+        TimesSpawned = 0 
+        
+        
+        
+        for i in Map:
             print(i)
-
+       
         running = True
         while running:
             screen.fill(White)
@@ -255,34 +259,47 @@ class Game():
             for projectile in self.player.projectilegroup:
                 if pygame.sprite.spritecollide(projectile, self.enemies, True, None):
                     projectile.kill()
-                    
-
+            
             # Topleft 
             # Topright
-            # if Grid[roompos[0]][roompos[1]] == 'E':
+            # if Map[roompos[0]][roompos[1]] == 'E':
             #     EnemyInRoom = True
             #if current is E
             #EnemyInRoom == true:
             #spawn enemy
-            # RoomRight: pygame.draw.rect(screen,White,)
+            # RoomRight: pygame.draw.rect(screen,White,)*
             # RoomLeft:
             # RoomUp:
             # RoomDown:
-            if not EnemyInRoom:
-                
-                if playerpos[0] != len(Grid)-1:
-                    if Grid[playerpos[0]+1][playerpos[1]] == 'R':
+            if EnemyInRoom == False:
+
+                if playerpos[0] != len(Map)-1:
+                    if Map[playerpos[0]+1][playerpos[1]] == 'R' or Map[playerpos[0]+1][playerpos[1]] == 'E':
                         DownExit= pygame.draw.rect(screen,White,(700,1040,520,40))
-                        if DownExit.colliderect(self.player.rect) :
-                        
-                            self.player.rect.x = screenx/2 
-                            self.player.rect.y = 100
-                            Grid[playerpos[0]][playerpos[1]] = 'R'
-                            Grid[playerpos[0]+1][playerpos[1]] = '#'
-                            playerpos = (playerpos[0]+1,playerpos[1])
-                            print(playerpos)
-                            for i in Grid:
-                                print(i)
+                        if Map[playerpos[0]+1][playerpos[1]] == 'E':
+                            if DownExit.colliderect(self.player.rect):
+                                self.player.rect.x = screenx/2 
+                                self.player.rect.y = 100
+                                EnemyInRoom = True
+                               
+                                Map[playerpos[0]][playerpos[1]] = 'R'
+                                Map[playerpos[0]+1][playerpos[1]] = '#'
+                                playerpos = (playerpos[0]+1,playerpos[1])
+                                print(playerpos)
+                                for i in Map:
+                                    print(i)
+                                
+                        else:
+                            if DownExit.colliderect(self.player.rect):
+                                self.player.rect.x = screenx/2 
+                                self.player.rect.y = 100
+                                Map[playerpos[0]][playerpos[1]] = 'R'
+                                Map[playerpos[0]+1][playerpos[1]] = '#'
+                                playerpos = (playerpos[0]+1,playerpos[1])
+                                print(playerpos)
+                                for i in Map:
+                                    print(i)
+                                    
                     else:
                         DownExit= pygame.draw.rect(screen,Black,(700,1040,520,40))
                         if DownExit.colliderect(self.player.rect):
@@ -293,18 +310,34 @@ class Game():
                         self.player.rect.y = 990    
                             
                 if playerpos[0] != 0:
-                    if Grid[playerpos[0]-1][playerpos[1]] == 'R':
+                    if Map[playerpos[0]-1][playerpos[1]] == 'R' or Map[playerpos[0]-1][playerpos[1]] == 'E':
                         TopExit = pygame.draw.rect(screen,White,(700,0,520,40))
-                        if TopExit.colliderect(self.player.rect)  : 
-                            print("Touch TopExit")
-                            self.player.rect.x = screenx/2
-                            self.player.rect.y = screeny-100
-                            Grid[playerpos[0]][playerpos[1]] = 'R'
-                            Grid[playerpos[0]-1][playerpos[1]] = '#'
-                            playerpos = (playerpos[0]-1,playerpos[1])
-                            print(playerpos)
-                            for i in Grid:
-                                print(i)
+                        if Map[playerpos[0]-1][playerpos[1]] == 'E':
+                            if TopExit.colliderect(self.player.rect) :
+                            
+                                self.player.rect.x = screenx/2
+                                self.player.rect.y = screeny-100
+                                EnemyInRoom = True
+                                
+                                
+                                Map[playerpos[0]][playerpos[1]] = 'R'
+                                Map[playerpos[0]-1][playerpos[1]] = '#'
+                                playerpos = (playerpos[0]-1,playerpos[1])
+                                print(playerpos)
+                                for i in Map:
+                                    print(i)
+                            
+                        else:
+                            if TopExit.colliderect(self.player.rect) :
+                        
+                                self.player.rect.x = screenx/2
+                                self.player.rect.y = screeny-100
+                                Map[playerpos[0]][playerpos[1]] = 'R'
+                                Map[playerpos[0]-1][playerpos[1]] = '#'
+                                playerpos = (playerpos[0]-1,playerpos[1])
+                                print(playerpos)
+                                for i in Map:
+                                    print(i)
                     else:
                         TopExit= pygame.draw.rect(screen,Black,(700,0,520,40))
                         if TopExit.colliderect(self.player.rect):
@@ -313,18 +346,35 @@ class Game():
                     TopExit= pygame.draw.rect(screen,Black,(700,0,520,40))
                     if TopExit.colliderect(self.player.rect):
                         self.player.rect.y = 40
-                if playerpos[1] != len(Grid[0]) -1:
-                    if Grid[playerpos[0]][playerpos[1]+1] == 'R':
+                if playerpos[1] != len(Map[0]) -1:
+                    if Map[playerpos[0]][playerpos[1]+1] == 'R' or Map[playerpos[0]][playerpos[1]+1] == 'E':
                         RightExit =  pygame.draw.rect(screen, White,(1880,350,40,380))
-                        if RightExit.colliderect(self.player.rect): 
-                            self.player.rect.x = 100
-                            self.player.rect.y = screeny/2
-                            Grid[playerpos[0]][playerpos[1]] = 'R'
-                            Grid[playerpos[0]][playerpos[1]+1] = '#'
-                            playerpos = (playerpos[0],playerpos[1]+1)
-                            print(playerpos)
-                            for i in Grid:
-                                print(i)
+                        
+                        if Map[playerpos[0]][playerpos[1]+1] == 'E':
+                            if RightExit.colliderect(self.player.rect): 
+                                self.player.rect.x = 100
+                                self.player.rect.y = screeny/2
+                                Map[playerpos[0]][playerpos[1]] = 'R'
+                                Map[playerpos[0]][playerpos[1]+1] = '#'
+                             
+                                EnemyInRoom = True
+                                RightExit =  pygame.draw.rect(screen, Black,(1880,350,40,380))
+                                playerpos = (playerpos[0],playerpos[1]+1)
+                                print(playerpos)
+                                for i in Map:
+                                    print(i)
+                              
+                                
+                        else:
+                            if RightExit.colliderect(self.player.rect): 
+                                self.player.rect.x = 100
+                                self.player.rect.y = screeny/2
+                                Map[playerpos[0]][playerpos[1]] = 'R'
+                                Map[playerpos[0]][playerpos[1]+1] = '#'
+                                playerpos = (playerpos[0],playerpos[1]+1)
+                                print(playerpos)
+                                for i in Map:
+                                    print(i)
                     else:
                         RightExit =  pygame.draw.rect(screen, Black,(1880,350,40,380))
                         if RightExit.colliderect(self.player.rect):
@@ -334,17 +384,30 @@ class Game():
                     if RightExit.colliderect(self.player.rect):
                         self.player.rect.x = 1830
                 if playerpos[1] != 0:
-                    if Grid[playerpos[0]][playerpos[1]-1] == 'R':
+                    if Map[playerpos[0]][playerpos[1]-1] == 'R'or Map[playerpos[0]][playerpos[1]-1] == 'E':
                         LeftExit = pygame.draw.rect(screen, White, (0,350,40,380))
-                        if LeftExit.colliderect(self.player.rect):
-                            self.player.rect.x = screenx-100
-                            self.player.rect.y = screeny/2 
-                            Grid[playerpos[0]][playerpos[1]] = 'R'
-                            Grid[playerpos[0]][playerpos[1]-1] = '#'  
-                            playerpos = (playerpos[0],playerpos[1]-1) 
-                            print(playerpos)
-                            for i in Grid:
-                                print(i)
+                        if Map[playerpos[0]][playerpos[1]-1] == 'E':
+                            if LeftExit.colliderect(self.player.rect):
+                            
+                                self.player.rect.x = screenx-100
+                                self.player.rect.y = screeny/2 
+                                EnemyInRoom = True
+                                Map[playerpos[0]][playerpos[1]] = 'R'
+                                Map[playerpos[0]][playerpos[1]-1] = '#' 
+                                playerpos = (playerpos[0],playerpos[1]-1) 
+                                print(playerpos)
+                                for i in Map:
+                                    print(i)
+                        else:
+                            if LeftExit.colliderect(self.player.rect):
+                                self.player.rect.x = screenx-100
+                                self.player.rect.y = screeny/2 
+                                Map[playerpos[0]][playerpos[1]] = 'R'
+                                Map[playerpos[0]][playerpos[1]-1] = '#'  
+                                playerpos = (playerpos[0],playerpos[1]-1) 
+                                print(playerpos)
+                                for i in Map:
+                                    print(i)
                     else:
                         LeftExit =  pygame.draw.rect(screen, Black,(0,350,40,380))
                         if LeftExit.colliderect(self.player.rect):
@@ -354,15 +417,47 @@ class Game():
                     if LeftExit.colliderect(self.player.rect):
                         self.player.rect.x = 40
                         
+                        
 
                     
                 
     
             else:
-                pass
+                
+                if TimesSpawned < 1:
+                    for i in range(0,3):
+                    #enemy = Enemy() #put coords as a input see if it works 
+                        enemy= Enemy()
+                        self.enemies.add(enemy)
+                    TimesSpawned +=1
+            
+                DownExit= pygame.draw.rect(screen,Black,(700,1040,520,40))
+                if DownExit.colliderect(self.player.rect):
+                    self.player.rect.y = 990
+               
+               
+                TopExit= pygame.draw.rect(screen,Black,(700,0,520,40))
+                if TopExit.colliderect(self.player.rect):
+                    self.player.rect.y = 40
+                
+            
+                RightExit =  pygame.draw.rect(screen, Black,(1880,350,40,380))
+                if RightExit.colliderect(self.player.rect):
+                    self.player.rect.x = 1830
+               
+
+                LeftExit =  pygame.draw.rect(screen, Black,(0,350,40,380))
+                if LeftExit.colliderect(self.player.rect):
+                    self.player.rect.x = 40
+                    
+                
+                if self.enemies.has(enemy) == False:
+                    print("No more enemies")
+                    TimesSpawned = 0
+                    EnemyInRoom = False 
+                
             self.enemies.draw(screen)
             self.enemies.update()
-            
             self.player.projectilegroup.draw(screen)
             self.player.projectilegroup.update()
             self.playersp.draw(screen)
