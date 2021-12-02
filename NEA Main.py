@@ -187,7 +187,8 @@ class Game():
 
     #Rooms = RoomLayout(Rooms)
    
-
+  
+                    
     #i = random.randint(0,len(Rooms)-1)
    # j = random.randint(0,len(Rooms[0])-1) 
     # 
@@ -274,7 +275,7 @@ class Game():
             if EnemyInRoom == False:
 
                 if playerpos[0] != len(Map)-1:
-                    if Map[playerpos[0]+1][playerpos[1]] == 'R' or Map[playerpos[0]+1][playerpos[1]] == 'E':
+                    if Map[playerpos[0]+1][playerpos[1]] == 'R' or Map[playerpos[0]+1][playerpos[1]] == 'E' or Map[playerpos[0]+1][playerpos[1]] == 'B':
                         DownExit= pygame.draw.rect(screen,White,(700,1040,520,40))
                         if Map[playerpos[0]+1][playerpos[1]] == 'E':
                             if DownExit.colliderect(self.player.rect):
@@ -310,7 +311,7 @@ class Game():
                         self.player.rect.y = 990    
                             
                 if playerpos[0] != 0:
-                    if Map[playerpos[0]-1][playerpos[1]] == 'R' or Map[playerpos[0]-1][playerpos[1]] == 'E':
+                    if Map[playerpos[0]-1][playerpos[1]] == 'R' or Map[playerpos[0]-1][playerpos[1]] == 'E'or Map[playerpos[0]-1][playerpos[1]] == 'B':
                         TopExit = pygame.draw.rect(screen,White,(700,0,520,40))
                         if Map[playerpos[0]-1][playerpos[1]] == 'E':
                             if TopExit.colliderect(self.player.rect) :
@@ -347,7 +348,7 @@ class Game():
                     if TopExit.colliderect(self.player.rect):
                         self.player.rect.y = 40
                 if playerpos[1] != len(Map[0]) -1:
-                    if Map[playerpos[0]][playerpos[1]+1] == 'R' or Map[playerpos[0]][playerpos[1]+1] == 'E':
+                    if Map[playerpos[0]][playerpos[1]+1] == 'R' or Map[playerpos[0]][playerpos[1]+1] == 'E' or Map[playerpos[0]][playerpos[1]+1] == 'B':
                         RightExit =  pygame.draw.rect(screen, White,(1880,350,40,380))
                         
                         if Map[playerpos[0]][playerpos[1]+1] == 'E':
@@ -384,7 +385,7 @@ class Game():
                     if RightExit.colliderect(self.player.rect):
                         self.player.rect.x = 1830
                 if playerpos[1] != 0:
-                    if Map[playerpos[0]][playerpos[1]-1] == 'R'or Map[playerpos[0]][playerpos[1]-1] == 'E':
+                    if Map[playerpos[0]][playerpos[1]-1] == 'R'or Map[playerpos[0]][playerpos[1]-1] == 'E'or Map[playerpos[0]][playerpos[1]-1] == 'B':
                         LeftExit = pygame.draw.rect(screen, White, (0,350,40,380))
                         if Map[playerpos[0]][playerpos[1]-1] == 'E':
                             if LeftExit.colliderect(self.player.rect):
@@ -451,7 +452,7 @@ class Game():
                     self.player.rect.x = 40
                     
                 
-                if self.enemies.has(enemy) == False:
+                if len(self.enemies) == 0:
                     print("No more enemies")
                     TimesSpawned = 0
                     EnemyInRoom = False 
@@ -523,7 +524,7 @@ class Game():
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     click = True
             pygame.display.update()
-    
+     
     def option(self):
         running = True
         while running: 
@@ -545,7 +546,6 @@ class Game():
         running = True
         charclass = ["Warrior","Mage","Paladin","Rogue"]
         ability = ["Melee","Magic","Heal"]
-       
         stats = { 'Speed' : 0,
                   'Damage': 0,
                   'Spell Damage': 0,

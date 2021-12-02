@@ -13,6 +13,7 @@ class GridGenerator:
         if i == 0 and j == 0 or i == 0 and j == j_length or i == i_length and j == 0 or i == i_length and j == j_length:
             return True 
     def GenerateEnemyRoom(self,layout):
+        BossToAdd = 1
         for i in range(0,len(layout)-1):
             for j in range(0,i):
                # print(j)
@@ -21,8 +22,19 @@ class GridGenerator:
                     #print(chance)
                     if chance == 1:
                         layout[i][j] = 'E'
+        
+        for i in range(0,len(layout)-1):
+            for j in range(0,i):
+                if layout[i][j] == 'E':
+                    layout[i][j] = 'B'
+                    BossToAdd -= 1
+                    break
+            if BossToAdd ==0:
+                break
+        
         return layout
                     
+    
 
     def Layout(self):
         Rooms = []
