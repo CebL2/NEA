@@ -10,14 +10,14 @@ import numpy as np
 import pygame, sys, random, os
 
 from pygame.constants import FULLSCREEN
-from Enemy import Enemy
-from Attack import Attack
-from AttackDown import AttackDown
-from AttackLeft import AttackLeft
-from AttackRight import AttackRight
+from Enemy import *
+from Attack import *
+from AttackDown import *
+from AttackLeft import *
+from AttackRight import *
 from GridGenerator import *
 from Stats import *
-
+from Obstacles import *
 #import pickle
 
 clock = pygame.time.Clock()
@@ -106,7 +106,7 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (1280/2, 1024/2)
         self.vectorposition = pygame.math.Vector2(self.rect.x,self.rect.y)
-        self.speed = 1
+        self.speed = 3
         self.screenx = screenx
         self.screeny = screeny
         self.gap = 0 
@@ -131,18 +131,12 @@ class Player(pygame.sprite.Sprite):
 
         keypressed = pygame.key.get_pressed()
         if keypressed[pygame.K_s] and self.rect.y < self.screeny:
-           # print("Does this reach?")
-            #self.vectorposition += 0.5
-            # self.vectorposition[1] += self.speed
             self.rect.y += self.speed
         if keypressed[pygame.K_w] and self.rect.y > 0:
-            # self.vectorposition[1] -= self.speed
             self.rect.y  -= self.speed
         if keypressed[pygame.K_a] and self.rect.x > 0:
-           # self.vectorposition[0] 
             self.rect.x -= self.speed
         if keypressed[pygame.K_d] and self.rect.x <  self.screenx:
-            #self.vectorposition[0] 
             self.rect.x += self.speed
       
 
@@ -150,8 +144,7 @@ class Player(pygame.sprite.Sprite):
         projectileup = Attack(self.rect.centerx,self.rect.centery-100)
         self.projectilegroup.add(projectileup)
         
-            
-       
+        
     def Attackdown(self):
         projectiledown = AttackDown(self.rect.centerx,self.rect.centery+100)
         self.projectilegroup.add(projectiledown)
@@ -163,16 +156,13 @@ class Player(pygame.sprite.Sprite):
     def Attackleft(self):
         projectiledown = AttackLeft(self.rect.centerx-50,self.rect.centery)
         self.projectilegroup.add(projectiledown)
-        
-      
-        
+             
         
 class Game():
-    
     def __init__(self,screenx,screeny):
         self.enemies = pygame.sprite.Group()
         self.playersp = pygame.sprite.Group()
-        self.allsprites = pygame.sprite.Group()
+        self.obstaclegroup = pygame.sprite.Group()
         self.charclass = 0
         self.Map = []
         self.luck = 0 
@@ -181,17 +171,13 @@ class Game():
         self.border_gap = 0
         self.player = Player(screenx,screeny)
         self.playersp.add(self.player)
-        self.allsprites.add(self.player)
+        #self.obstacle = RoomObstacles()
+        #self.obstaclegroup.add(self.obstacle)
+        #self.allsprites.add(self.player)
         
-        
+    def GenerateObstacles(self):
+        pass
 
-    #Rooms = RoomLayout(Rooms)
-   
-  
-                    
-    #i = random.randint(0,len(Rooms)-1)
-   # j = random.randint(0,len(Rooms[0])-1) 
-    # 
     def GenerateMap(self):
         Grid = GridGenerator()
         Rooms = Grid.Layout()
@@ -207,14 +193,16 @@ class Game():
             
     def RunGame(self):
         Map = self.GenerateMap()
-       
+        
         Roomi = random.randint(0,len(Map)-1)
         Roomj = random.randint(0,len(Map[0])-1)
         
         roompos = self.checkifRoom(Map,Roomi,Roomj)
 
         
-        enemy = Enemy()
+        #enemy = Enemy()
+        # Obstacles = RoomObstacles()
+        # self.obstacles.add()
         Map[roompos[0]][roompos[1]] = "#"
         
        
@@ -230,14 +218,15 @@ class Game():
         
         for i in Map:
             print(i)
+            
        
         running = True
         while running:
             screen.fill(White)
             ##############      ##############
-            #                                #
-
-            #                                #
+            #           #                    #
+                    ##########
+            #        ###                     #
             ##############      ##############
             TopLeft = pygame.draw.rect(screen,Black,(0,0,700,40))
             TopRight = pygame.draw.rect(screen,Black,(1220,0,700,40))
@@ -247,6 +236,7 @@ class Game():
             LeftDown = pygame.draw.rect(screen, Black, (0,730, 40,350))
             RightUp = pygame.draw.rect(screen, Black, (1880,0,40,350))
             RightDown = pygame.draw.rect(screen, Black, (1880,730,40,350))
+            
             if LeftUp.colliderect(self.player.rect) or LeftDown.colliderect(self.player.rect):
                 self.player.rect.x = 40
             if RightUp.colliderect(self.player.rect) or RightDown.colliderect(self.player.rect):
@@ -257,25 +247,16 @@ class Game():
                 
             if TopLeft.colliderect(self.player.rect) or TopRight.colliderect(self.player.rect):
                 self.player.rect.y = 40
-            for projectile in self.player.projectilegroup:
-                if pygame.sprite.spritecollide(projectile, self.enemies, True, None):
-                    projectile.kill()
-            
-            # Topleft 
-            # Topright
-            # if Map[roompos[0]][roompos[1]] == 'E':
-            #     EnemyInRoom = True
-            #if current is E
-            #EnemyInRoom == true:
-            #spawn enemy
-            # RoomRight: pygame.draw.rect(screen,White,)*
-            # RoomLeft:
-            # RoomUp:
-            # RoomDown:
+                
+            #print(self.enemy.health)
+          
+                    
             if EnemyInRoom == False:
-
+                
                 if playerpos[0] != len(Map)-1:
                     if Map[playerpos[0]+1][playerpos[1]] == 'R' or Map[playerpos[0]+1][playerpos[1]] == 'E' or Map[playerpos[0]+1][playerpos[1]] == 'B':
+                        
+
                         DownExit= pygame.draw.rect(screen,White,(700,1040,520,40))
                         if Map[playerpos[0]+1][playerpos[1]] == 'E':
                             if DownExit.colliderect(self.player.rect):
@@ -291,6 +272,7 @@ class Game():
                                     print(i)
                                 
                         else:
+                            
                             if DownExit.colliderect(self.player.rect):
                                 self.player.rect.x = screenx/2 
                                 self.player.rect.y = 100
@@ -329,6 +311,7 @@ class Game():
                                     print(i)
                             
                         else:
+                           
                             if TopExit.colliderect(self.player.rect) :
                         
                                 self.player.rect.x = screenx/2
@@ -367,6 +350,7 @@ class Game():
                               
                                 
                         else:
+                            
                             if RightExit.colliderect(self.player.rect): 
                                 self.player.rect.x = 100
                                 self.player.rect.y = screeny/2
@@ -386,6 +370,7 @@ class Game():
                         self.player.rect.x = 1830
                 if playerpos[1] != 0:
                     if Map[playerpos[0]][playerpos[1]-1] == 'R'or Map[playerpos[0]][playerpos[1]-1] == 'E'or Map[playerpos[0]][playerpos[1]-1] == 'B':
+                        
                         LeftExit = pygame.draw.rect(screen, White, (0,350,40,380))
                         if Map[playerpos[0]][playerpos[1]-1] == 'E':
                             if LeftExit.colliderect(self.player.rect):
@@ -400,6 +385,7 @@ class Game():
                                 for i in Map:
                                     print(i)
                         else:
+                            
                             if LeftExit.colliderect(self.player.rect):
                                 self.player.rect.x = screenx-100
                                 self.player.rect.y = screeny/2 
@@ -417,18 +403,15 @@ class Game():
                     LeftExit =  pygame.draw.rect(screen, Black,(0,350,40,380))
                     if LeftExit.colliderect(self.player.rect):
                         self.player.rect.x = 40
-                        
-                        
-
-                    
                 
-    
             else:
+               
                 
                 if TimesSpawned < 1:
                     for i in range(0,3):
                     #enemy = Enemy() #put coords as a input see if it works 
                         enemy= Enemy()
+                        
                         self.enemies.add(enemy)
                     TimesSpawned +=1
             
@@ -451,6 +434,49 @@ class Game():
                 if LeftExit.colliderect(self.player.rect):
                     self.player.rect.x = 40
                     
+                for projectile in self.player.projectilegroup:
+                    collision = pygame.sprite.spritecollide(projectile, self.enemies, False)
+                    for enemy in collision:
+                        if enemy.health == 0:
+                            enemy.kill()    
+                            projectile.kill()
+                        if pygame.sprite.spritecollide(projectile, self.enemies, False) and enemy.health != 0:
+                            enemy.health -=1
+                            projectile.kill()
+                        
+                        
+                        
+                #     for i in range(0,3):
+                #     #enemy = Enemy() #put coords as a input see if it works 
+                #         enemy= Enemy()
+                #         self.enemies.add(enemy)
+                #     TimesSpawned +=1
+                
+                #     print("True")
+         
+                            
+                        
+                # collision = pygame.sprite.spritecollide(enemy,self.player.projectilegroup,False)
+                
+                # if enemy.health < 
+                    # if enedsdaasdmy.health == 0:  
+                    #     KillEnemy = True
+                
+                    # for projectile in self.player.projectilegroup: 
+                    #     if : #statement kills both enemy sprite and projectile
+                    #         projectile.kill() 
+                    # enemy.health -= 1 
+                    
+                    
+                        
+                # else:
+                #     for projectile in self.player.projectilegroup:
+                #         if pygame.sprite.spritecollide(projectile, self.enemies, True, None):
+                #             projectile.kill()
+                    
+                        
+                
+
                 
                 if len(self.enemies) == 0:
                     print("No more enemies")
@@ -463,7 +489,8 @@ class Game():
             self.player.projectilegroup.update()
             self.playersp.draw(screen)
             self.playersp.update()
-                
+            #self.obstaclegroup.draw(screen)
+            #self.obstaclegroup.update()
             
                 #consider usint pygame.event toget key presses?
                 #keypressed is useful for continuous movement
@@ -503,7 +530,6 @@ class Game():
             mousex, mousey = pygame.mouse.get_pos()
             if BackToGame.collidepoint(mousex,mousey):
                 if click == True:
-                
                     running = False 
                     click = False  
                     return True
@@ -558,7 +584,6 @@ class Game():
         while running:
             
       
-            
             #Class
             screen.fill(Black)
             mousex, mousey = pygame.mouse.get_pos()
@@ -686,9 +711,8 @@ class Game():
             pygame.display.update()
     def save():
         pass                
-        #def Move(self):
+        
 
-#Room to room movement - when the player goes to the border limit, it puts them into a new room
     
     def checkifRoom(self,room,i,j):  
     #what if i = 1 and j =2?

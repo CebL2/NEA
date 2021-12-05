@@ -1,7 +1,7 @@
 import pygame, random
 
-screenx = 1280
-screeny = 1024
+screenx = 1920
+screeny = 1080
 screen = pygame.display.set_mode((screenx,screeny))
 class Enemy(pygame.sprite.Sprite):
     Enemy  = pygame.Surface((200,200)) #pygame.image.load("spritegroup//test enemy.png").convert()
@@ -14,10 +14,15 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.center = ((random.randint(0,1280),(random.randint(0,1024))))   
         self.x = self.rect.x
         self.y = self.rect.y 
+        self.health = 2
         self.speed = 1
         
         
-    
+    def killSprite(self):
+        if self.health == 0:
+            self.kill()
+        else:
+            return 0 
     def update(self):
         
         pass
