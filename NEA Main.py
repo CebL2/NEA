@@ -409,7 +409,6 @@ class Game():
                 
                 if TimesSpawned < 1:
                     for i in range(0,3):
-                    #enemy = Enemy() #put coords as a input see if it works 
                         enemy= Enemy()
                         
                         self.enemies.add(enemy)
@@ -442,40 +441,8 @@ class Game():
                             projectile.kill()
                         if pygame.sprite.spritecollide(projectile, self.enemies, False) and enemy.health != 0:
                             enemy.health -=1
-                            projectile.kill()
-                        
-                        
-                        
-                #     for i in range(0,3):
-                #     #enemy = Enemy() #put coords as a input see if it works 
-                #         enemy= Enemy()
-                #         self.enemies.add(enemy)
-                #     TimesSpawned +=1
-                
-                #     print("True")
-         
-                            
-                        
-                # collision = pygame.sprite.spritecollide(enemy,self.player.projectilegroup,False)
-                
-                # if enemy.health < 
-                    # if enedsdaasdmy.health == 0:  
-                    #     KillEnemy = True
-                
-                    # for projectile in self.player.projectilegroup: 
-                    #     if : #statement kills both enemy sprite and projectile
-                    #         projectile.kill() 
-                    # enemy.health -= 1 
-                    
-                    
-                        
-                # else:
-                #     for projectile in self.player.projectilegroup:
-                #         if pygame.sprite.spritecollide(projectile, self.enemies, True, None):
-                #             projectile.kill()
-                    
-                        
-                
+                            projectile.kill()    
+  
 
                 
                 if len(self.enemies) == 0:

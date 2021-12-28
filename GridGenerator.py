@@ -39,16 +39,14 @@ class GridGenerator:
     def Layout(self):
         Rooms = []
 
-        for i in range(15):
+        for i in range(10):
             Rooms.append([])
-            for _ in range(15):
+            for _ in range(10):
                 Rooms[i].append(" ")
-        print(len(Rooms))
-        print(len(Rooms[0]))
-        RoomsToAdd = random.randint(25,75)
+       
+        RoomsToAdd =  random.randint(20,60)
         
-        #print(RoomCount)
-        #direction = random.randint(0,3)
+       
         randi = random.randint(0, len(Rooms)-1)
         randj = random.randint(0, len(Rooms[0])-1)
         
@@ -71,6 +69,7 @@ class GridGenerator:
         probleft = 0.25
         probright = 0.25
         while RoomsToAdd > 0:
+           
             if upcount >3:
                 probup = 1/10
                 probdown = 3/10
@@ -97,7 +96,7 @@ class GridGenerator:
                 rightcount = 0                 
             directions = ['up','down','left','right']
             RoomDirection = np.random.choice(directions,p=[probup,probdown,probleft,probright])
-            
+           
             if not self.isBorder(i, len(Rooms)-1,j,len(Rooms[0])-1):
                 #not border
                 if RoomDirection == 'up' and Rooms[i-1][j] == "R":  
@@ -139,314 +138,188 @@ class GridGenerator:
             else: #is border
                 if not self.isCorner(i,len(Rooms)-1, j,len(Rooms[0])-1):
                     #not corner
-                    if i == 0 and RoomDirection == 'up': #top
-                        RoomDirection = np.random.choice(directions,p=[0,1/3,1/3,1/3]) # directions = ['up','down','left','right']
-                        if RoomDirection == 'down' and Rooms[i+1][j] == "R":
-                            i+= 1
-                            downcount +=1
+                    if RoomDirection == 'up':
+                        if i ==0:
+                            upcount+=1
                             continue
-                        elif RoomDirection == 'down':
-                            Rooms[i+1][j] = "R"
-                            i+=1
-                            downcount =0
-                            
-                        elif RoomDirection == 'right' and Rooms[i][j+1] == "R":
-                            j+=1
-                            rightcount +=1
-                            continue
-                        elif RoomDirection == 'right':
-                            Rooms[i][j+1] = "R"
-                            j+=1
-                            rightcount = 0
-                        elif RoomDirection == 'left' and Rooms[i][j-1] == "R":
-                            j-= 1
-                            leftcount += 1
-                            continue
-                        elif RoomDirection == 'left':
-                            Rooms[i][j-1] = "R"
-                            j-= 1
-                            leftcount = 0
-                            
-                    elif i == len(Rooms)-1 and RoomDirection == 'down': #bot
-                        RoomDirection = np.random.choice(directions,p=[1/3,0,1/3,1/3]) # directions = ['up','down','left','right']
-                        if RoomDirection == 'up' and Rooms[i-1][j] == "R":
-                            i-=1
-                            upcount +=1
-                            continue
-                        elif RoomDirection == 'up':
-                            Rooms[i-1][j] = "R"
-                            i-=1
-                            upcount = 0
-                            
-                        elif RoomDirection == 'right' and Rooms[i][j+1] == "R":
-                            j+= 1
-                            rightcount +=1
-                            continue
-                        elif RoomDirection == 'right':    
-                            Rooms[i][j+1] = "R"
-                            j+=1
-                            rightcount = 0
-                        elif RoomDirection == 'left' and Rooms[i][j-1] == "R":
-                            j-= 1
-                            leftcount +=1
-                            continue
-                            
-                        elif RoomDirection == 'left':
-                            Rooms[i][j-1] = "R"
-                            j-= 1
-                            leftcount = 0
-                    elif j == 0 and RoomDirection == 'left':# left
-                        RoomDirection = np.random.choice(directions,p=[1/3,1/3,0,1/3]) # directions = ['up','down','left','right']
-                        if RoomDirection == 'down' and Rooms[i+1][j] == "R":
-                            i+=1
-                            downcount += 1
-                            continue
-                        elif RoomDirection == 'down':
-                            Rooms[i+1][j] = "R"
-                            i+=1
-                            downcount = 0
-                        elif RoomDirection == 'right' and Rooms[i][j+1] == "R":
-                            j+=1
-                            rightcount +=1
-                            continue
-                        elif RoomDirection == 'right':
-                            Rooms[i][j+1] = "R"
-                            j+=1
-                            rightcount =0
-                        elif RoomDirection == 'up' and Rooms[i-1][j] == "R":
-                            i-=1
-                            upcount +=1
-                            continue
-                        elif RoomDirection == 'up':
-                            Rooms[i-1][j] = "R"
-                            i-= 1
-                            upcount = 0
-                        
-                    elif j == len(Rooms[0])-1 and RoomDirection == 'right':  #right
-                        RoomDirection = np.random.choice(directions,p=[1/3,1/3,1/3,0]) 
-                        if RoomDirection == 'down' and Rooms[i+1][j] == "R":
-                            i+=1
-                            downcount +=1
-                            continue
-                        elif RoomDirection == 'down':
-                            Rooms[i+1][j] = "R"
-                            i+=1
-                            downcount =0
-                        elif RoomDirection == 'up' and Rooms[i-1][j] == "R":
-                            i-= 1
-                            upcount +=1
-                            continue
-                        elif RoomDirection == 'up':
-                            Rooms[i-1][j] = "R"
-                            i-=1
-                            upcount = 0
-                        elif RoomDirection == 'left' and Rooms[i][j-1] == "R":
-                            j-= 1
-                            leftcount +=1
-                            continue
-                        elif RoomDirection == 'left':
-                            Rooms[i][j-1] = "R"
-                            j-= 1
-                            leftcount =0 
-                    else:  
-                        if RoomDirection == 'up' and Rooms[i-1][j] == "R":   #checks the dircection given and whether if there is already a P inside the grid
-                            i-= 1
-                            upcount +=1
-                            continue
-                        elif RoomDirection == 'up':  
-                            Rooms[i-1][j] = "R"
-                            i-= 1
-                            upcount =0
-                        #statements with i/j have to be kept in here, as it will add the "R" regardless of what hte value of i and j is
-                        elif RoomDirection == 'down' and Rooms[i+1][j] == "R":
-                            i+=1
-                            downcount +=1
-                            continue
-                        elif RoomDirection == 'down':
-                            Rooms[i+1][j] = "R"
-                            i+=1
-                            downcount =0
-                        elif RoomDirection == 'right' and Rooms[i][j+1] == "R" :
-                            j+= 1
-                            rightcount +=1
-                            continue
-                            
-                        elif RoomDirection == 'right':
-                            Rooms[i][j+1] = "R"
-                            j+= 1
-                            rightcount = 0
-                        elif RoomDirection == 'left' and Rooms[i][j-1] == "R":
-                            j-=1
-                            leftcount +=1
-                            continue
-                            
-                        elif RoomDirection == 'left':
-                            Rooms[i][j-1] = "R"   
-                            j-=1   
-                            leftcount =0   
-                else:
-                    #is corner       
-                    if i == 0 and j == 0: #top left
-                        if RoomDirection == 'left' or RoomDirection == 'up':   # directions = ['up','down','left','right']
-                            RoomDirection = np.random.choice(directions,p=[0,1/2,0,1/2])
-                            if RoomDirection == 'down' and Rooms[i+1][j] == "R":
-                                i+= 1
-                                downcount +=1
+                        else:
+                            if  Rooms[i-1][j] == "R":
+                                i-= 1
+                                upcount+=1
                                 continue
-                            elif RoomDirection == 'down':
-                                Rooms[i+1][j] = "R"
-                                i+= 1
-                                downcount = 0
-                            elif RoomDirection == 'right' and Rooms[i][j+1] == "R":
-                                j+= 1
-                                rightcount +=1
-                                continue
-                            
-                            elif RoomDirection == 'right':
-                                Rooms[i][j+1] = "R"
-                                j+= 1
-                                rightcount =0
-                        else:  
-                        
-                            #statements with i/j have to be kept in here, as it will add the "R" regardless of what hte value of i and j is
-                            if RoomDirection == 'down' and Rooms[i+1][j] == "R":
+                            else:
+                                Rooms[i-1][j] = "R"
+                                i-= 1
+                                upcount =0
+                    elif RoomDirection == 'down':
+                        if i == len(Rooms)-1:
+                            downcount+=1
+                            continue
+                        else:
+                            if Rooms[i+1][j] == "R":
                                 i+=1
-                                downcount +=1
+                                downcount+=1
                                 continue
-                            elif RoomDirection == 'down':
+                            else:
                                 Rooms[i+1][j] = "R"
                                 i+=1
-                                downcount = 0
-                            elif RoomDirection == 'right' and Rooms[i][j+1] == "R" :
-                                j+= 1
-                                rightcount +=1
+                                downcount =0
+                                    
+                            
+                    elif RoomDirection == 'left':
+                        if j == 0:
+                            leftcount+=1
+                            continue
+                        else:
+                            if Rooms[i][j-1] == "R":
+                                j-=1
+                                leftcount+=1
                                 continue
-                                
-                            elif RoomDirection == 'right':
+                            else:
+                                Rooms[i][j-1] = "R"
+                                j-=1
+                                leftcount=0
+                    elif RoomDirection == 'right':
+                        if j == len(Rooms[0])-1:
+                            rightcount+=1
+                            continue
+                        else:
+                            if Rooms[i][j+1] == "R":
+                                j+=1
+                                rightcount+=1
+                                continue
+                            else:
                                 Rooms[i][j+1] = "R"
                                 j+= 1
                                 rightcount = 0
+                                
+                    
+                        
+                else:
+                    #is corner       
+                    if i == 0 and j == 0: #top left
+                        if RoomDirection == 'left':# directions = ['up','down','left','right']
+                            leftcount+=1
+                            continue
+                        elif RoomDirection == 'up':
+                            upcount+=1
+                            continue
+                        
+                        
+                            #statements with i/j have to be kept in here, as it will add the "R" regardless of what hte value of i and j is
+                        elif RoomDirection == 'down' :
+                            if Rooms[i+1][j] == "R":
+                                i+=1
+                                downcount +=1
+                                continue
+                            else:
+                                Rooms[i+1][j] = "R"
+                                i+=1
+                                downcount = 0
+                    
+                        
+                        elif RoomDirection == 'right' : 
+                            if Rooms[i][j+1] == "R" :
+                                j+= 1
+                                rightcount +=1
+                                continue
+                            else:
+                                Rooms[i][j+1] == "R"
+                                j+=1
+                                rightcount=0
+                                
+                            
+                    
                         
                     elif i == 0 and j == len(Rooms[0])-1 : #top right
-                        if RoomDirection == 'right' or RoomDirection == 'up':   # directions = ['up','down','left','right']
-                            RoomDirection = np.random.choice(directions,p=[0,1/2,1/2,0])
-                            if RoomDirection == 'down' and Rooms[i+1][j]== "R":
-                                i+= 1
-                                downcount +=1
-                                continue
-                            elif RoomDirection == 'down':
-                                Rooms[i+1][j] = "R"
-                                i+= 1
-                                downcount = 0
-                            elif RoomDirection == 'left' and Rooms[i][j-1] == "R":
-                                j-= 1
-                                leftcount += 1
-                                continue
-                            elif RoomDirection == 'left':
-                                Rooms[i][j-1] = "R"
-                                j-= 1
-                                leftcount = 0
-                        else:  
+                        if RoomDirection == 'right':
+                            rightcount+=1
+                            continue
+                        elif RoomDirection == 'up':   # directions = ['up','down','left','right']
+                            upcount+=1
+                            continue
                         
-                            #statements with i/j have to be kept in here, as it will add the "R" regardless of what hte value of i and j is
-                            if RoomDirection == 'down' and Rooms[i+1][j] == "R":
+                        elif RoomDirection == 'down' :
+                            if Rooms[i+1][j] == "R":
                                 i+=1
                                 downcount +=1
                                 continue
-                            elif RoomDirection == 'down':
+                            else:
                                 Rooms[i+1][j] = "R"
                                 i+=1
                                 downcount = 0
-                            elif RoomDirection == 'left' and Rooms[i][j-1] == "R":
-                                j-=1
-                                leftcount +=1
-                                continue
                                 
-                            elif RoomDirection == 'left':
-                                Rooms[i][j-1] = "R"   
-                                j-=1 
-                                leftcount =0
-                    elif i == len(Rooms)-1 and j == 0 : #bottom left
-                        if  RoomDirection == 'left' or RoomDirection == 'down':   # directions = ['up','down','left','right']
-                            RoomDirection = np.random.choice(directions,p=[1/2,0,0,1/2])
-                            if RoomDirection == 'up' and Rooms[i-1][j] == "R":
-                                i-= 1
-                                upcount +=1
-                                continue
-                            elif RoomDirection == 'up':
-                                Rooms[i-1][j] = "R"
-                                i-= 1
-                                upcount =0
-                            elif RoomDirection == 'right' and Rooms[i][j+1] == "R":
-                                j+=1
-                                rightcount +=1
-                                continue
-                            elif RoomDirection == 'right':
-                                Rooms[i][j+1] = "R"
-                                j+= 1
-                                rightcount =0
-                        else:  
-                            if RoomDirection == 'up' and Rooms[i-1][j] == "R":   #checks the dircection given and whether if there is already a P inside the grid
-                                i-= 1
-                                upcount +=1
-                                continue
-                            elif RoomDirection == 'up':  
-                                Rooms[i-1][j] = "R"
-                                i-= 1
-                                upcount =0
-                            #statements with i/j have to be kept in here, as it will add the "R" regardless of what hte value of i and j is
-                    
-                                
-                            elif RoomDirection == 'right' and Rooms[i][j+1] == "R" :
-                                j+= 1
-                                rightcount +=1
-                                continue
-                                
-                            elif RoomDirection == 'right':
-                                Rooms[i][j+1] = "R"
-                                j+= 1
-                                rightcount =0
-                            
-                    elif i == len(Rooms)-1 and j == len(Rooms[0])-1 : #bottom right
-                        if RoomDirection == 'right' or RoomDirection == 'down':   # directions = ['up','down','left','right']
-                            RoomDirection = np.random.choice(directions,p=[1/2,0,1/2,0])
-                            if RoomDirection == 'up' and Rooms[i-1][j] == "R":
-                                i-= 1
-                                upcount +=1
-                                continue
-                            elif RoomDirection == 'up':
-                                Rooms[i-1][j] = "R"
-                                i-= 1
-                                upcount =0 
-                            elif RoomDirection == 'left' and Rooms[i][j-1] == "R":
+                        elif RoomDirection == 'left':
+                            if Rooms[i][j-1] == "R":
                                 j-= 1
-                                leftcount +=1
+                                leftcount+=1
                                 continue
-                            elif RoomDirection == 'left':
-
+                            else:
                                 Rooms[i][j-1] = "R"
-                                j-= 1
-                                leftcount =0
-                        else:  
-                            if RoomDirection == 'up' and Rooms[i-1][j] == "R":   #checks the dircection given and whether if there is already a P inside the grid
-                                i-= 1
-                                upcount +=1
-                                continue
-                            elif RoomDirection == 'up':  
-                                Rooms[i-1][j] = "R"
-                                i-= 1
-                                upcount = 0
-                            #statements with i/j have to be kept in here, as it will add the "R" regardless of what hte value of i and j    
-                            elif RoomDirection == 'left' and Rooms[i][j-1] == "R":
                                 j-=1
-                                leftcount +=1
+                                leftcount =0
+                
+                        
+                    elif i == len(Rooms)-1 and j == 0 : #bottom left
+                        if  RoomDirection == 'left' :
+                            leftcount+=1
+                            continue
+                        elif RoomDirection == 'down':   # directions = ['up','down','left','right']
+                            downcount+=1
+                            continue
+                        
+                        elif RoomDirection == 'up':
+                            if Rooms[i-1][j] == "R":
+                                i-=1
+                                upcount+=1
                                 continue
-                            elif RoomDirection == 'left':
-                                Rooms[i][j-1] = "R"   
-                                j-=1 
-                                leftcount =0                         
+                            else:
+                                Rooms[i-1][j] = "R"
+                                i-=1
+                                upcount=0
+                        elif RoomDirection == 'right' : 
+                            if Rooms[i][j+1] == "R" :
+                                j+= 1
+                                rightcount +=1
+                                continue
+                            else:
+                                Rooms[i][j+1] == "R"
+                                j+=1
+                                rightcount=0
+                                
+                            
+                    
+                    elif i == len(Rooms)-1 and j == len(Rooms[0])-1 : #bottom right
+                        if RoomDirection == 'right' :
+                            rightcount+=1
+                            continue
+                        elif RoomDirection == 'down':   # directions = ['up','down','left','right']
+                            downcount+=1
+                            continue
+                        elif RoomDirection == 'up':
+                            if Rooms[i-1][j] == "R":
+                                i-=1
+                                upcount+=1
+                                continue
+                            else:
+                                Rooms[i-1][j] = "R"
+                                i-=1
+                                upcount=0
+                                
+                        elif RoomDirection == 'left':
+                            if Rooms[i][j-1] == "R":
+                                j-= 1
+                                leftcount+=1
+                                continue
+                            else:
+                                Rooms[i][j-1] = "R"
+                                j-=1
+                                leftcount =0
+                                        
             RoomsToAdd -= 1
+        
         return Rooms
+
     
     
 Grid = GridGenerator()
