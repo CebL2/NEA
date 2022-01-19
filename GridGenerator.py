@@ -15,12 +15,14 @@ class GridGenerator:
     def GenerateEnemyRoom(self,layout):
         BossToAdd = 1
         for i in range(0,len(layout)-1):
-            for j in range(0,i):
-               # print(j)
+            #print('row iter')
+            for j in range(0,len(layout[0])):
+                #print('inside iter')
                 if layout[i][j] == 'R':
-                    chance = random.randint(0,1)
-                    #print(chance)
-                    if chance == 1:
+                    chance = [0,1]
+                    decision = np.random.choice(chance,p=[0.3,0.7])
+                    print(decision)
+                    if decision == 1:
                         layout[i][j] = 'E'
         
         for i in range(0,len(layout)-1):
@@ -31,35 +33,22 @@ class GridGenerator:
                     break
             if BossToAdd ==0:
                 break
-        
         return layout
                     
-    
-
     def Layout(self):
         Rooms = []
-
         for i in range(10):
             Rooms.append([])
             for _ in range(10):
                 Rooms[i].append(" ")
        
         RoomsToAdd =  random.randint(20,60)
-        
-       
         randi = random.randint(0, len(Rooms)-1)
         randj = random.randint(0, len(Rooms[0])-1)
-        
         Rooms[randi][randj] = "R"
-        #print(i,j)
-        #list = ['up','down','left','right']
-        #print(np.random.choice(list,p=[1/4,1/4,]))
         i = randi
         j = randj
-        #RoomsToAdd = 150
-        print(RoomsToAdd,  'is the total number of rooms')
         RoomsToAdd -=1
-        print(RoomsToAdd ,'is the amount of rooms to add')
         upcount = 0
         downcount = 0
         leftcount = 0
@@ -69,7 +58,6 @@ class GridGenerator:
         probleft = 0.25
         probright = 0.25
         while RoomsToAdd > 0:
-           
             if upcount >3:
                 probup = 1/10
                 probdown = 3/10
@@ -192,9 +180,6 @@ class GridGenerator:
                                 Rooms[i][j+1] = "R"
                                 j+= 1
                                 rightcount = 0
-                                
-                    
-                        
                 else:
                     #is corner       
                     if i == 0 and j == 0: #top left
@@ -204,8 +189,6 @@ class GridGenerator:
                         elif RoomDirection == 'up':
                             upcount+=1
                             continue
-                        
-                        
                             #statements with i/j have to be kept in here, as it will add the "R" regardless of what hte value of i and j is
                         elif RoomDirection == 'down' :
                             if Rooms[i+1][j] == "R":
@@ -216,8 +199,6 @@ class GridGenerator:
                                 Rooms[i+1][j] = "R"
                                 i+=1
                                 downcount = 0
-                    
-                        
                         elif RoomDirection == 'right' : 
                             if Rooms[i][j+1] == "R" :
                                 j+= 1
@@ -227,10 +208,6 @@ class GridGenerator:
                                 Rooms[i][j+1] == "R"
                                 j+=1
                                 rightcount=0
-                                
-                            
-                    
-                        
                     elif i == 0 and j == len(Rooms[0])-1 : #top right
                         if RoomDirection == 'right':
                             rightcount+=1
@@ -285,10 +262,7 @@ class GridGenerator:
                             else:
                                 Rooms[i][j+1] == "R"
                                 j+=1
-                                rightcount=0
-                                
-                            
-                    
+                                rightcount=0          
                     elif i == len(Rooms)-1 and j == len(Rooms[0])-1 : #bottom right
                         if RoomDirection == 'right' :
                             rightcount+=1
@@ -320,8 +294,6 @@ class GridGenerator:
         
         return Rooms
 
-    
-    
 Grid = GridGenerator()
 layout = Grid.Layout()
 newroom = Grid.GenerateEnemyRoom(layout)
