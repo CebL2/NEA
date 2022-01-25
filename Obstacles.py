@@ -14,22 +14,17 @@ Black = (0,0,0)
 
 #pos, size
 class RoomObstacles(pygame.sprite.Sprite):
-    Obstacles = pygame.Surface((random.randint(0,100),random.randint(0,100)))
-    Obstacles.fill((0,0,0))
-    def __init__(self) -> None:
-        super().__init__()
-        self.image = RoomObstacles.Obstacles
-        #ObstacleGroup = pygame.sprite.Group()
-        self.rect = self.image.get_rect()
-        self.rect.center = (300,500)
-        
-        
-        
-        
-        
-      
-        
-        
-        
+    def __init__(self,i,j):
+        pygame.sprite.Sprite.__init__(self)
+        self.i = i
+        self.j = j
 
-        
+        self.image = pygame.Surface((100,100))
+        #self.ObstacleGroup = pygame.sprite.Group()
+        self.image.fill((255,0,0))
+        self.rect = self.image.get_rect()
+        self.rect.center = ((random.randint(0,1280),(random.randint(0,1024))))  
+        #self.rect.center = (300,500)
+    
+    
+

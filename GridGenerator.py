@@ -2,15 +2,15 @@ import random
 
 import numpy as np
 
-class GridGenerator:
+class GridGenerator: 
     def __init__(self):
         pass
-    def isBorder(self,i, i_length, j, j_length):
+    def isBorder(self,i, i_length, j, j_length): #checks if the list element is on the border
         if i == 0 or i == i_length or j== 0 or j == j_length:
             return True
 
     def isCorner(self,i, i_length, j, j_length):
-        if i == 0 and j == 0 or i == 0 and j == j_length or i == i_length and j == 0 or i == i_length and j == j_length:
+        if i == 0 and j == 0 or i == 0 and j == j_length or i == i_length and j == 0 or i == i_length and j == j_length: #checks if the list element is on the corner
             return True 
     def GenerateEnemyRoom(self,layout):
         BossToAdd = 1
@@ -21,27 +21,27 @@ class GridGenerator:
                 if layout[i][j] == 'R':
                     chance = [0,1]
                     decision = np.random.choice(chance,p=[0.3,0.7])
-                    print(decision)
+                    
                     if decision == 1:
                         layout[i][j] = 'E'
-        
-        for i in range(0,len(layout)-1):
-            for j in range(0,i):
-                if layout[i][j] == 'E':
-                    layout[i][j] = 'B'
-                    BossToAdd -= 1
-                    break
-            if BossToAdd ==0:
-                break
+        while BossToAdd >0:
+            for i in range(0,len(layout)-1):
+                for j in range(0,i):
+                    if layout[i][j] == 'E':
+                        chance = [0,1]
+                        decision = np.random.choice(chance,p=[0.3,0.7])
+                        if decision == 1:
+                            layout[i][j] = 'B'
+                            BossToAdd -= 1
+                            break
         return layout
-                    
-    def Layout(self):
+
+    def Layout(self): #generates the whole map
         Rooms = []
         for i in range(10):
             Rooms.append([])
             for _ in range(10):
                 Rooms[i].append(" ")
-       
         RoomsToAdd =  random.randint(20,60)
         randi = random.randint(0, len(Rooms)-1)
         randj = random.randint(0, len(Rooms[0])-1)
@@ -57,8 +57,8 @@ class GridGenerator:
         probdown = 0.25
         probleft = 0.25
         probright = 0.25
-        while RoomsToAdd > 0:
-            if upcount >3:
+        while RoomsToAdd > 0: 
+            if upcount >3:  #if the amount of times of a direction has occured more then 3 times, then the probablity of that direction will decrease
                 probup = 1/10
                 probdown = 3/10
                 probleft = 3/10
@@ -83,11 +83,11 @@ class GridGenerator:
                 probright = 1/10
                 rightcount = 0                 
             directions = ['up','down','left','right']
-            RoomDirection = np.random.choice(directions,p=[probup,probdown,probleft,probright])
+            RoomDirection = np.random.choice(directions,p=[probup,probdown,probleft,probright]) #chooses a random direction, 
            
             if not self.isBorder(i, len(Rooms)-1,j,len(Rooms[0])-1):
                 #not border
-                if RoomDirection == 'up' and Rooms[i-1][j] == "R":  
+                if RoomDirection == 'up' and Rooms[i-1][j] == "R":   #checks for each direction to see whether if there is already a room or not 
                     i-= 1
                     upcount +=1
                     continue
@@ -95,7 +95,6 @@ class GridGenerator:
                     Rooms[i-1][j] = "R"
                     i-= 1
                     upcount = 0
-                #statements with i/j have to be kept in here, as it will add the "R" regardless of what hte value of i and j is
                 elif RoomDirection == 'down' and Rooms[i+1][j] == "R":
                     i+=1
                     downcount +=1
@@ -117,12 +116,10 @@ class GridGenerator:
                     j-=1
                     leftcount +=1
                     continue
-                    
                 elif RoomDirection == 'left':
                     Rooms[i][j-1] = "R"   
                     j-=1
                     leftcount = 0
-                
             else: #is border
                 if not self.isCorner(i,len(Rooms)-1, j,len(Rooms[0])-1):
                     #not corner
@@ -189,7 +186,7 @@ class GridGenerator:
                         elif RoomDirection == 'up':
                             upcount+=1
                             continue
-                            #statements with i/j have to be kept in here, as it will add the "R" regardless of what hte value of i and j is
+                            
                         elif RoomDirection == 'down' :
                             if Rooms[i+1][j] == "R":
                                 i+=1
@@ -294,8 +291,8 @@ class GridGenerator:
         
         return Rooms
 
-Grid = GridGenerator()
-layout = Grid.Layout()
-newroom = Grid.GenerateEnemyRoom(layout)
-for i in newroom:
-    print(i)
+# Grid = GridGenerator()
+# layout = Grid.Layout()
+# newroom = Grid.GenerateEnemyRoom(layout)
+# for i in newroom:
+#     print(i)

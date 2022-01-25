@@ -2,48 +2,62 @@
 from Attack import Attack
 import pygame 
 
-projectilegroup = pygame.sprite.Group()
-screenx = 1280
-screeny = 1024
-screen = pygame.display.set_mode((screenx,screeny))
-class Player(pygame.sprite.Sprite):
-    player_image = pygame.image.load("spritegroup//test sprite.jpg").convert()
-    def __init__(self):
-        pygame.sprite.Sprite.__init__(self)
+class Player(pygame.sprite.Sprite):  #Player class
+    player_image = pygame.Surface((50,50)) 
+    player_image.fill((0,255,0))
+    def __init__(self,screenx,screeny):      
+        pygame.sprite.Sprite.__init__(self) 
         self.image = Player.player_image
         self.rect = self.image.get_rect()
         self.rect.center = (1280/2, 1024/2)
-        self.border = 2
-    
-    
-    
-    def moveright(self):
-        self.rect.x += self.border
-    def moveleft(self):
-        self.rect.x -= self.border
-    def moveup(self):
-        self.rect.y -= self.border
-    def movedown(self):
-        self.rect.y += self.border
-        
-    def shoot(self):
-        projectile = Attack(player.rect.x,player.rect.y)
-        projectile.rect.y -= projectile.speed
-        projectilegroup.add(projectile)
-    
-        
-        
+        #self.vectorposition = pygame.math.Vector2(self.rect.x,self.rect.y)
+        self.speed = 3
+        self.screenx = screenx
+        self.screeny = screeny
+        self.gap = 0 
+        self.projectilegroup = pygame.sprite.Group()  #projectile group 
+        # self.charClass = charclass
+        # self.statblock = statblock
+        # self.charlist = charclasslist
+    # def PlayerClass(self):
+    #     if self.charClass == self.charlist[0]:#warrior #charclass = ["Warrior","Mage","Paladin","Rogue"]
+    #         bonuses = Warrior()  #planning to add classes
+    #     elif self.charclass == self.charlist[1]:
+    #         bonuses = Mage()
+    #     elif self.charclass == self.charlist[2]:
+    #         bonuses = Paladin()     
+    #     else:
+    #         bonuses = Rogue()     #add bonuses to statblock
+    # def Spell(self,charclass,charlist):
+    #     thing = Spells()    
+    def update(self):  #update function to move player
 
+        keypressed = pygame.key.get_pressed()
+        if keypressed[pygame.K_s] and self.rect.y < self.screeny:
+            self.rect.y += self.speed
+        if keypressed[pygame.K_w] and self.rect.y > 0:
+            self.rect.y  -= self.speed
+        if keypressed[pygame.K_a] and self.rect.x > 0:
+            self.rect.x -= self.speed
+        if keypressed[pygame.K_d] and self.rect.x <  self.screenx:
+            self.rect.x += self.speed
+      
+    def Attackup(self):  #attack functions for projectiles
+        projectileup = Attack(self.rect.centerx,self.rect.centery-100,1)
+        self.projectilegroup.add(projectileup)
+
+    def Attackright(self):
+        projectiledown = Attack(self.rect.centerx+50,self.rect.centery,2)
+        self.projectilegroup.add(projectiledown)
         
+    def Attackleft(self):
+        projectiledown = Attack(self.rect.centerx-50,self.rect.centery,3)
+        self.projectilegroup.add(projectiledown)
         
-#def enemystate(collide)
-# if collide is true:
-#      enemystate is True
-#      while enemystate is True:
-#           colliding into walls will not teleport the player to the other side of the wall until enemystate becomes false again
-#           the only way to do that is when the enemy count (or contents in the enemy list) is o
-#           if enemycount == 0
-#               enemystate = False
+    def Attackdown(self):
+        projectiledown = Attack(self.rect.centerx,self.rect.centery+100,4)
+        self.projectilegroup.add(projectiledown)
+        
 
 # def characterCreation():
 #     while running:

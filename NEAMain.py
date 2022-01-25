@@ -1,10 +1,11 @@
 #TO DO
 #Implement Projectiles #DONE 
 #Room traversal with restrictiosn #DONE
-#Enemy spawn
+#Enemy spawn DONE
 #Room modifications (obstacles)         
 #Character creation with built in speical abilities for different classes    #PROGRESS
-#Spells
+#Spells 
+#Create self.Map 
 
 import numpy as np
 import pygame, sys, random, os
@@ -12,22 +13,19 @@ import pygame, sys, random, os
 from pygame.constants import FULLSCREEN
 from Enemy import *
 from Attack import *
-#from AttackDown import *
-#from AttackLeft import *
-#from AttackRight import *
 from GridGenerator import *
 from Stats import *
 from Obstacles import *
+from Player import *
 #import pickle
 
+pygame.init()
 clock = pygame.time.Clock()
 White = (255,255,255) #preset values for colour and resolution
 Black = (0,0,0)
 screenx = 1920
 screeny = 1080
-pygame.init()
 
-#display = pygame.display.set_mode((300,200))
 textfont = pygame.font.Font(r'C:\Windows\Fonts\georgia.ttf', 50 ) 
  
 click = False
@@ -47,11 +45,11 @@ spawnamount_hard = random.randint(9,12)
 # with open ('test.txt', 'w') as file:
 #     file.write("this is a test")
 #     file.close()
-def Main():
+def Main():  #main function to call 
     MainGame = Game()
-    MainGame.MainMenu()
+    MainGame.MainMenu() 
 
-class Hud:
+class Hud:  #WIP
     def __init__(self, screenx,screeny):
         pass
         
@@ -66,7 +64,6 @@ class Spells:
 class Warrior:
     def __init__(self):
         pass
-    
 class Mage:
     def __init__(self):
         pass
@@ -76,161 +73,83 @@ class Paladin:
 class Rogue:
     def __init__(self):
         pass
-class Player(pygame.sprite.Sprite):
-    player_image = pygame.Surface((50,50)) 
-    player_image.fill((0,255,0))
-    def __init__(self,screenx,screeny):      
-        super().__init__() 
-        self.image = Player.player_image
-        self.rect = self.image.get_rect()
-        self.rect.center = (1280/2, 1024/2)
-        self.vectorposition = pygame.math.Vector2(self.rect.x,self.rect.y)
-        self.speed = 3
-        self.screenx = screenx
-        self.screeny = screeny
-        self.gap = 0 
-        self.projectilegroup = pygame.sprite.Group()
-        # self.charClass = charclass
-        # self.statblock = statblock
-        # self.charlist = charclasslist
-    def MoveToPlayer(self):
-        return(self.rect.x,self.rect.y)
-    def PlayerClass(self):
-        if self.charClass == self.charlist[0]:#warrior #charclass = ["Warrior","Mage","Paladin","Rogue"]
-            bonuses = Warrior()
-        elif self.charclass == self.charlist[1]:
-            bonuses = Mage()
-        elif self.charclass == self.charlist[2]:
-            bonuses = Paladin()    
-        else:
-            bonuses = Rogue()     #add bonuses to statblock
-            
-    def Spell(self,charclass,charlist):
-        thing = Spells()    
-    def update(self):
 
-        keypressed = pygame.key.get_pressed()
-        if keypressed[pygame.K_s] and self.rect.y < self.screeny:
-            self.rect.y += self.speed
-        if keypressed[pygame.K_w] and self.rect.y > 0:
-            self.rect.y  -= self.speed
-        if keypressed[pygame.K_a] and self.rect.x > 0:
-            self.rect.x -= self.speed
-        if keypressed[pygame.K_d] and self.rect.x <  self.screenx:
-            self.rect.x += self.speed
-      
-
-    def Attackup(self):
-        projectileup = Attack(self.rect.centerx,self.rect.centery-100,1)
-        self.projectilegroup.add(projectileup)
-        
-        
-    def Attackdown(self):
-        projectiledown = Attack(self.rect.centerx,self.rect.centery+100,4)
-        self.projectilegroup.add(projectiledown)
-        
-    def Attackright(self):
-        projectiledown = Attack(self.rect.centerx+50,self.rect.centery,2)
-        self.projectilegroup.add(projectiledown)
-        
-    def Attackleft(self):
-        projectiledown = Attack(self.rect.centerx-50,self.rect.centery,3)
-        self.projectilegroup.add(projectiledown)
-
-    
-        
-    def MoveToPlayer(self):
-        
-        #while self.playerx!= self.rect.x and self.playery !=self.rect.y:
-        
-        pass
-       
-              
-        
-   
-# enemies = pygame.sprite.Group()
-
-# for i in range(0,3):
-#     enemies.add(enemy)
-    
-# print(enemies.sprites())
-
-#print(enemy.enemylist)
-#enemies.add(enemy.enemylist)  
-
-
-class Game():
+class Game(): 
     def __init__(self):
         self.screenx = 1920
         self.screeny = 1080
-        self.enemies = pygame.sprite.Group()
+        self.enemies = pygame.sprite.Group()   #preset sprite groups to be used for colllision purposes
         self.playersp = pygame.sprite.Group()
         self.obstaclegroup = pygame.sprite.Group()
-        self.charclass = 0
-        self.Map = []
-        self.luck = 0 
+        self.charclass = 0  #other features that are yet to be implemented
+        self.Map = self.GenerateMap()
+        self.luck = 0  
         self.badluck = 0 
         self.enemystate = False
+        
+        self.Roomi = random.randint(0,len(self.Map)-1) 
+        self.Roomj = random.randint(0,len(self.Map[0])-1)
         self.border_gap = 0
-        self.player = Player(self.screenx,self.screeny)
-        self.playersp.add(self.player)
-        #self.obstacle = RoomObstacles()
-        #self.obstaclegroup.add(self.obstacle)
-        #self.allsprites.add(self.player)
+        self.player = Player(self.screenx,self.screeny) #calls the player class
+        self.playersp.add(self.player) #adds the player sprite to the the group 
         
     def GenerateObstacles(self):
         pass
-
-    def GenerateMap(self):
-        Grid = GridGenerator()
-        Rooms = Grid.Layout()
-        Map = Grid.GenerateEnemyRoom(Rooms)
-        return Map
     
-          
-
-    def GenerateWalls(self,Rooms):
-        for i in len(Rooms)-1:
-            for j in len(i):
-                print(j)
+    def checkifRoom(self,room,i,j): #checks whether if a element in the self.Map/list is a room
+        roomstate = room[i][j]
+        new_i = random.randint(0,len(room)-1)
+        new_j = random.randint(0,len(room[0])-1)
+        if roomstate != 'R': #if the roomstate isn't R (i.e its E or B)
+            return self.checkifRoom(room,new_i,new_j) #recurssive call the function to check again
+        else:
+            return i,j 
+        
+    def GenerateMap(self):  #calls a class imported from a separate file to generate grid
+        Grid = GridGenerator() #calls the class 
+        Rooms = Grid.Layout() #generates the room, outputs a list
+        Map = Grid.GenerateEnemyRoom(Rooms) #input is a list, the output is a modified version of the list
+        return Map
             
-    def RunGame(self):
-        Map = self.GenerateMap()
+    def CheckRoom(self):
         
-        Roomi = random.randint(0,len(Map)-1)
-        Roomj = random.randint(0,len(Map[0])-1)
+        pass
         
-        roompos = self.checkifRoom(Map,Roomi,Roomj)
+    def RunGame(self):  #runs the game 
 
+        roompos = self.checkifRoom(self.Map,self.Roomi,self.Roomj) #and pass it through a function to check whether if its a valid room with no enemies 
+        ObstacleGroup = pygame.sprite.Group() #obstacle group to be used to draw obstacles in every room 
+        for i,value in enumerate(self.Map):  #iterates the entire self.Map to add a separate obstacle, still improving
+            for j,val in enumerate(value):  
+                obs = RoomObstacles(i,j)
+                ObstacleGroup.add(obs)
         
-        # Obstacles = RoomObstacles()
-        # self.obstacles.add()
-        Map[roompos[0]][roompos[1]] = "#"
-        
-       
-        playerpos = (roompos[0],roompos[1])
-        
-        EnemyInRoom = False
-        EnemyBattle = False
-        
-        
-        TimesSpawned = 0 
-        
-        
-        
-        for i in Map:
-            print(i)
-            
-       
+        self.Map[roompos[0]][roompos[1]] = "#"  #player symbol
+        playerpos = (roompos[0],roompos[1])  #a tuple to represent the player position on the self.Map
+        EnemyInRoom = False  #by default, there are no enemies in the room 
+        currentpos = playerpos
+        TimesSpawned = 0  #preset values to check how many times has the enemy spaned
+        ObstacleToDraw = pygame.sprite.Group()  #a separate group to draw obstacles, the idea is to have a group of obstacles ready to be added to another group to ONLY draw
+        #specific obstacles in each room, as each room has a set obstacle assigned to it       
         running = True
+
         while running:
-            screen.fill(White)
-            ##############      ##############
-            #           #                    #
-                    ##########
-            #        ###                     #
-            ##############      ##############
-            TopLeft = pygame.draw.rect(screen,Black,(0,0,700,40))
+            pygame.mouse.set_visible(False)
+            screen.fill(White) 
+            
+            #check which position is it currently
+            if currentpos != playerpos:
+                ObstacleToDraw.empty()
+                for obstacle in ObstacleGroup:
+                    if obstacle.i == playerpos[0] and obstacle.j == playerpos[1]:
+                        ObstacleToDraw.add(obstacle)
+            else:
+                for obstacle in ObstacleGroup:
+                    if obstacle.i == playerpos[0] and obstacle.j == playerpos[1]:
+                        ObstacleToDraw.add(obstacle)  #simple check to see if obstacles are being drawn
+                                   
+            ObstacleToDraw.draw(screen) #draws the obstacle
+            TopLeft = pygame.draw.rect(screen,Black,(0,0,700,40))    #walls/borders, there are variants of wall as the 'exit' to different rooms will be a separate wall
             TopRight = pygame.draw.rect(screen,Black,(1220,0,700,40))
             DownLeft = pygame.draw.rect(screen, Black, (0,1040, 700,40))
             DownRight = pygame.draw.rect(screen, Black, (1220,1040, 700,40))
@@ -238,84 +157,81 @@ class Game():
             LeftDown = pygame.draw.rect(screen, Black, (0,730, 40,350))
             RightUp = pygame.draw.rect(screen, Black, (1880,0,40,350))
             RightDown = pygame.draw.rect(screen, Black, (1880,730,40,350))
-            
-            if LeftUp.colliderect(self.player.rect) or LeftDown.colliderect(self.player.rect):
+
+            if LeftUp.colliderect(self.player.rect) or LeftDown.colliderect(self.player.rect):    #these statements make sure that the player does not go through the borders
                 self.player.rect.x = 40
             if RightUp.colliderect(self.player.rect) or RightDown.colliderect(self.player.rect):
-                self.player.rect.x = 1830
-                
+                self.player.rect.x = 1830  
             if DownLeft.colliderect(self.player.rect) or DownRight.colliderect(self.player.rect):
                 self.player.rect.y = 990
-                
             if TopLeft.colliderect(self.player.rect) or TopRight.colliderect(self.player.rect):
                 self.player.rect.y = 40
-                
-            #print(self.enemy.health)
-          
-                    
-            if EnemyInRoom == False:
-    
-                if playerpos[0] != len(Map)-1:
-                    if Map[playerpos[0]+1][playerpos[1]] == 'R' or Map[playerpos[0]+1][playerpos[1]] == 'E' or Map[playerpos[0]+1][playerpos[1]] == 'B':
+            
+            if EnemyInRoom == False:  #if there are no enemies in the room, then check the player position on the self.Map and see if the adjacent rooms are passable or not.
+                                      #if the adjacent room/element is empty (not P, E or B), then a black wall will replace the white wall in that corresponding place
+                if playerpos[0] != len(self.Map)-1: #checks if the player is at a border
+                    if self.Map[playerpos[0]+1][playerpos[1]] == 'R' or self.Map[playerpos[0]+1][playerpos[1]] == 'E' or self.Map[playerpos[0]+1][playerpos[1]] == 'B':
                         DownExit= pygame.draw.rect(screen,White,(700,1040,520,40))
-                        if Map[playerpos[0]+1][playerpos[1]] == 'E':
-                            if DownExit.colliderect(self.player.rect):
-                                self.player.rect.x = screenx/2 
+                        if self.Map[playerpos[0]+1][playerpos[1]] == 'E':  #if the corresponding room has an enemy
+                            if DownExit.colliderect(self.player.rect):  #and the player has collided the exit rect/exited the room
+                                self.player.rect.x = screenx/2  #set values to put them at where they would appear when going through a room from a certain side
                                 self.player.rect.y = 100
-                                EnemyInRoom = True
-                               
-                                Map[playerpos[0]][playerpos[1]] = 'R'
-                                Map[playerpos[0]+1][playerpos[1]] = '#'
-                                playerpos = (playerpos[0]+1,playerpos[1])
+                                EnemyInRoom = True #set to true, certain conditions will be applied 
+                                self.Map[playerpos[0]][playerpos[1]] = 'R'  #as the player position hasnt been changed, the value gets changed to R as 'Room'
+                                self.Map[playerpos[0]+1][playerpos[1]] = '#' #the adjacent room gets changed into the player symbol
+                                currentpos = playerpos
+                                playerpos = (playerpos[0]+1,playerpos[1]) #then, the player position gets changed accordingly
                                 #print(playerpos)
-                                for i in Map:
-                                    print(i)
+                                for i in self.Map:  #for convenience, every time the player has moved to a different room the self.self.Map will be printed out in the terminal, 
+                                                #planning to add a self.self.Map overlay in the main game 
+                                    print(i)                  
+                        else: 
+                            if DownExit.colliderect(self.player.rect): #if the adjacent room has no enemies, 
+                                self.player.rect.x = screenx/2 #then similar operations occur apart from the EnemInRoom being modified.
+                                self.player.rect.y = 100
+                                self.Map[playerpos[0]][playerpos[1]] = 'R'
+                                self.Map[playerpos[0]+1][playerpos[1]] = '#'
+                                currentpos = playerpos
+                                playerpos = (playerpos[0]+1,playerpos[1])
                                 
-                        else:
-                            
-                            if DownExit.colliderect(self.player.rect):
-                                self.player.rect.x = screenx/2 
-                                self.player.rect.y = 100
-                                Map[playerpos[0]][playerpos[1]] = 'R'
-                                Map[playerpos[0]+1][playerpos[1]] = '#'
-                                playerpos = (playerpos[0]+1,playerpos[1])
                                 #print(playerpos)
-                                for i in Map:
-                                    print(i)
-                                    
+                                for i in self.Map:
+                                    print(i)#for convenience, every time the player has moved to a different room the self.Map will be printed out in the terminal, 
+                                                #planning to add a self.Map overlay in the main game             
                     else:
-                        DownExit= pygame.draw.rect(screen,Black,(700,1040,520,40))
-                        if DownExit.colliderect(self.player.rect):
-                            self.player.rect.y = 990
+                        DownExit= pygame.draw.rect(screen,Black,(700,1040,520,40)) #if there is no room available, then draw a black rectangle
+                        if DownExit.colliderect(self.player.rect): #if the player collides into it: 
+                            self.player.rect.y = 990        #the player will stay in place 
                 else:
-                    DownExit= pygame.draw.rect(screen,Black,(700,1040,520,40))
-                    if DownExit.colliderect(self.player.rect):
+                    DownExit= pygame.draw.rect(screen,Black,(700,1040,520,40)) #this is to check whether if the player is at a border or not
+                    if DownExit.colliderect(self.player.rect): 
                         self.player.rect.y = 990    
-                            
+                        #rest of the code are relatively similar to this one as its just a different side          
                 if playerpos[0] != 0:
-                    if Map[playerpos[0]-1][playerpos[1]] == 'R' or Map[playerpos[0]-1][playerpos[1]] == 'E'or Map[playerpos[0]-1][playerpos[1]] == 'B':
+                    if self.Map[playerpos[0]-1][playerpos[1]] == 'R' or self.Map[playerpos[0]-1][playerpos[1]] == 'E'or self.Map[playerpos[0]-1][playerpos[1]] == 'B':
                         TopExit = pygame.draw.rect(screen,White,(700,0,520,40))
-                        if Map[playerpos[0]-1][playerpos[1]] == 'E':
+                        if self.Map[playerpos[0]-1][playerpos[1]] == 'E':
                             if TopExit.colliderect(self.player.rect) :
                                 self.player.rect.x = screenx/2
                                 self.player.rect.y = screeny-100
                                 EnemyInRoom = True        
-                                Map[playerpos[0]][playerpos[1]] = 'R'
-                                Map[playerpos[0]-1][playerpos[1]] = '#'
+                                self.Map[playerpos[0]][playerpos[1]] = 'R'
+                                self.Map[playerpos[0]-1][playerpos[1]] = '#'
+                                currentpos = playerpos
                                 playerpos = (playerpos[0]-1,playerpos[1])
                                 #print(playerpos)
-                                for i in Map:
+                                for i in self.Map:
                                     print(i)  
-                        else:
-                           
+                        else: 
                             if TopExit.colliderect(self.player.rect): 
                                 self.player.rect.x = screenx/2
                                 self.player.rect.y = screeny-100
-                                Map[playerpos[0]][playerpos[1]] = 'R'
-                                Map[playerpos[0]-1][playerpos[1]] = '#'
+                                self.Map[playerpos[0]][playerpos[1]] = 'R'
+                                self.Map[playerpos[0]-1][playerpos[1]] = '#'
+                                currentpos = playerpos
                                 playerpos = (playerpos[0]-1,playerpos[1])
                                 #print(playerpos)
-                                for i in Map:
+                                for i in self.Map:
                                     print(i)
                     else:
                         TopExit= pygame.draw.rect(screen,Black,(700,0,520,40))
@@ -325,35 +241,34 @@ class Game():
                     TopExit= pygame.draw.rect(screen,Black,(700,0,520,40))
                     if TopExit.colliderect(self.player.rect):
                         self.player.rect.y = 40
-                if playerpos[1] != len(Map[0]) -1:
-                    if Map[playerpos[0]][playerpos[1]+1] == 'R' or Map[playerpos[0]][playerpos[1]+1] == 'E' or Map[playerpos[0]][playerpos[1]+1] == 'B':
+                if playerpos[1] != len(self.Map[0]) -1:
+                    if self.Map[playerpos[0]][playerpos[1]+1] == 'R' or self.Map[playerpos[0]][playerpos[1]+1] == 'E' or self.Map[playerpos[0]][playerpos[1]+1] == 'B':
                         RightExit =  pygame.draw.rect(screen, White,(1880,350,40,380))
                         
-                        if Map[playerpos[0]][playerpos[1]+1] == 'E':
+                        if self.Map[playerpos[0]][playerpos[1]+1] == 'E':
                             if RightExit.colliderect(self.player.rect): 
                                 self.player.rect.x = 100
                                 self.player.rect.y = screeny/2
-                                Map[playerpos[0]][playerpos[1]] = 'R'
-                                Map[playerpos[0]][playerpos[1]+1] = '#'
+                                self.Map[playerpos[0]][playerpos[1]] = 'R'
+                                self.Map[playerpos[0]][playerpos[1]+1] = '#'
                              
                                 EnemyInRoom = True
-                                RightExit =  pygame.draw.rect(screen, Black,(1880,350,40,380))
+                                currentpos = playerpos
                                 playerpos = (playerpos[0],playerpos[1]+1)
                                 print(playerpos)
-                                for i in Map:
-                                    print(i)
-                              
-                                
+                                for i in self.Map:
+                                    print(i)     
                         else:
                             
                             if RightExit.colliderect(self.player.rect): 
                                 self.player.rect.x = 100
                                 self.player.rect.y = screeny/2
-                                Map[playerpos[0]][playerpos[1]] = 'R'
-                                Map[playerpos[0]][playerpos[1]+1] = '#'
+                                self.Map[playerpos[0]][playerpos[1]] = 'R'
+                                self.Map[playerpos[0]][playerpos[1]+1] = '#'
+                                currentpos = playerpos
                                 playerpos = (playerpos[0],playerpos[1]+1)
                                 print(playerpos)
-                                for i in Map:
+                                for i in self.Map:
                                     print(i)
                     else:
                         RightExit =  pygame.draw.rect(screen, Black,(1880,350,40,380))
@@ -364,30 +279,32 @@ class Game():
                     if RightExit.colliderect(self.player.rect):
                         self.player.rect.x = 1830
                 if playerpos[1] != 0:
-                    if Map[playerpos[0]][playerpos[1]-1] == 'R'or Map[playerpos[0]][playerpos[1]-1] == 'E'or Map[playerpos[0]][playerpos[1]-1] == 'B':
-                        
+                    if self.Map[playerpos[0]][playerpos[1]-1] == 'R'or self.Map[playerpos[0]][playerpos[1]-1] == 'E'or self.Map[playerpos[0]][playerpos[1]-1] == 'B':
                         LeftExit = pygame.draw.rect(screen, White, (0,350,40,380))
-                        if Map[playerpos[0]][playerpos[1]-1] == 'E':
+                        if self.Map[playerpos[0]][playerpos[1]-1] == 'E':
                             if LeftExit.colliderect(self.player.rect):
-                            
+                                '''testing
+                                '''
                                 self.player.rect.x = screenx-100
                                 self.player.rect.y = screeny/2 
                                 EnemyInRoom = True
-                                Map[playerpos[0]][playerpos[1]] = 'R'
-                                Map[playerpos[0]][playerpos[1]-1] = '#' 
+                                self.Map[playerpos[0]][playerpos[1]] = 'R'
+                                self.Map[playerpos[0]][playerpos[1]-1] = '#' 
+                                currentpos = playerpos
                                 playerpos = (playerpos[0],playerpos[1]-1) 
                                 print(playerpos)
-                                for i in Map:
+                                for i in self.Map:
                                     print(i)
                         else:
                             if LeftExit.colliderect(self.player.rect):
                                 self.player.rect.x = screenx-100
                                 self.player.rect.y = screeny/2 
-                                Map[playerpos[0]][playerpos[1]] = 'R'
-                                Map[playerpos[0]][playerpos[1]-1] = '#'  
+                                self.Map[playerpos[0]][playerpos[1]] = 'R'
+                                self.Map[playerpos[0]][playerpos[1]-1] = '#'
+                                currentpos = playerpos  
                                 playerpos = (playerpos[0],playerpos[1]-1) 
                                 print(playerpos)
-                                for i in Map:
+                                for i in self.Map:
                                     print(i)
                     else:
                         LeftExit =  pygame.draw.rect(screen, Black,(0,350,40,380))
@@ -397,71 +314,57 @@ class Game():
                     LeftExit =  pygame.draw.rect(screen, Black,(0,350,40,380))
                     if LeftExit.colliderect(self.player.rect):
                         self.player.rect.x = 40
-                
-            else:
-                x = self.player.rect.x
-                y = self.player.rect.y
-                DownExit= pygame.draw.rect(screen,Black,(700,1040,520,40))
+            else: #if EnemyInRoom is true:
+                if TimesSpawned < 1:
+                    #for i in range(0,3):
+                    enemy = Enemy()
+                    self.enemies.add(enemy)
+                    TimesSpawned +=1 
+                DownExit= pygame.draw.rect(screen,Black,(700,1040,520,40)) #seal all walls shut
                 if DownExit.colliderect(self.player.rect):
                     self.player.rect.y = 990
-               
-               
                 TopExit= pygame.draw.rect(screen,Black,(700,0,520,40))
                 if TopExit.colliderect(self.player.rect):
                     self.player.rect.y = 40
-                
-            
                 RightExit =  pygame.draw.rect(screen, Black,(1880,350,40,380))
                 if RightExit.colliderect(self.player.rect):
                     self.player.rect.x = 1830
-               
-
                 LeftExit =  pygame.draw.rect(screen, Black,(0,350,40,380))  
                 if LeftExit.colliderect(self.player.rect):
                     self.player.rect.x = 40
                     
-                for projectile in self.player.projectilegroup:
-                    collision = pygame.sprite.spritecollide(projectile, self.enemies, False)
+                for projectile in self.player.projectilegroup:  #checks if player attack projectiles has collided with the enemy
+                    collision = pygame.sprite.spritecollide(projectile, self.enemies, False) #checks within the sprite group whether if 'projectile' has collided with any sprites the sprite group self.enemies
                     for enemy in collision:
-                        if enemy.health == 0:
-                            enemy.kill()    
+                        if enemy.health == 0:  #if enemy health is 0:
+                            enemy.kill()     #delete the enemy from the group
                             projectile.kill()
-                        if pygame.sprite.spritecollide(projectile, self.enemies, False) and enemy.health != 0:
+                        elif collision and enemy.health != 0: #if the attack projectile collides, -1 to enemy health 
                             enemy.health -=1
                             projectile.kill()   
-               
-               
-                if TimesSpawned < 1:
-                    
-                    #for i in range(0,3):
-                    enemy = Enemy()
-                    self.enemies.add(enemy)
-                  
-                    TimesSpawned +=1 
-                if len(self.enemies) == 0:
+                if len(self.enemies) == 0: #if the sprite group is enpty, return to normal state 
                     print("No more enemies")
                     TimesSpawned = 0
                     EnemyInRoom = False 
                 self.enemies.draw(screen)
-                self.enemies.update(self.player.rect.x,self.player.rect.y)
+                self.enemies.update(self.player.rect.x,self.player.rect.y) #player positions are passed into the update function for the enemy to move towards the player
             self.player.projectilegroup.draw(screen)
             self.player.projectilegroup.update()
             self.playersp.draw(screen)
             self.playersp.update()
+            ObstacleToDraw.update()
             #self.obstaclegroup.draw(screen)
             #self.obstaclegroup.update()
             
-              
-                
             for event in pygame.event.get():
                 if event.type == pygame.QUIT: # Did the user click the window close button?
                     running = False
                     sys.exit()  
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE:
+                if event.type == pygame.KEYDOWN: 
+                    if event.key == pygame.K_ESCAPE: #one time events
                         #running = False
-                        running = self.Pause()               
-                    if event.key == pygame.K_DOWN:
+                        running = self.Pause()     #pause menu         
+                    if event.key == pygame.K_DOWN:  #attack projectiles
                         self.player.Attackdown()
                     if event.key == pygame.K_UP:
                         self.player.Attackup()
@@ -471,14 +374,12 @@ class Game():
                         self.player.Attackleft()
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     self.click = True   
-                    
             pygame.display.update()    
-                    
-
-    def Pause(self):
+    def Pause(self): #pause menu
         running = True
         click = False
         while running:
+            pygame.mouse.set_visible(True)
             screen.fill(White)
             BackToGame = pygame.draw.rect(screen, Black,(100,200,200,200))
             screen.blit(textfont.render("Back",True, White),(100,200))
@@ -523,7 +424,8 @@ class Game():
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     self.click = True
             pygame.display.update()
-    def CharacterCreation(self):
+            
+    def CharacterCreation(self): #character creation section for the player to customise their character, still WIP
         running = True
         charclass = ["Warrior","Mage","Paladin","Rogue"]
         ability = ["Melee","Magic","Heal"]
@@ -532,7 +434,6 @@ class Game():
                   'Spell Damage': 0,
                   'Health': 0
                 }
-        
         i = 0
         click = False
         statpoints = 20
@@ -579,16 +480,12 @@ class Game():
             if next.collidepoint(mousex,mousey) and click == True:
                
                 pygame.draw.rect(screen, Black,(375,500,100,100))
-                
-               
                 if i == len(charclass)-1:
                     print("this should reach")
                     pygame.draw.rect(screen, Black,(375,500,100,100))
                     screen.blit(textfont.render(charclass[0],True,White),(800,300))
                     i = 0
-
                 else:
-                    
                     screen.blit(textfont.render(charclass[i+1],True,Black),(800,300))
                     i += 1
                 #print(charclass[i])
@@ -596,28 +493,19 @@ class Game():
             if prev.collidepoint(mousex,mousey) and click == True: #if click == true and false the moment the mouse button comes up 
                 #print("reach 2")
                 pygame.draw.rect(screen, Black,(375,500,100,100))
-               
-                
                 if i ==0:
-                  
                         pygame.draw.rect(screen, Black,(375,500,100,100))
                         screen.blit(textfont.render(charclass[i-1],True,White),(800,300))
                         i = len(charclass) -1
                         
                 else:
-                    
                     screen.blit(textfont.render(charclass[i-1],True,Black),(800,300))
                     i -= 1 
                 click = False
             if play.collidepoint(mousex,mousey) and click == True:
                 running = False
-               
                 return charclass[i],stats
-            
-            
-            
-            
-            
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT: # Did the user click the window close button?
                     running = False
@@ -627,20 +515,15 @@ class Game():
                         running = False
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     click = True
-                
-                    
-               
             pygame.display.update()   
     def MainMenu(self):
         click = False
         while running:
-            
             screen.fill(Black) #the colour
             button1 = pygame.draw.rect(screen, White,(900,300,100,100))
             screen.blit(textfont.render("Play", True, Black), (900,300))
             mousex, mousey = pygame.mouse.get_pos()
             if button1.collidepoint(mousex,mousey) and event.type == pygame.MOUSEBUTTONDOWN:
-            
                 #charac = CharacterCreation()
                 self.CharacterCreation()
                 self.RunGame()
@@ -660,22 +543,10 @@ class Game():
                 # if event.type == pygame.MOUSEBUTTONDOWN:
                 #     click = True
                 #     print("click reach")
-               
             pygame.display.update()
     def save():
         pass                
-        
-
     
-    def checkifRoom(self,room,i,j):  
-    #what if i = 1 and j =2?
-        roomstate = room[i][j]
-        new_i = random.randint(0,len(room)-1)
-        new_j = random.randint(0,len(room[0])-1)
-        if roomstate != 'R':
-            return self.checkifRoom(room,new_i,new_j)
-        else:
-            return i,j 
         
 if __name__ == "__main__":
     Main()
