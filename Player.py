@@ -1,5 +1,5 @@
 
-from Attack import Attack
+from Attack import *
 import pygame 
 
 class Player(pygame.sprite.Sprite):  #Player class
@@ -10,7 +10,6 @@ class Player(pygame.sprite.Sprite):  #Player class
         self.image = Player.player_image
         self.rect = self.image.get_rect()
         self.rect.center = (1280/2, 1024/2)
-        #self.vectorposition = pygame.math.Vector2(self.rect.x,self.rect.y)
         self.speed = 3
         self.screenx = screenx
         self.screeny = screeny
@@ -31,7 +30,8 @@ class Player(pygame.sprite.Sprite):  #Player class
     # def Spell(self,charclass,charlist):
     #     thing = Spells()    
     def update(self):  #update function to move player
-
+        
+        
         keypressed = pygame.key.get_pressed()
         if keypressed[pygame.K_s] and self.rect.y < self.screeny:
             self.rect.y += self.speed

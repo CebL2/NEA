@@ -7,17 +7,17 @@
 #Spells 
 #Create self.Map 
 
-import numpy as np
-import pygame, sys, random, os
 
-from pygame.constants import FULLSCREEN
+import pygame, sys, random
 from Enemy import *
 from Attack import *
 from GridGenerator import *
 from Stats import *
 from Obstacles import *
 from Player import *
+from MiniMap import*
 #import pickle
+
 
 pygame.init()
 clock = pygame.time.Clock()
@@ -45,10 +45,10 @@ spawnamount_hard = random.randint(9,12)
 # with open ('test.txt', 'w') as file:
 #     file.write("this is a test")
 #     file.close()
+
 def Main():  #main function to call 
     MainGame = Game()
     MainGame.MainMenu() 
-
 class Hud:  #WIP
     def __init__(self, screenx,screeny):
         pass
@@ -74,13 +74,15 @@ class Rogue:
     def __init__(self):
         pass
 
+
+#         M = pygame.surf
 class Game(): 
     def __init__(self):
         self.screenx = 1920
         self.screeny = 1080
         self.enemies = pygame.sprite.Group()   #preset sprite groups to be used for colllision purposes
         self.playersp = pygame.sprite.Group()
-        self.obstaclegroup = pygame.sprite.Group()
+        #self.obstaclegroup = pygame.sprite.Group()
         self.charclass = 0  #other features that are yet to be implemented
         self.Map = self.GenerateMap()
         self.luck = 0  
@@ -111,10 +113,7 @@ class Game():
         Map = Grid.GenerateEnemyRoom(Rooms) #input is a list, the output is a modified version of the list
         return Map
             
-    def CheckRoom(self):
-        
-        pass
-        
+  
     def RunGame(self):  #runs the game 
 
         roompos = self.checkifRoom(self.Map,self.Roomi,self.Roomj) #and pass it through a function to check whether if its a valid room with no enemies 
@@ -123,7 +122,10 @@ class Game():
             for j,val in enumerate(value):  
                 obs = RoomObstacles(i,j)
                 ObstacleGroup.add(obs)
-        
+        m = pygame.Surface((700,600))
+       
+        ma = MiniMap(m)
+       
         self.Map[roompos[0]][roompos[1]] = "#"  #player symbol
         playerpos = (roompos[0],roompos[1])  #a tuple to represent the player position on the self.Map
         EnemyInRoom = False  #by default, there are no enemies in the room 
@@ -132,7 +134,6 @@ class Game():
         ObstacleToDraw = pygame.sprite.Group()  #a separate group to draw obstacles, the idea is to have a group of obstacles ready to be added to another group to ONLY draw
         #specific obstacles in each room, as each room has a set obstacle assigned to it       
         running = True
-
         while running:
             pygame.mouse.set_visible(False)
             screen.fill(White) 
@@ -146,8 +147,9 @@ class Game():
             else:
                 for obstacle in ObstacleGroup:
                     if obstacle.i == playerpos[0] and obstacle.j == playerpos[1]:
-                        ObstacleToDraw.add(obstacle)  #simple check to see if obstacles are being drawn
-                                   
+                        ObstacleToDraw.add(obstacle)  #simple check to see if obstacles are being drawn    
+            
+            
             ObstacleToDraw.draw(screen) #draws the obstacle
             TopLeft = pygame.draw.rect(screen,Black,(0,0,700,40))    #walls/borders, there are variants of wall as the 'exit' to different rooms will be a separate wall
             TopRight = pygame.draw.rect(screen,Black,(1220,0,700,40))
@@ -157,7 +159,8 @@ class Game():
             LeftDown = pygame.draw.rect(screen, Black, (0,730, 40,350))
             RightUp = pygame.draw.rect(screen, Black, (1880,0,40,350))
             RightDown = pygame.draw.rect(screen, Black, (1880,730,40,350))
-
+            screen.blit(m,(1420,-300))
+            #screen.blit()*
             if LeftUp.colliderect(self.player.rect) or LeftDown.colliderect(self.player.rect):    #these statements make sure that the player does not go through the borders
                 self.player.rect.x = 40
             if RightUp.colliderect(self.player.rect) or RightDown.colliderect(self.player.rect):
@@ -353,9 +356,7 @@ class Game():
             self.playersp.draw(screen)
             self.playersp.update()
             ObstacleToDraw.update()
-            #self.obstaclegroup.draw(screen)
-            #self.obstaclegroup.update()
-            
+            ma.update()            
             for event in pygame.event.get():
                 if event.type == pygame.QUIT: # Did the user click the window close button?
                     running = False
@@ -496,8 +497,7 @@ class Game():
                 if i ==0:
                         pygame.draw.rect(screen, Black,(375,500,100,100))
                         screen.blit(textfont.render(charclass[i-1],True,White),(800,300))
-                        i = len(charclass) -1
-                        
+                        i = len(charclass) -1       
                 else:
                     screen.blit(textfont.render(charclass[i-1],True,Black),(800,300))
                     i -= 1 
@@ -527,12 +527,10 @@ class Game():
                 #charac = CharacterCreation()
                 self.CharacterCreation()
                 self.RunGame()
-                           
             button2 = pygame.draw.rect(screen, Black,(100,100,100,50))
             screen.blit(textfont.render("Options", True, White), (100,100))
             if button2.collidepoint(mousex,mousey) and event.type == pygame.MOUSEBUTTONDOWN:
                 self.option()
-
             for event in pygame.event.get():
                 if event.type == pygame.QUIT: # Did the user click the window close button?
                     pygame.quit()
@@ -540,13 +538,10 @@ class Game():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         pygame.quit()
-                # if event.type == pygame.MOUSEBUTTONDOWN:
-                #     click = True
-                #     print("click reach")
+
             pygame.display.update()
     def save():
         pass                
-    
-        
+           
 if __name__ == "__main__":
     Main()
