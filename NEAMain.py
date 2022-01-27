@@ -82,7 +82,6 @@ class Game():
         self.screeny = 1080
         self.enemies = pygame.sprite.Group()   #preset sprite groups to be used for colllision purposes
         self.playersp = pygame.sprite.Group()
-        #self.obstaclegroup = pygame.sprite.Group()
         self.charclass = 0  #other features that are yet to be implemented
         self.Map = self.GenerateMap()
         self.luck = 0  
@@ -122,8 +121,8 @@ class Game():
             for j,val in enumerate(value):  
                 obs = RoomObstacles(i,j)
                 ObstacleGroup.add(obs)
-        m = pygame.Surface((700,600))
-       
+        m = pygame.Surface((800,300))
+        #m.fill((0,222,0))
         ma = MiniMap(m)
        
         self.Map[roompos[0]][roompos[1]] = "#"  #player symbol
@@ -159,7 +158,7 @@ class Game():
             LeftDown = pygame.draw.rect(screen, Black, (0,730, 40,350))
             RightUp = pygame.draw.rect(screen, Black, (1880,0,40,350))
             RightDown = pygame.draw.rect(screen, Black, (1880,730,40,350))
-            screen.blit(m,(1420,-300))
+            screen.blit(m,(1420,0))
             #screen.blit()*
             if LeftUp.colliderect(self.player.rect) or LeftDown.colliderect(self.player.rect):    #these statements make sure that the player does not go through the borders
                 self.player.rect.x = 40

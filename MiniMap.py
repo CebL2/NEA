@@ -1,19 +1,28 @@
 import pygame
 
+screenx = 1920
+screeny = 1080
+
+screen = pygame.display.set_mode((screenx,screeny),pygame.FULLSCREEN)
 class MiniMap():
     def __init__(self,Grid): 
         self.image = Grid
+        self.inner = pygame.Surface((600,200))
+        self.inner.fill((255,255,255))
         self.rect = self.image.get_rect()
+        self.rect.center = (1420,0)
+       # img = pygame.Rect(1420,0,700,300)
         
-        pygame.draw.rect(self.image,(255,255,255),(1420,-300,400,400))
-        print(self.rect.center)
         
     
     def update(self):
+        screen.blit(self.inner,(1400,50))
         keypressed = pygame.key.get_pressed()
         if keypressed[pygame.K_m]:
+            self.inner.set_alpha(200)
             self.image.set_alpha(200)
         else:
+            self.inner.set_alpha(100)
             self.image.set_alpha(100)
             
     def MapGrid(self):
