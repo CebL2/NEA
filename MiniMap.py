@@ -8,11 +8,11 @@ class MiniMap():
     def __init__(self,Grid): 
         self.image = Grid
         self.inner = pygame.Surface((600,200))
-        self.inner.fill((255,255,255))
+        #self.inner.fill((255,255,255))
         self.rect = self.image.get_rect()
         self.rect.center = (1420,0)
        # img = pygame.Rect(1420,0,700,300)
-        
+        #create a grid within the 
         
     
     def update(self):
@@ -22,7 +22,7 @@ class MiniMap():
             self.inner.set_alpha(200)
             self.image.set_alpha(200)
         else:
-            self.inner.set_alpha(100)
+            self.inner.set_alpha(255)
             self.image.set_alpha(100)
             
     def MapGrid(self):
