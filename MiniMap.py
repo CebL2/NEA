@@ -3,20 +3,21 @@ import pygame
 screenx = 1920
 screeny = 1080
 
-screen = pygame.display.set_mode((screenx,screeny),pygame.FULLSCREEN)
+#the screen has to be passed in through the main function and not a separate variable in this class
 class MiniMap():
-    def __init__(self,Grid): 
+    def __init__(self,Grid,screen): 
         self.image = Grid
-        self.inner = pygame.Surface((600,200))
+        self.inner = pygame.Surface((500,200))
         #self.inner.fill((255,255,255))
         self.rect = self.image.get_rect()
         self.rect.center = (1420,0)
+        self.screen = screen
        # img = pygame.Rect(1420,0,700,300)
         #create a grid within the 
         
     
     def update(self):
-        screen.blit(self.inner,(1400,50))
+        self.screen.blit(self.inner,(1400,50))
         keypressed = pygame.key.get_pressed()
         if keypressed[pygame.K_m]:
             self.inner.set_alpha(200)
