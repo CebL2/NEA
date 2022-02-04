@@ -1,20 +1,28 @@
 import pygame
 
-screenx = 1920
-screeny = 1080
+
 
 #the screen has to be passed in through the main function and not a separate variable in this class
 class MiniMap():
-    def __init__(self,Grid,screen): 
+    def __init__(self,Grid,screen,maplist): 
+        self.map = maplist
         self.image = Grid
+        self.xval = Grid.get_width()
+        self.yval = Grid.get_height()
+        print(self.xval,self.yval)
         self.inner = pygame.Surface((500,200))
         #self.inner.fill((255,255,255))
-        self.rect = self.image.get_rect()
-        self.rect.center = (1420,0)
+        self.rect1 = self.image.get_rect()
+        self.rect1.center = (1420,0)
         self.screen = screen
+        self.rect2 = self.inner.get_rect()
+        #print(self.rect1.center, self.rect2.center)
        # img = pygame.Rect(1420,0,700,300)
         #create a grid within the 
-        
+        # for x, row in enumerate(self.map):
+        #     for y, col in enumerate(row):
+        #         #rect
+    
     
     def update(self):
         self.screen.blit(self.inner,(1400,50))

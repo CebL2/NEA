@@ -1,8 +1,5 @@
 import pygame, random
 
-screenx = 1920
-screeny = 1080
-screen = pygame.display.set_mode((screenx,screeny))
 
 #for every room inside the grid:
     #assign a room obstacle  class to it
@@ -18,7 +15,8 @@ class RoomObstacles(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.i = i
         self.j = j
-
+        amount = random.randint(3,6)
+        #for _ in range(0,amount):
         self.image = pygame.Surface((100,100))
         #self.ObstacleGroup = pygame.sprite.Group()
         self.image.fill((255,0,0))
