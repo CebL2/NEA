@@ -13,7 +13,7 @@ class Attack(pygame.sprite.Sprite):
         self.speed = 10
         self.Direction = Direction
         self.screenx = screenx
-        self.scereny = screeny
+        self.screeny = screeny
         
     
     def update(self):

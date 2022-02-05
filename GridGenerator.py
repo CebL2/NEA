@@ -37,9 +37,9 @@ class GridGenerator:
         return layout
     def Layout(self): #generates the whole map
         Rooms = []
-        for i in range(5):
+        for i in range(10):
             Rooms.append([])
-            for _ in range(7):
+            for _ in range(10):
                 Rooms[i].append(" ")
         RoomsToAdd =  random.randint(15,20)
         randi = random.randint(0, len(Rooms)-1)

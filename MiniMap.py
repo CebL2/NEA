@@ -4,18 +4,24 @@ import pygame
 
 #the screen has to be passed in through the main function and not a separate variable in this class
 class MiniMap():
-    def __init__(self,Grid,screen,maplist): 
+    def __init__(self,screen,maplist): 
         self.map = maplist
-        self.image = Grid
-        self.xval = Grid.get_width()
-        self.yval = Grid.get_height()
-        print(self.xval,self.yval)
-        self.inner = pygame.Surface((500,200))
-        #self.inner.fill((255,255,255))
-        self.rect1 = self.image.get_rect()
-        self.rect1.center = (1420,0)
+        self.image = pygame.Surface((500,400))
+        self.width = 1
+        self.white = (200,200,200)
+        self.Black = (0,0,0)
+        self.xval = self.image.get_width()//len(self.map[0])
+        self.yval = self.image.get_height()//len(self.map)
         self.screen = screen
-        self.rect2 = self.inner.get_rect()
+        print(self.xval,self.yval)
+        #self.rect = pygame.Rect(1400,50,300,300)
+        
+        #self.inner.fill((255,255,255))
+        
+        #self.rect1 = self.image.get_rect()
+        #self.rect1.center = (1420,0)
+        
+       # self.rect2 = self.inner.get_rect()
         #print(self.rect1.center, self.rect2.center)
        # img = pygame.Rect(1420,0,700,300)
         #create a grid within the 
@@ -23,15 +29,27 @@ class MiniMap():
         #     for y, col in enumerate(row):
         #         #rect
     
-    
+    def drawgrid(self):
+        for y, row in enumerate(self.map):
+            for x , col in enumerate(row):
+                #print("erach/")
+                xval = x*self.xval
+                yval = y*self.yval
+                #print(xval,yval)
+                rect = pygame.Rect(1400+xval,50+yval,self.xval-4,self.yval-4)
+                pygame.draw.rect(self.screen,self.Black,rect)
+        #self.inner = pygame.Surface((500,200))
     def update(self):
-        self.screen.blit(self.inner,(1400,50))
+        
+        self.drawgrid()
+        self.screen.blit(self.image,(1400,50))
+       
         keypressed = pygame.key.get_pressed()
         if keypressed[pygame.K_m]:
-            self.inner.set_alpha(200)
+            #self.inner.set_alpha(200)
             self.image.set_alpha(200)
         else:
-            self.inner.set_alpha(255)
+            #self.inner.set_alpha(255)
             self.image.set_alpha(100)
             
     def MapGrid(self):

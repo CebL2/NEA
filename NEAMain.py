@@ -10,7 +10,6 @@
 
 import pygame, sys, random
 from Enemy import *
-from Attack import *
 from GridGenerator import *
 from Stats import *
 from Obstacles import *
@@ -40,7 +39,6 @@ def Main():  #main function to call
         MainGame.MainMenu()
         MainGame.CharacterCreation()
         MainGame.RunGame()
-        print('reach?')
         del MainGame
 
 class Hud:  #WIP
@@ -121,9 +119,9 @@ class Game():
                 for _ in range(0,3):
                     obs = RoomObstacles(i,j)
                     ObstacleGroup.add(obs)
-        m = pygame.Surface((800,300))
+        #m = pygame.Surface((800,300))
         #m.fill((0,222,0))
-        ma = MiniMap(m,screen,self.Map)
+        ma = MiniMap(screen,self.Map)
        
         self.Map[roompos[0]][roompos[1]] = "#"  #player symbol
         playerpos = (roompos[0],roompos[1])  #a tuple to represent the player position on the self.Map
@@ -158,9 +156,10 @@ class Game():
                         ObstacleToDraw.add(obstacle)  #simple check to see if obstacles are being drawn    
             
             
-             #draws the obstacle
+             #draws th*e obstacle
             
-            screen.blit(m,(1420,0))
+            #rect = pygame.Rect(50,500,300,300)
+            #pygame.draw.rect(screen,self.Black, rect)
             #screen.blit()*
             if LeftUp.colliderect(self.player.rect) or LeftDown.colliderect(self.player.rect):    #these statements make sure that the player does not go through the borders
                 self.player.rect.x = 40
@@ -233,7 +232,6 @@ class Game():
                                 self.Map[playerpos[0]-1][playerpos[1]] = '#'
                                 currentpos = playerpos
                                 playerpos = (playerpos[0]-1,playerpos[1])
-                            
                                 for i in self.Map:
                                     print(i)
                     else:
@@ -346,11 +344,7 @@ class Game():
                 
                 if len(playercol) != 0:
                     running = 0
-                    #break
-                    #playercol.clear()
-                #return True
-                    
-                #print("asd")
+                    break
                     
                 if len(self.enemies) == 0: #if the sprite group is enpty, return to normal state 
                     print("No more enemies")
@@ -536,21 +530,20 @@ class Game():
             pygame.display.update()   
     def MainMenu(self):
         running = 1
+        click = 0
         while running:
             pygame.mouse.set_visible(1)
             screen.fill(self.Black) #the colour
             button1 = pygame.draw.rect(screen, self.White,(900,300,100,100))
             screen.blit(self.textfont.render("Play",1, self.Black), (900,300))
             mousex, mousey = pygame.mouse.get_pos()
-            if button1.collidepoint(mousex,mousey) and event.type == pygame.MOUSEBUTTONDOWN:
-                
+            if button1.collidepoint(mousex,mousey) and click  == 1:
+        
                 running = 0
                 return 0
-               
-
             button2 = pygame.draw.rect(screen, self.Black,(100,100,100,50))
             screen.blit(self.textfont.render("Options", 1, self.White), (100,100))
-            if button2.collidepoint(mousex,mousey) and event.type == pygame.MOUSEBUTTONDOWN:
+            if button2.collidepoint(mousex,mousey) and click == 1:
                 self.option()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT: # Did the user click the window close button?
@@ -559,6 +552,10 @@ class Game():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         pygame.quit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    click = 1
+                else:
+                    click = 0
             pygame.display.update()
     def save():
         pass                
