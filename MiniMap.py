@@ -6,14 +6,17 @@ import pygame
 class MiniMap():
     def __init__(self,screen,maplist):   #the screen itself and the map list
         self.map = maplist  
-        self.image = pygame.Surface((500,400))
+        self.image = pygame.Surface((300,150))
+        
         self.width = 1
         self.white = (200,200,200)
         self.Black = (0,0,0)
         self.xval = self.image.get_width()//len(self.map[0])
         self.yval = self.image.get_height()//len(self.map)
+        self.green = (0,255,0)
+        self.uhh = (255,0,255)
         self.screen = screen
-        print(self.xval,self.yval)
+        self.image.fill(self.white)
         #self.rect = pygame.Rect(1400,50,300,300)
         
         #self.inner.fill((255,255,255))
@@ -32,25 +35,30 @@ class MiniMap():
     def drawgrid(self):
         for y, row in enumerate(self.map):
             for x , col in enumerate(row):
-                #print("erach/")
                 xval = x*self.xval
                 yval = y*self.yval
+                
                 #print(xval,yval)
-                rect = pygame.Rect(1400+xval,50+yval,self.xval-4,self.yval-4)
-                pygame.draw.rect(self.screen,self.Black,rect)
-        #self.inner = pygame.Surface((500,200))
+                rect = pygame.Rect(1582.5+xval,39+yval,self.xval-4,self.yval-4)
+                if self.map[y][x] == ' ':
+                    pygame.draw.rect(self.screen,self.Black,rect)
+                elif self.map[y][x] == '#':
+                    pygame.draw.rect(self.screen,self.green,rect)
+                else:
+                    pygame.draw.rect(self.screen,self.uhh,rect)
+        
     def update(self):
         
         self.drawgrid()
-        self.screen.blit(self.image,(1400,50))
+        self.screen.blit(self.image,(1580,39))
        
         keypressed = pygame.key.get_pressed()
         if keypressed[pygame.K_m]:
             #self.inner.set_alpha(200)
-            self.image.set_alpha(200)
+            self.image.set_alpha(100)
         else:
             #self.inner.set_alpha(255)
-            self.image.set_alpha(100)
+            self.image.set_alpha(200)
             
     def MapGrid(self):
         pass

@@ -124,13 +124,13 @@ class Game():
        
         Load = File
         if Load != None:
-            print('reach?')
+          
             self.Map = Load[0]
             playerpos = Load[1]
             currentpos = playerpos
             ma = MiniMap(self._screen,self.Map)
         else:
-            print("or did it reach here")
+            
             Roomi = random.randint(0,len(self.Map)-1) 
             Roomj = random.randint(0,len(self.Map[0])-1)
             roompos = self.checkifRoom(self.Map,Roomi,Roomj) #and pass it through a function to check whether if its a valid room with no enemies 
@@ -212,9 +212,7 @@ class Game():
                                 playerpos = (playerpos[0]+1,playerpos[1]) #then, the player position gets changed accordingly
                                 #print(playerpos)
                                 self.globalpos = (playerpos[0],playerpos[1])
-                                for i in self.Map:  #for convenience, every time the player has moved to a different room the self.Map will be printed out in the terminal, 
-                                                #planning to add a self.Map overlay in the main game 
-                                    print(i)                  
+                                               
                         else: 
                             if DownExit.colliderect(player.rect): #if the adjacent room has no enemies, 
                                 player.rect.x = self._screenx/2 #then similar operations occur apart from the EnemInRoom being modified.
@@ -225,9 +223,7 @@ class Game():
                                 playerpos = (playerpos[0]+1,playerpos[1])
                                 self.globalpos = (playerpos[0],playerpos[1])
                                 #print(playerpos)
-                                for i in self.Map:
-                                    print(i)#for convenience, every time the player has moved to a different room the self.Map will be printed out in the terminal, 
-                                                #planning to add a self.Map overlay in the main game             
+                                            
                     else:
                         DownExit= pygame.draw.rect(self._screen,self._Black,(700,1040,520,40)) #if there is no room available, then draw a self._Black rectangle
                         if DownExit.colliderect(player.rect): #if the player collides into it: 
@@ -250,8 +246,7 @@ class Game():
                                 currentpos = playerpos
                                 playerpos = (playerpos[0]-1,playerpos[1])
                                 self.globalpos = (playerpos[0],playerpos[1])
-                                for i in self.Map:
-                                    print(i)  
+                              
                         else: 
                             if TopExit.colliderect(player.rect): 
                                 player.rect.x = self._screenx/2
@@ -261,8 +256,7 @@ class Game():
                                 currentpos = playerpos
                                 playerpos = (playerpos[0]-1,playerpos[1])
                                 self.globalpos = (playerpos[0],playerpos[1])
-                                for i in self.Map:
-                                    print(i)
+                               
                     else:
                         TopExit= pygame.draw.rect(self._screen,self._Black,(700,0,520,40))
                         if TopExit.colliderect(player.rect):
@@ -284,9 +278,7 @@ class Game():
                                 currentpos = playerpos
                                 playerpos = (playerpos[0],playerpos[1]+1)
                                 self.globalpos = (playerpos[0],playerpos[1])
-                                print(playerpos)
-                                for i in self.Map:
-                                    print(i)     
+                                   
                         else:
                             if RightExit.colliderect(player.rect): 
                                 player.rect.x = 100
@@ -296,9 +288,7 @@ class Game():
                                 currentpos = playerpos
                                 playerpos = (playerpos[0],playerpos[1]+1)
                                 self.globalpos = (playerpos[0],playerpos[1])
-                                print(playerpos)
-                                for i in self.Map:
-                                    print(i)
+                              
                     else:
                         RightExit =  pygame.draw.rect(self._screen, self._Black,(1880,350,40,380))
                         if RightExit.colliderect(player.rect):
@@ -322,9 +312,7 @@ class Game():
                                 currentpos = playerpos
                                 playerpos = (playerpos[0],playerpos[1]-1) 
                                 self.globalpos = (playerpos[0],playerpos[1])
-                                print(playerpos)
-                                for i in self.Map:
-                                    print(i)
+                             
                         else:
                             if LeftExit.colliderect(player.rect):
                                 player.rect.x = self._screenx-100
@@ -334,9 +322,7 @@ class Game():
                                 currentpos = playerpos  
                                 playerpos = (playerpos[0],playerpos[1]-1) 
                                 self.globalpos = (playerpos[0],playerpos[1])
-                                print(playerpos)
-                                for i in self.Map:
-                                    print(i)
+                                
                     else:
                         LeftExit =  pygame.draw.rect(self._screen, self._Black,(0,350,40,380))
                         if LeftExit.colliderect(player.rect):
