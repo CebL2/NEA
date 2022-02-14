@@ -5,17 +5,16 @@ import pygame
 class Attack(pygame.sprite.Sprite):
     projectile =  pygame.Surface((10,10)) #pygame.image.load("spritegroup//projectile.png").convert()
     #projectile.fill(Orange)
-    def __init__(self,x,y,screenx,screeny,Direction):
+    def __init__(self,playerx,playery,screenx,screeny,Direction): #the position of the player, two screen values and the direction of the attack
         pygame.sprite.Sprite.__init__(self)
         self.image = Attack.projectile
         self.rect = self.image.get_rect()
-        self.rect.center = (x,y)
+        self.rect.center = (playerx,playery)
         self.speed = 10
         self.Direction = Direction
         self.screenx = screenx
         self.screeny = screeny
-        
-    
+
     def update(self):
         if self.Direction == 1:
             self.rect.y -= self.speed

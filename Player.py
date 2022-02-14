@@ -5,7 +5,7 @@ import pygame
 class Player(pygame.sprite.Sprite):  #Player class
     player_image = pygame.Surface((50,50)) 
     player_image.fill((0,255,0))
-    def __init__(self,screenx,screeny):      
+    def __init__(self,screenx,screeny):   #screen values are passed in  
         pygame.sprite.Sprite.__init__(self) 
         self.image = Player.player_image
         self.rect = self.image.get_rect()
@@ -57,17 +57,3 @@ class Player(pygame.sprite.Sprite):  #Player class
         projectiledown = Attack(self.rect.centerx,self.rect.centery+100,self.screenx,self.screeny,4)
         self.projectilegroup.add(projectiledown)
         
-
-# def characterCreation():
-#     while running:
-#         screen.fill(White)
-#         screen.blit(textfont.render("Choose your class"))
-#         right = pygame.draw.rect(screen, Black,(300,300,100,100))
-#         c = textfont.render("Warrior", True, White), (50,50)
-#         screen.blit(c)
-#         mousex, mousey = pygame.mouse.get_pos()
-#         if right.collidepoint(mousex,mousey):
-#             c = textfont.render("Mage",True,White),(50,50)
-#             screen.blit(c,(50,50))
-#         if right.collidepoint(mousex,mousey):
-#             c = textfont.render("Warrior",True,White)    

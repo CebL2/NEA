@@ -4,8 +4,8 @@ import pygame
 
 #the screen has to be passed in through the main function and not a separate variable in this class
 class MiniMap():
-    def __init__(self,screen,maplist): 
-        self.map = maplist
+    def __init__(self,screen,maplist):   #the screen itself and the map list
+        self.map = maplist  
         self.image = pygame.Surface((500,400))
         self.width = 1
         self.white = (200,200,200)

@@ -85,12 +85,9 @@ class GridGenerator:
             RoomDirection = np.random.choice(directions,p=[probup,probdown,probleft,probright]) #chooses a random direction, 
             if not self.isBorder(i, len(Rooms)-1,j,len(Rooms[0])-1):
                 #not border
-                
                 #check every direction:
                 #if a direction has a room
                 #kill the possibility of that room being selected
-                
-                
                 if RoomDirection == 'up' and Rooms[i-1][j] == "R":   #checks for each direction to see whether if there is already a room or not 
                     i-= 1
                     upcount +=1
