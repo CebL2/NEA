@@ -134,15 +134,14 @@ class Game():
             Roomi = random.randint(0,len(self.Map)-1) 
             Roomj = random.randint(0,len(self.Map[0])-1)
             roompos = self.checkifRoom(self.Map,Roomi,Roomj) #and pass it through a function to check whether if its a valid room with no enemies 
-            
-            #m = pygame.Surface((800,300))
-            #m.fill((0,222,0))
-            ma = MiniMap(self._screen,self.Map)
-        
             self.Map[roompos[0]][roompos[1]] = "#"  #player symbol
             playerpos = (roompos[0],roompos[1])  #a tuple to represent the player position on the self.Map
-             #by default, there are no enemies in the room 
+            #by default, there are no enemies in the room 
             currentpos = playerpos
+           
+            ma = MiniMap(self._screen,self.Map)
+        
+            
             self.globalpos = (playerpos[0],playerpos[1])
              #preset values to check how many times has the enemy spaned
            #a separate group to draw obstacles, the idea is to have a group of obstacles ready to be added to another group to ONLY draw
@@ -376,7 +375,7 @@ class Game():
             self.playersp.update()
             ObstacleToDraw.draw(self._screen)
             ObstacleToDraw.update()
-            ma.update()            
+            ma.update(playerpos[0],playerpos[1])            
             for event in pygame.event.get():
                 if event.type == pygame.QUIT: # Did the user click the window close button?
                     running = 0

@@ -1,7 +1,5 @@
 import pygame
 
-
-
 #the screen has to be passed in through the main function and not a separate variable in this class
 class MiniMap():
     def __init__(self,screen,maplist):   #the screen itself and the map list
@@ -14,9 +12,14 @@ class MiniMap():
         self.xval = self.image.get_width()//len(self.map[0])
         self.yval = self.image.get_height()//len(self.map)
         self.green = (0,255,0)
-        self.uhh = (255,0,255)
+        
+        self.gray = (220,220,220)
+        self.blue = (0,0,255)
+       
         self.screen = screen
         self.image.fill(self.white)
+        self.traversedlist = self.traversed()
+        
         #self.rect = pygame.Rect(1400,50,300,300)
         
         #self.inner.fill((255,255,255))
@@ -31,37 +34,53 @@ class MiniMap():
         # for x, row in enumerate(self.map):
         #     for y, col in enumerate(row):
         #         #rect
-    
-    def drawgrid(self):
+    def traversed(self):
+        traversedlist = []
+        for i in range(0,len(self.map)):
+            traversedlist.append([])
+            for _ in range(0,len(self.map[0])):
+                traversedlist[i].append(0)
+        return traversedlist
+       
+    def drawgrid(self,posx,posy):
+        
         for y, row in enumerate(self.map):
             for x , col in enumerate(row):
+                
                 xval = x*self.xval
                 yval = y*self.yval
-                
+                if y == posx and x == posy:
+                    self.traversedlist[y][x] = 1
                 #print(xval,yval)
+                
                 rect = pygame.Rect(1582.5+xval,39+yval,self.xval-4,self.yval-4)
                 if self.map[y][x] == ' ':
                     pygame.draw.rect(self.screen,self.Black,rect)
                 elif self.map[y][x] == '#':
-                    pygame.draw.rect(self.screen,self.green,rect)
+                    
+                        pygame.draw.rect(self.screen,self.green,rect)
+                    
                 else:
-                    pygame.draw.rect(self.screen,self.uhh,rect)
+                    if self.traversedlist[y][x] >0:
+                        pygame.draw.rect(self.screen,self.blue,rect)
+                    
+                    else:
+                        pygame.draw.rect(self.screen,self.gray,rect)
         
-    def update(self):
+    def update(self,x,y):
         
-        self.drawgrid()
+        self.drawgrid(x,y)
         self.screen.blit(self.image,(1580,39))
        
         keypressed = pygame.key.get_pressed()
         if keypressed[pygame.K_m]:
             #self.inner.set_alpha(200)
+            
             self.image.set_alpha(100)
         else:
             #self.inner.set_alpha(255)
             self.image.set_alpha(200)
-            
-    def MapGrid(self):
-        pass
+ 
 #         M = pygame.surface(500,300)
 #         rows = len(self.Map)-1
 #         cols = len(self.Map[0])-1
