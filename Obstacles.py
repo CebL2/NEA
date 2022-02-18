@@ -14,6 +14,8 @@ class RoomObstacles(pygame.sprite.Sprite):
         self.image.fill((255,0,0))
         self.rect = self.image.get_rect()
         self.rect.center = ((random.randint(500,1000),(random.randint(500,1000))))  
+
+        
         #self.rect.center = (300,500)
     
     

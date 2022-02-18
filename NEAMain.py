@@ -19,7 +19,7 @@ import pickle
 
 
 pygame.init()
-
+WIDTH, HEIGHT = 1920, 1080
 
 
 
@@ -34,11 +34,12 @@ pygame.init()
 #     file.close()
 
 def Main():  #main function to call 
+    
     while 1:
         
-  
-        #print(ab)
+        print("outside reach 1")
         MainGame = Game()
+        print("outside reach 2")
         MainGame.MainMenu()
         del MainGame
 
@@ -71,13 +72,13 @@ class Rogue:
 #         M = pygame.surf
 class Game(): 
     def __init__(self):
-        self._screen = pygame.display.set_mode((1920,1080),pygame.FULLSCREEN)
+        self._screen = pygame.display.set_mode((WIDTH,HEIGHT),pygame.FULLSCREEN)
         self._White = (255,255,255) #preset values for colour and resolution
         self._Black = (0,0,0)
         self._screenx = 1920
         self._screeny = 1080
         self._textfont = pygame.font.Font(r'C:\Windows\Fonts\georgia.ttf', 50 ) 
-        self.clock = pygame.time.Clock()
+        self._clock = pygame.time.Clock()
 
         self.enemies = pygame.sprite.Group()   #preset sprite groups to be used for colllision purposes
         self.playersp = pygame.sprite.Group()
@@ -86,12 +87,11 @@ class Game():
         self.luck = 0  
         self.badluck = 0 
         self.enemystate = 0
-        self.Map = self.GenerateMap()
+        self.Map = None
         self.globalpos = None
         self.border_gap = 0
         #adds the player sprite to the the group 
 
-        
     def checkifRoom(self,room,i,j): #checks whether if a element in the self.Map/list is a room
         roomstate = room[i][j]
         new_i = random.randint(0,len(room)-1)
@@ -124,13 +124,12 @@ class Game():
        
         Load = File
         if Load != None:
-          
             self.Map = Load[0]
             playerpos = Load[1]
             currentpos = playerpos
             ma = MiniMap(self._screen,self.Map)
         else:
-            
+            self.Map = self.GenerateMap()
             Roomi = random.randint(0,len(self.Map)-1) 
             Roomj = random.randint(0,len(self.Map[0])-1)
             roompos = self.checkifRoom(self.Map,Roomi,Roomj) #and pass it through a function to check whether if its a valid room with no enemies 
@@ -157,8 +156,11 @@ class Game():
         TimesSpawned = 0 
         EnemyInRoom = 0
         running = 1
+        for i in self.Map:
+            print(i)
         while running:
-            self.clock.tick(120)
+            #print(player.rect.x)
+            self._clock.tick(120)
             pygame.mouse.set_visible(0)
             self._screen.fill(self._White) 
             TopLeft = pygame.draw.rect(self._screen,self._Black,(0,0,700,40))    #walls/borders, there are variants of wall as the 'exit' to different rooms will be a separate wall
@@ -168,7 +170,7 @@ class Game():
             LeftUp = pygame.draw.rect(self._screen, self._Black, (0,0, 40,350))
             LeftDown = pygame.draw.rect(self._screen, self._Black, (0,730, 40,350))
             RightUp = pygame.draw.rect(self._screen, self._Black, (1880,0,40,350))
-            RightDown = pygame.draw.rect(self._screen, self._Black, (1880,730,40,350))
+            RightDown = pygame.draw.rect(self._screen, self._Black,  (1880,730,40,350))
             #check which position is it currently
             if currentpos != playerpos:
                 ObstacleToDraw.empty()
@@ -182,7 +184,20 @@ class Game():
             
             
              #draws th*e obstacle
-            
+            for obs in ObstacleToDraw:
+              
+                if obs.rect.colliderect(player.rect):
+                    print(player.rect.x)
+                    print("serp")
+                    print(player.rect.left)
+                    # print(obs.rect.left,obs.rect.top)
+                    # print(player.rect.x,player.rect.y)
+                    if player.rect.x+player.rect.width == obs.rect.x:
+                        player.rect.x = obs.rect.left- player.rect.width
+                    # print(obs.rect.x)
+                    # print("sepr")
+                    # print(obs.rect.left)
+                    #player.rect.y+=0 
             #rect = pygame.Rect(50,500,300,300)
             #pygame.draw.rect(self._screen,self._Black, rect)
             #self._screen.blit()*
@@ -554,6 +569,7 @@ class Game():
     def MainMenu(self):
         running = 1
         click = 0
+        print("reach")
         while running:
             pygame.mouse.set_visible(1)
             self._screen.fill(self._Black) #the colour

@@ -15,7 +15,7 @@ class MiniMap():
         
         self.gray = (220,220,220)
         self.blue = (0,0,255)
-       
+        self.red = (255,0,0)
         self.screen = screen
         self.image.fill(self.white)
         self.traversedlist = self.traversed()
@@ -59,6 +59,9 @@ class MiniMap():
                 elif self.map[y][x] == '#':
                     
                         pygame.draw.rect(self.screen,self.green,rect)
+                elif self.map[y][x] == 'B':
+                    
+                        pygame.draw.rect(self.screen,self.red,rect)
                     
                 else:
                     if self.traversedlist[y][x] >0:
