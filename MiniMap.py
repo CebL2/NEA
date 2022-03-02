@@ -14,7 +14,7 @@ class MiniMap():
         self.green = (0,255,0)
         
         self.gray = (220,220,220)
-        self.blue = (0,0,255)
+        self.yellow =(255,255,0)
         self.red = (255,0,0)
         self.screen = screen
         self.image.fill(self.white)
@@ -43,7 +43,10 @@ class MiniMap():
         return traversedlist
        
     def drawgrid(self,posx,posy):
-        
+        distancei=0
+        distancej=0
+        new = {}
+        indexing =0 
         for y, row in enumerate(self.map):
             for x , col in enumerate(row):
                 
@@ -52,8 +55,15 @@ class MiniMap():
                 if y == posx and x == posy:
                     self.traversedlist[y][x] = 1
                 #print(xval,yval)
+                # if indexing >3:
+                #     indexing =0
+                
                 
                 rect = pygame.Rect(1582.5+xval,39+yval,self.xval-4,self.yval-4)
+                pygame.draw.rect(self.screen,self.Black,rect)
+                distancei = posy - y
+                distancej = posx - x
+                
                 if self.map[y][x] == ' ':
                     pygame.draw.rect(self.screen,self.Black,rect)
                 elif self.map[y][x] == '#':
@@ -65,10 +75,46 @@ class MiniMap():
                     
                 else:
                     if self.traversedlist[y][x] >0:
-                        pygame.draw.rect(self.screen,self.blue,rect)
+                        pygame.draw.rect(self.screen,self.yellow,rect)
                     
                     else:
                         pygame.draw.rect(self.screen,self.gray,rect)
+                    
+                    
+                
+                    
+                
+                    #if the distance between the list indexes is one
+                    #show room on map
+                    #other wise,treat as if no room (black)
+        #print(new)            
+    # def drawgrid(self,posx,posy):
+        
+    #     for y, row in enumerate(self.map):
+    #         for x , col in enumerate(row):
+                
+    #             xval = x*self.xval
+    #             yval = y*self.yval
+    #             if y == posx and x == posy:
+    #                 self.traversedlist[y][x] = 1
+    #             #print(xval,yval)
+                
+    #             rect = pygame.Rect(1582.5+xval,39+yval,self.xval-4,self.yval-4)
+    #             if self.map[y][x] == ' ':
+    #                 pygame.draw.rect(self.screen,self.Black,rect)
+    #             elif self.map[y][x] == '#':
+                    
+    #                     pygame.draw.rect(self.screen,self.green,rect)
+    #             elif self.map[y][x] == 'B':
+                    
+    #                     pygame.draw.rect(self.screen,self.red,rect)
+                    
+    #             else:
+    #                 if self.traversedlist[y][x] >0:
+    #                     pygame.draw.rect(self.screen,self.yellow,rect)
+                    
+    #                 else:
+    #                     pygame.draw.rect(self.screen,self.gray,rect)
         
     def update(self,x,y):
         
