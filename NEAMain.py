@@ -15,6 +15,7 @@ from Stats import *
 from Obstacles import *
 from Player import *
 from MiniMap import*
+from Hud import*
 import pickle
 
 
@@ -88,12 +89,18 @@ class Game():
         self.traversed = None
         #adds the player sprite to the the group 
 
-    def checkifRoom(self,room,i,j): #checks whether if a element in the self.Map/list is a room
+    def checkifRoom(self,room,i,j,limit): #checks whether if a element in the self.Map/list is a room
+        limit+=1
+        if limit >100:
+            for row in range(0,len(room)-1):
+                for col in range(0,len(room[0])):
+                    if room[row][col] == 'R':
+                        return row,col
         roomstate = room[i][j]
         new_i = random.randint(0,len(room)-1)
         new_j = random.randint(0,len(room[0])-1)
         if roomstate != 'R': #if the roomstate isn't R (i.e its E or B)
-            return self.checkifRoom(room,new_i,new_j) #recurssive call the function to check again
+            return self.checkifRoom(room,new_i,new_j,limit) #recurssive call the function to check again
         else:
             return i,j 
     def GenerateMap(self):  #calls a class imported from a separate file to generate grid
@@ -155,7 +162,7 @@ class Game():
             self.Map = self.GenerateMap()
             Roomi = random.randint(0,len(self.Map)-1) 
             Roomj = random.randint(0,len(self.Map[0])-1)
-            roompos = self.checkifRoom(self.Map,Roomi,Roomj) #and pass it through a function to check whether if its a valid room with no enemies 
+            roompos = self.checkifRoom(self.Map,Roomi,Roomj,0) #and pass it through a function to check whether if its a valid room with no enemies 
             self.Map[roompos[0]][roompos[1]] = "#"  #player symbol
             playerpos = (roompos[0],roompos[1])  #a tuple to represent the player position on the self.Map
             #by default, there are no enemies in the room 
@@ -188,6 +195,7 @@ class Game():
         iFrames_time = pygame.USEREVENT+0
         iFrames= pygame.event.Event(iFrames_time)
         check = 0
+        GameHud = Hud(self._screen)
         #t = time()
         while running:  
             self._clock.tick(60)
@@ -210,6 +218,7 @@ class Game():
             LeftDown = pygame.draw.rect(self._screen, self._Black, (0,730, 40,350))
             RightUp = pygame.draw.rect(self._screen, self._Black, (1880,0,40,350))
             RightDown = pygame.draw.rect(self._screen, self._Black,  (1880,730,40,350))
+            
             
             #check which position is it currently
             if currentpos != playerpos:
@@ -445,6 +454,8 @@ class Game():
                     LeftExit =  pygame.draw.rect(self._screen, self._Black,(0,350,40,380))
                     if LeftExit.colliderect(self.player.rect):
                         self.player.rect.x = 40
+                if BossDefeated != 0:
+                    pass
             else: #if EnemyInRoom is 1:
                 
                 if not isBoss:
@@ -485,11 +496,17 @@ class Game():
                 playercol = pygame.sprite.spritecollide(self.player, self.enemies, 0)
                 #print(self.player.state)
                 if len(playercol)!=0 and self.player.state == 1:
-                   
-                    newtime = runningtime +2000
-                    pygame.event.post(iFrames)
-                    check = 1
-                    
+                   GameHud.health -=1
+                   if GameHud.health >0:
+                        
+                        #print(GameHud.health)
+                        newtime = runningtime +2000
+                        pygame.event.post(iFrames)
+                        check = 1
+                        #GameHud.Health(self._Red,self._Red,Self._)   
+                   else:
+                       running = 0
+                       break               
                     
                 
                 if check == 1 and newtime< runningtime:
@@ -500,17 +517,7 @@ class Game():
                     #pygame.time.set_timer(iFrames,2000,1)
                     
                 #aight maybe i still need o tr use pygame.time BUT ITS SO BAD AAAAAAAAAAAA
-                
-                    # print('runtime is ' +str(runningtime))
-                    
-                    # #we gon use threading
-                    # #SO MANUY LIMITATIONS
-                    # while runningtime < runningtime+2000:
-                    #     print('reach')
-                    #     self.player.playerstate == 0
-                    #     self.playerplayer_image.fill((0,255,0))
-
-
+              
                         
 
                         
@@ -541,10 +548,12 @@ class Game():
             # health-_2 =pygame.draw.rect(self._screen,self._Red,(100,0,80,50))
             # health_3 =pygame.draw.rect(self._screen,self._Red,(200,0,80,50))
                     
-                if len(self.enemies) == 0: #if the sprite group is enpty, return to normal state 
-                    print("No more enemies")
+                if len(self.enemies) == 0 and not IsBoss: #if the sprite group is enpty, return to normal state 
                     TimesSpawned = 0
                     EnemyInRoom = 0 
+                elif len(self.enemies) == 0 and  IsBoss:
+                    TimesSpawned = 0
+                    
                 self.enemies.draw(self._screen)
                 self.enemies.update(self.player.rect.x,self.player.rect.y) #player positions are passed into the update function for the enemy to move towards the player
             self.player.projectilegroup.draw(self._screen)
@@ -554,7 +563,7 @@ class Game():
             ObstacleToDraw.draw(self._screen)
             ObstacleToDraw.update()
             ma.update(playerpos[0],playerpos[1]) 
-            
+            GameHud.update()
             
             for event in pygame.event.get():
                 if event.type == pygame.QUIT: # Did the user click the window close button?
@@ -565,8 +574,6 @@ class Game():
                     if newtime > runningtime:
                         self.player.player_image.fill((0,0,255))
                         self.player.state = 0
-                  
-
                     
                 if event.type == pygame.KEYDOWN: 
                     if event.key == pygame.K_ESCAPE: #one time events

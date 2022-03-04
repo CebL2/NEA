@@ -50,6 +50,8 @@ class MiniMap():
         distancej=0
         new = {}
         indexing =0 
+        
+        #(1,0), (-1,0),  (0,1), (0,-1)
         for y, row in enumerate(self.map):
             for x , col in enumerate(row):
                 
@@ -75,7 +77,6 @@ class MiniMap():
                 elif self.map[y][x] == 'B':
                     
                         pygame.draw.rect(self.screen,self.red,rect)
-                    
                 else:
                     if self.traversedlist[y][x] >0:
                         pygame.draw.rect(self.screen,self.yellow,rect)
