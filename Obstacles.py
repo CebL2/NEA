@@ -8,17 +8,12 @@ class RoomObstacles(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.i = i
         self.j = j
-        #self.amount = amount
-        
-        # self.xsize = xsize
-        # self.ysize = ysize
-        # self.xcenter = xcenter
-        # self.ycenter =ycenter
+
         if xsize == None:
             self.xsize = random.randint(200,600)
-            self.ysize= random.randint(200,800)
-            self.xcenter=random.randint(500,1000)
-            self.ycenter= random.randint(500,1000)
+            self.ysize= random.randint(200,400)
+            self.xcenter=random.randint(500,800)
+            self.ycenter= random.randint(500,800)
         else:
             self.xsize = xsize
             self.ysize= ysize

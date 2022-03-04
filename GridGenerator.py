@@ -4,8 +4,8 @@ import numpy as np
 
 #loops=0
 class GridGenerator: 
-    def __init__(self):
-        pass
+    def __init__(self, rooms):
+        self.rooms = rooms
     def isBorder(self,i, i_length, j, j_length): #checks if the list element is on the border
         if i == 0 or i == i_length or j== 0 or j == j_length:
             return True
@@ -14,12 +14,9 @@ class GridGenerator:
         if i == 0 and j == 0 or i == 0 and j == j_length or i == i_length and j == 0 or i == i_length and j == j_length: #checks if the list element is on the corner
             return True 
     def GenerateEnemyRoom(self,layout):
-      
         BossToAdd = 1
         for i in range(0,len(layout)-1):
-            #print('row iter')
             for j in range(0,len(layout[0])):
-                #print('inside iter')
                 if layout[i][j] == 'R':
                     chance = [0,1]
                     decision = np.random.choice(chance,p=[0.3,0.7])
@@ -27,20 +24,16 @@ class GridGenerator:
                         layout[i][j] = 'E'
         
         while BossToAdd>0:#heuristic approach
-
+            for i in layout:
+                print(i)
+            
             for i in range(0,len(layout)-1):
-               
-                for j in range(0,i):
-                    
+                for j in range(0,len(layout[0])): 
                     if layout[i][j] == 'E':
-                        chance = [0,1]
-                        decision = np.random.choice(chance,p=[0.2,0.8])
-                        if decision == 1:
-                            
-                            layout[i][j] = 'B'
-                            BossToAdd -= 1
-                            print(layout)
-                            return layout
+                        layout[i][j] = 'B'
+                        BossToAdd -= 1
+                        
+                        return layout
                             
             
     def Layout(self): #generates the whole map
@@ -51,7 +44,7 @@ class GridGenerator:
             Rooms.append([])
             for _ in range(10):
                 Rooms[i].append(" ")
-        RoomsToAdd =  random.randint(20,50)
+        RoomsToAdd =  self.rooms
         randi = random.randint(0, len(Rooms)-1)
         randj = random.randint(0, len(Rooms[0])-1)
         Rooms[randi][randj] = "R"
@@ -300,7 +293,5 @@ class GridGenerator:
                                         
             RoomsToAdd -= 1
             loops+=1
-            
-        for i in Rooms:
-            print(i)
+
         return Rooms

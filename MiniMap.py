@@ -2,7 +2,7 @@ import pygame
 
 #the screen has to be passed in through the main function and not a separate variable in this class
 class MiniMap():
-    def __init__(self,screen,maplist):   #the screen itself and the map list
+    def __init__(self,screen,maplist,traversed=None):   #the screen itself and the map list
         self.map = maplist  
         self.image = pygame.Surface((300,150))
         
@@ -18,7 +18,10 @@ class MiniMap():
         self.red = (255,0,0)
         self.screen = screen
         self.image.fill(self.white)
-        self.traversedlist = self.traversed()
+        if traversed == None:
+            self.traversedlist = self.traversed()
+        else:
+            self.traversedlist = traversed
         
         #self.rect = pygame.Rect(1400,50,300,300)
         

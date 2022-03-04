@@ -10,7 +10,12 @@ class Player(pygame.sprite.Sprite):  #Player class
         self.image = Player.player_image
         self.rect = self.image.get_rect()
         self.rect.center = (screenx/2, screeny/2)
-        self.speed = 10 
+        self.state = 1
+        self.upspeed = 5
+        self.downspeed = 5
+        self.rightspeed = 5
+        self.leftspeed = 5
+        
         self.screenx = screenx
         self.screeny = screeny
         self.gap = 0 
@@ -30,16 +35,16 @@ class Player(pygame.sprite.Sprite):  #Player class
     # def Spell(self,charclass,charlist):
     #     thing = Spells()    
     def update(self):  #update function to move player
-    
         keypressed = pygame.key.get_pressed()
+        
         if keypressed[pygame.K_s] and self.rect.y < self.screeny:
-            self.rect.y += self.speed
+            self.rect.y += self.downspeed
         if keypressed[pygame.K_w] and self.rect.y > 0:
-            self.rect.y  -= self.speed
+            self.rect.y  -= self.upspeed
         if keypressed[pygame.K_a] and self.rect.x > 0:
-            self.rect.x -= self.speed
+            self.rect.x -= self.leftspeed
         if keypressed[pygame.K_d] and self.rect.x <  self.screenx:
-            self.rect.x += self.speed
+            self.rect.x += self.rightspeed
       
     def Attackup(self):  #attack functions for projectiles
         projectileup = Attack(self.rect.centerx,self.rect.centery-100,self.screenx,self.screeny,1)

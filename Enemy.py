@@ -23,17 +23,15 @@ class Enemy(pygame.sprite.Sprite):
         #print(xdist,ydist)
         if xdist > 0:
             self.rect.x-=1
-            #self.rect.y-=1
-            #self.FollowPlayerpos(x,y)
-        elif xdist <0 :#and ydist>0:
+            
+        elif xdist <0 :
             self.rect.x+=1
-            #self.rect.y-=1
-           # self.FollowPlayerpos(x,y)
+            
         elif  ydist>0:
-            #self.rect.x-=1
+           
             self.rect.y-=1
-            #self.FollowPlayerpos(x,y)
+           
         elif  ydist<0:
-          #  self.rect.x +=1
+         
             self.rect.y +=1
 
