@@ -11,6 +11,8 @@ class Enemy(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = ((random.randint(0,1280),(random.randint(0,1024))))   
         self.health = 2
+        self.difficulty = 1
+        self.bosshealth = 10
         self.speed = 10
     def killSprite(self): 
         if self.health == 0:

@@ -10,6 +10,9 @@ class Player(pygame.sprite.Sprite):  #Player class
         self.image = Player.player_image
         self.rect = self.image.get_rect()
         self.rect.center = (screenx/2, screeny/2)
+        print(self.rect.center)
+        print(self.rect.x,self.rect.y)
+        print(self.rect.topleft)
         self.state = 1
         self.upspeed = 5
         self.downspeed = 5

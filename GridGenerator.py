@@ -24,9 +24,7 @@ class GridGenerator:
                         layout[i][j] = 'E'
         
         while BossToAdd>0:#heuristic approach
-            for i in layout:
-                print(i)
-            
+          
             for i in range(0,len(layout)-1):
                 for j in range(0,len(layout[0])): 
                     if layout[i][j] == 'E':

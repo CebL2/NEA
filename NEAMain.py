@@ -180,10 +180,10 @@ class Game():
              #obstacle group to be used to draw obstacles in every room 
             for i,value in enumerate(self.Map):  #iterates the entire self.Map to add a separate obstacle, still improving
                 for j,val in enumerate(value):  
-                    randomobs = random.randint(1,4)
-                    for _ in range(0,randomobs):
-                        obs = RoomObstacles(i,j)
-                        self.ObstacleGroup.add(obs)
+                    #randomobs = random.randint(1,4)
+                    #for _ in range(0,1):
+                    obs = RoomObstacles(i,j)
+                    self.ObstacleGroup.add(obs)
         ObstacleToDraw = pygame.sprite.Group()  
         TimesSpawned = 0 
         EnemyInRoom = 0
@@ -238,25 +238,111 @@ class Game():
                 # abs(self.player.rect.top - obs.rect.bottom)  <3
                 # #if self.player.rect.colliderect(obs.rect):
                 if self.player.rect.colliderect(obs.rect):  #colliderect  = true
-                    #if collid right side of obs, player cant move left
-                    if keypressed[pygame.K_w]:
-                        self.playerupspeed =0
-                        self.player.rect.y = obs.rect.bottom
+                    print(self.player.rect.y, obs.rect.y)
+                    print(self.player.rect.y, obs.rect.y+obs.ysize)
+                    if self.player.rect.y+45 > obs.rect.y and self.player.rect.y+10 < obs.rect.y+obs.ysize: #and self.player.rect.y <= obs.rect.y+obs.ysize:
+                        if obs.rect.collidepoint(self.player.rect.x,self.player.rect.y) or obs.rect.collidepoint(self.player.rect.x,self.player.rect.y+50):
+                            self.player.rect.x = obs.rect.x+obs.xsize
+                        elif obs.rect.collidepoint(self.player.rect.x+50,self.player.rect.y) or obs.rect.collidepoint(self.player.rect.x+50,self.player.rect.y+50):
+                            self.player.rect.x= obs.rect.x-50
+                    else:
+                        if obs.rect.collidepoint(self.player.rect.x,self.player.rect.y+50) or obs.rect.collidepoint(self.player.rect.x+50,self.player.rect.y+50):
+                            self.player.rect.y = obs.rect.y-50
+                        elif  obs.rect.collidepoint(self.player.rect.x,self.player.rect.y) or obs.rect.collidepoint(self.player.rect.x+50,self.player.rect.y):
+                            self.player.rect.y = obs.rect.y+obs.ysize
                         
-                    elif keypressed[pygame.K_s]:
-                        self.playerdownspeed = 0
-                        self.player.rect.y = obs.rect.top-51
+                    #player rect x and rect y is the TOPLEFT of the square
+                    
+                    # if obs.rect.collidepoint(self.player.rect.x,self.player.rect.y+50) or obs.rect.collidepoint(self.player.rect.x+50,self.player.rect.y+50) or obs.rect.collidepoint(self.player.rect.x,self.player.rect.y) or obs.rect.collidepoint(self.player.rect.x+50,self.player.rect.y):   #this checks whether if any of the points collide with the obs.rect
+                    #     if self.player.rect.y+45 > obs.rect.y and self.player.rect.y < obs.rect.y+obs.ysize: #and self.player.rect.y <= obs.rect.y+obs.ysize:
+                            
+                    #         if obs.rect.collidepoint(self.player.rect.x,self.player.rect.y) or obs.rect.collidepoint(self.player.rect.x,self.player.rect.y+50):
+                           
+                    #             self.player.rect.x = obs.rect.x+obs.xsize
+                    #         elif obs.rect.collidepoint(self.player.rect.x+50,self.player.rect.y) or obs.rect.collidepoint(self.player.rect.x+50,self.player.rect.y+50):
+                    #             self.player.rect.x  = obs.rect.x-50
+                    #    # if self.player.rect.y < obs.rect.y+obs.ysize:
+                    #     else:
+                    #         self.player.rect.y = obs.rect.y-50
+                            
+                        
+                    # elif obs.rect.collidepoint(self.player.rect.x,self.player.rect.y) or obs.rect.collidepoint(self.player.rect.x+50,self.player.rect.y):
+                    #     if self.player.rect.y+45 > obs.rect.y:
+                    #         if obs.rect.collidepoint(self.player.rect.x,self.player.rect.y) or obs.rect.collidepoint(self.player.rect.x,self.player.rect.y+50):
+                           
+                    #             self.player.rect.x = obs.rect.x+obs.xsize
+                    #         elif obs.rect.collidepoint(self.player.rect.x+50,self.player.rect.y) or obs.rect.collidepoint(self.player.rect.x+50,self.player.rect.y+50):
+                    #             self.player.rect.x  = obs.rect.x-50
+                    #     self.player.rect.y = obs.rect.y+obs.ysize
+                    # # elif obs.rect.collidepoint(self.player.rect.x,self.player.rect.y) or obs.rect.collidepoint(self.player.rect.x+50,self.player.rect.y):   #this checks whether if any of the points collide with the obs.rect
+                    # #     if self.player.rect.y < obs.rect.y+obs.ysize:
+                    #         if obs.rect.collidepoint(self.player.rect.x,self.player.rect.y):
+                                
+                    #             self.player.rect.x = obs.rect.x+obs.xsize
+                    #         else:
+                    #             self.player.rect.x  = obs.rect.x-50
+                    #     else:
+                    #         self.player.rect.y = obs.rect.y+obs.ysize
+                                
+                            
+                        # else:
+                        #     self.player.rect.y = obs.rect.y+obs.ysize
+                           
+                       #->  ###
+                            ###
+                        
+                    #                             #print()
+                    # elif obs.rect.collidepoint(self.player.rect.x,self.player.rect.y) or obs.rect.collidepoint(self.player.rect.x+50,self.player.rect.y):
+                    #     self.player.rect.y = obs.rect.y+obs.ysize
+                    
+                    # elif obs.rect.collidepoint(self.player.rect.x+50,self.player.rect.y) or obs.rect.collidepoint(self.player.rect.x+50,self.player.rect.y+50):
+                    #     self.player.rect.x = obs.rect.x-50
+                        
+                   # elif obs.rect.collidepoint(self.player.rect.x,self.player.rect.y):
+                    
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                                     
+                                                
+                                                
+                    #elif obs.rect.collidepoint()
+                    # elif obs.rect.collidepoint(self.player.rect.x,self.player.rect.y):
+                    #     #AIGHT THIS IS IT WE DID IT 
+                    #     self.player.rect.y = obs.rect.y+obs.ysize
+                    # elif obs.rect.collidepoint(self.player.rect.x+50,self.player.rect.y):
+                    #     self.player.rect.x = obs.rect.x-50
+                    # elif obs.rect.collidepoint(self.player.rect.x,self.player.rect.y):
+                    #     self.player.rect.x = obs.rect.x+obs.xsize
+                        
+                        
+                        
+                    # if collid right side of obs, player cant move left
+                    # if keypressed[pygame.K_w]:
+                    #     self.playerupspeed =0()
+                    #     self.player.rect.y = obs.rect.y
+                        
+                    # elif keypressed[pygame.K_s]:
+                    #     self.playerdownspeed = 0    
+                    #     self.player.rect.y = obs.rect.top-50    
+                    # elif keypressed[pygame.K_a]:
+                    #     self.playerdownspeed = 0
+                    #     self.player.rect.x = obs.rect.x 
+                    # elif keypressed[pygame.K_d]:
+                    #     
                         
                     
                     # elif  keypressed[pygame.K_a]:
                     #     self.player.rect.x = obs.rect.right
                     # elif keypressed[pygame.K_d]:
-                    #     self.player.rect.x = obs.rect.left
-                else:
-                    self.playerupspeed = speed
-                    self.playerdownspeed = speed
-                #think i need to write 3 diretiosn for EACH statemtn like this
-                # if self.player.rect.top <= obs.rect.bottom :#and self.player.rect.x == obs.rect.x::
+                #     #     self.player.rect.x = obs.rect.left
+                # else:
+                #     self.playerupspeed = speed
+                #     self.playerdownspeed = speed
+                # #think i need to write 3 diretiosn for EACH statemtn like this
+                # # if self.player.rect.top <= obs.rect.bottom :#and self.player.rect.x == obs.rect.x::
                 #     if self.player.rect.colliderect(obs.rect) and self.player.rect.right >= obs.rect.left:
                 #         self.player.rect.x = obs.rect.left
                         #print('reach?')
@@ -513,41 +599,9 @@ class Game():
                     self.player.player_image.fill((0,255,0))
                     self.player.state = 1
                     
-                    
-                    #pygame.time.set_timer(iFrames,2000,1)
-                    
-                #aight maybe i still need o tr use pygame.time BUT ITS SO BAD AAAAAAAAAAAA
-              
+                
                         
-
-                        
-                # if len(playercol)!=0 and self.playerstate == 1:
-                #     if self.health >=3:
-                #         self._clock.tick()
-                        
-                #         self.health -=1
-                        
-                #             print(timer)
-                #             self.playerplayer_image.fill((0,0,255))
-                #             self.playerstate = 0
-                #             timer+=1
-                            
-                #         else:
-                #             self.playerplayer_image.fill((0,255,0))
-                #             self.playerstate = 1
-                            
-                            
-                        
-                #         #maybe use get ticks?
-                        
-                #         if self.health == 2:
-                #             #self.health -=1
-                #             health_3 =pygame.draw.rect(self._screen,self._Black,(200,0,80,50))
-
-            # health_1 =pygame.draw.rect(self._screen,self._Red,(0,0,80,50))
-            # health-_2 =pygame.draw.rect(self._screen,self._Red,(100,0,80,50))
-            # health_3 =pygame.draw.rect(self._screen,self._Red,(200,0,80,50))
-                    
+         
                 if len(self.enemies) == 0 and not IsBoss: #if the sprite group is enpty, return to normal state 
                     TimesSpawned = 0
                     EnemyInRoom = 0 
@@ -744,7 +798,7 @@ class Game():
     def MainMenu(self):
         running = 1
         click = 0
-        print("reach")
+        
         while running:
             pygame.mouse.set_visible(1)
             self._screen.fill(self._Black) #the colour
