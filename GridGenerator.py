@@ -4,8 +4,10 @@ import numpy as np
 
 #loops=0
 class GridGenerator: 
-    def __init__(self, rooms):
+    def __init__(self, rooms,enemyrooms):
         self.rooms = rooms
+        self.enemyrooms = enemyrooms
+        print(self.enemyrooms)
     def isBorder(self,i, i_length, j, j_length): #checks if the list element is on the border
         if i == 0 or i == i_length or j== 0 or j == j_length:
             return True
@@ -15,13 +17,15 @@ class GridGenerator:
             return True 
     def GenerateEnemyRoom(self,layout):
         BossToAdd = 1
-        for i in range(0,len(layout)-1):
-            for j in range(0,len(layout[0])):
-                if layout[i][j] == 'R':
-                    chance = [0,1]
-                    decision = np.random.choice(chance,p=[0.3,0.7])
-                    if decision == 1:
-                        layout[i][j] = 'E'
+        while self.enemyrooms > 0:
+            for i in range(0,len(layout)-1):
+                for j in range(0,len(layout[0])):
+                    if layout[i][j] == 'R':
+                        chance = [0,1]
+                        decision = np.random.choice(chance,p=[0.3,0.7])
+                        if decision == 1:
+                            layout[i][j] = 'E'
+                            self.enemyrooms -=1
         
         while BossToAdd>0:#heuristic approach
           

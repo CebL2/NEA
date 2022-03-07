@@ -7,22 +7,22 @@ class Enemy(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.playerx = 1
         self.playery = 1
-        self.image = pygame.Surface((200,200)) #Enemy.Enemy
+        self.image = pygame.Surface((100,100)) #Enemy.Enemy
         self.rect = self.image.get_rect()
         self.rect.center = ((random.randint(0,1280),(random.randint(0,1024))))   
         self.health = 2
         self.difficulty = 1
         self.bosshealth = 10
         self.speed = 10
-    def killSprite(self): 
-        if self.health == 0:
-            self.kill()
-        else:
-            return 0 
-    def update(self,x,y): #simple enemy movement to move to player
+  
+    def update(self,x,y,test=None): #simple enemy movement to move to player
+        
         xdist= self.rect.x - x
         ydist = self.rect.y - y
         #print(xdist,ydist)
+        
+        
+        #if the enemy collided
         if xdist > 0:
             self.rect.x-=1
             
@@ -30,10 +30,8 @@ class Enemy(pygame.sprite.Sprite):
             self.rect.x+=1
             
         elif  ydist>0:
-           
             self.rect.y-=1
            
         elif  ydist<0:
-         
             self.rect.y +=1
 

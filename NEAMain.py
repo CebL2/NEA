@@ -23,29 +23,18 @@ import pickle
 pygame.init()
 WIDTH, HEIGHT = 1920, 1080
 
-
-#json to save files
-#write is save
-#read is load 
-#in order to save, we need to dump or write binary data with binary write 
-#with open("filename.txt",'wb') as file 
-#file.dump(data) with the pickle module?
-# with open ('test.txt', 'w') as file:
-#     file.write("this is a test")
-#     file.close()
-
 def Main():  #main function to call 
-    
     while 1:
-        
         MainGame = Game()
-        
         MainGame.MainMenu()
         del MainGame
 
 
-class Items:
+class Items(pygame.sprite.Sprite):
     def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        powerup = pygame.Surface((25,25)) 
+        random
         pass
 class Spells:
     def __init__(self):
@@ -60,8 +49,6 @@ class Rogue:
     def __init__(self):
         pass
 
-
-#         M = pygame.surf
 class Game(): 
     def __init__(self):
         self._screen = pygame.display.set_mode((WIDTH,HEIGHT))
@@ -76,22 +63,25 @@ class Game():
         self.enemies = pygame.sprite.Group()   #preset sprite groups to be used for colllision purposes
         self.playersp = pygame.sprite.Group()
         self.charclass = 0  #other features that are yet to be implemented
-        self.rooms = 10
+        self.rooms = 20
         self.health = 3
+        self.enemyRooms = 12
         
-        self.player = Player(self._screenx,self._screeny)
+        
         self.luck = 0  
         self.badluck = 0 
+        self.player = None
         self.Map = None
         self.globalpos = None
         self.border_gap = 0
         self.ObstacleGroup = None
         self.traversed = None
-        #adds the player sprite to the the group 
+        
 
     def checkifRoom(self,room,i,j,limit): #checks whether if a element in the self.Map/list is a room
         limit+=1
         if limit >100:
+            print('does this even reach HELLO')
             for row in range(0,len(room)-1):
                 for col in range(0,len(room[0])):
                     if room[row][col] == 'R':
@@ -104,12 +94,13 @@ class Game():
         else:
             return i,j 
     def GenerateMap(self):  #calls a class imported from a separate file to generate grid
-        Grid = GridGenerator(self.rooms) #calls the class 
+        Grid = GridGenerator(self.rooms,self.enemyRooms) #calls the class 
         Rooms = Grid.Layout() #generates the room, outputs a list #no issues
         Map = Grid.GenerateEnemyRoom(Rooms) #input is a list, the output is a modified version of the list
         return Map
             
     def Save(self):
+        print('reach')
         obslist=[]
         with open("file1", "wb") as file1: #write the obstacles in as well
             #oblist = []
@@ -117,6 +108,7 @@ class Game():
             pickle.dump(self.Map,file1)
             pickle.dump(self.globalpos,file1)
             pickle.dump(self.traversed,file1)
+            pickle.dump(self.player.rect.center,file1)
         with open("file2","wb") as file2:
             for obstacle in self.ObstacleGroup:
                 newdict = {}
@@ -136,29 +128,34 @@ class Game():
             map = pickle.load(file1)
             position = pickle.load(file1)
             traversed = pickle.load(file1)
+            playercenter = pickle.load(file1)
         with open("file2","rb") as file2:
             obstacles = pickle.load(file2)
+       
             
-           
-            
-        return map,position,obstacles,traversed
+        return map,position,obstacles,traversed,playercenter
     def RunGame(self,File=None):  #runs the game 
          #calls the player class
-        self.playersp.add(self.player) 
         self.ObstacleGroup = pygame.sprite.Group()
         Load = File
         if Load != None:
+            
             self.Map = Load[0]
             playerpos = Load[1]
             obstaclelist = Load[2]
             traversedlist = Load[3]
+            playercenter = Load[4]
+            self.player = Player(self._screenx,self._screeny,playercenter[0],playercenter[1])
             for obstacle in obstaclelist:
                 obs = RoomObstacles(obstacle['i'],obstacle['j'],obstacle['xsize'],obstacle['ysize'],obstacle['xcenter'],obstacle['ycenter'])
                 self.ObstacleGroup.add(obs)
-                
             currentpos = playerpos
+            self.globalpos = playerpos
             ma = MiniMap(self._screen,self.Map,traversedlist)
+            
+            
         else:
+            self.player = Player(self._screenx,self._screeny)
             self.Map = self.GenerateMap()
             Roomi = random.randint(0,len(self.Map)-1) 
             Roomj = random.randint(0,len(self.Map[0])-1)
@@ -170,20 +167,19 @@ class Game():
            
             ma = MiniMap(self._screen,self.Map)
         
-            
             self.globalpos = (playerpos[0],playerpos[1])
              #preset values to check how many times has the enemy spaned
            #a separate group to draw obstacles, the idea is to have a group of obstacles ready to be added to another group to ONLY draw
             #specific obstacles in each room, as each room has a set obstacle assigned to it     
-        # print("is this reaching multiple times?") 
+        
             
              #obstacle group to be used to draw obstacles in every room 
             for i,value in enumerate(self.Map):  #iterates the entire self.Map to add a separate obstacle, still improving
                 for j,val in enumerate(value):  
-                    #randomobs = random.randint(1,4)
-                    #for _ in range(0,1):
-                    obs = RoomObstacles(i,j)
-                    self.ObstacleGroup.add(obs)
+                    randomobs = random.randint(1,4)
+                    for _ in range(0,randomobs):
+                        obs = RoomObstacles(i,j)
+                        self.ObstacleGroup.add(obs)
         ObstacleToDraw = pygame.sprite.Group()  
         TimesSpawned = 0 
         EnemyInRoom = 0
@@ -191,23 +187,18 @@ class Game():
         BossDefeated = 0
         score = 0 
         speed = 5
-        isBoss = False
+        IsBoss = False
         iFrames_time = pygame.USEREVENT+0
         iFrames= pygame.event.Event(iFrames_time)
         check = 0
         GameHud = Hud(self._screen)
-        #t = time()
+        self.playersp.add(self.player) 
+        print(playerpos) #playerpos is none?
         while running:  
             self._clock.tick(60)
             self.traversed = ma.traversedlist
             runningtime = pygame.time.get_ticks()
-            iFrametimer = runningtime+2000
-        # iFrames =
-           # print(runningtime)
-            #print(iFrametimer)
-            
-            #print(self.player.rect.x)
-            #initialtimer = pygame.time.get_ticks()
+       
             pygame.mouse.set_visible(0)
             self._screen.fill(self._White) 
             TopLeft = pygame.draw.rect(self._screen,self._Black,(0,0,700,40))    #walls/borders, there are variants of wall as the 'exit' to different rooms will be a separate wall
@@ -231,16 +222,14 @@ class Game():
                     if obstacle.i == playerpos[0] and obstacle.j == playerpos[1]:
                         ObstacleToDraw.add(obstacle)  #simple check to see if obstacles are being drawn    
 
+
+            #BOTTOM LEFT AND BOTTOM RIGHT STILL NOT WORKING
+            
+            #something to do with top rigth and top left edges
+            
             for obs in ObstacleToDraw: 
-                keypressed = pygame.key.get_pressed()
-                #print(obs.rect.bottom)
-                #print(obs.rect.bottom)
-                # abs(self.player.rect.top - obs.rect.bottom)  <3
-                # #if self.player.rect.colliderect(obs.rect):
                 if self.player.rect.colliderect(obs.rect):  #colliderect  = true
-                    print(self.player.rect.y, obs.rect.y)
-                    print(self.player.rect.y, obs.rect.y+obs.ysize)
-                    if self.player.rect.y+45 > obs.rect.y and self.player.rect.y+10 < obs.rect.y+obs.ysize: #and self.player.rect.y <= obs.rect.y+obs.ysize:
+                    if self.player.rect.y+45 > obs.rect.y and self.player.rect.y+10 < obs.rect.y+obs.ysize: 
                         if obs.rect.collidepoint(self.player.rect.x,self.player.rect.y) or obs.rect.collidepoint(self.player.rect.x,self.player.rect.y+50):
                             self.player.rect.x = obs.rect.x+obs.xsize
                         elif obs.rect.collidepoint(self.player.rect.x+50,self.player.rect.y) or obs.rect.collidepoint(self.player.rect.x+50,self.player.rect.y+50):
@@ -248,147 +237,17 @@ class Game():
                     else:
                         if obs.rect.collidepoint(self.player.rect.x,self.player.rect.y+50) or obs.rect.collidepoint(self.player.rect.x+50,self.player.rect.y+50):
                             self.player.rect.y = obs.rect.y-50
-                        elif  obs.rect.collidepoint(self.player.rect.x,self.player.rect.y) or obs.rect.collidepoint(self.player.rect.x+50,self.player.rect.y):
+                        elif obs.rect.collidepoint(self.player.rect.x,self.player.rect.y) or obs.rect.collidepoint(self.player.rect.x+50,self.player.rect.y):
                             self.player.rect.y = obs.rect.y+obs.ysize
-                        
-                    #player rect x and rect y is the TOPLEFT of the square
+                for projec in self.player.projectilegroup:
+                    if pygame.sprite.spritecollideany(obs,self.player.projectilegroup):
+                        projec.kill()
                     
-                    # if obs.rect.collidepoint(self.player.rect.x,self.player.rect.y+50) or obs.rect.collidepoint(self.player.rect.x+50,self.player.rect.y+50) or obs.rect.collidepoint(self.player.rect.x,self.player.rect.y) or obs.rect.collidepoint(self.player.rect.x+50,self.player.rect.y):   #this checks whether if any of the points collide with the obs.rect
-                    #     if self.player.rect.y+45 > obs.rect.y and self.player.rect.y < obs.rect.y+obs.ysize: #and self.player.rect.y <= obs.rect.y+obs.ysize:
-                            
-                    #         if obs.rect.collidepoint(self.player.rect.x,self.player.rect.y) or obs.rect.collidepoint(self.player.rect.x,self.player.rect.y+50):
-                           
-                    #             self.player.rect.x = obs.rect.x+obs.xsize
-                    #         elif obs.rect.collidepoint(self.player.rect.x+50,self.player.rect.y) or obs.rect.collidepoint(self.player.rect.x+50,self.player.rect.y+50):
-                    #             self.player.rect.x  = obs.rect.x-50
-                    #    # if self.player.rect.y < obs.rect.y+obs.ysize:
-                    #     else:
-                    #         self.player.rect.y = obs.rect.y-50
-                            
-                        
-                    # elif obs.rect.collidepoint(self.player.rect.x,self.player.rect.y) or obs.rect.collidepoint(self.player.rect.x+50,self.player.rect.y):
-                    #     if self.player.rect.y+45 > obs.rect.y:
-                    #         if obs.rect.collidepoint(self.player.rect.x,self.player.rect.y) or obs.rect.collidepoint(self.player.rect.x,self.player.rect.y+50):
-                           
-                    #             self.player.rect.x = obs.rect.x+obs.xsize
-                    #         elif obs.rect.collidepoint(self.player.rect.x+50,self.player.rect.y) or obs.rect.collidepoint(self.player.rect.x+50,self.player.rect.y+50):
-                    #             self.player.rect.x  = obs.rect.x-50
-                    #     self.player.rect.y = obs.rect.y+obs.ysize
-                    # # elif obs.rect.collidepoint(self.player.rect.x,self.player.rect.y) or obs.rect.collidepoint(self.player.rect.x+50,self.player.rect.y):   #this checks whether if any of the points collide with the obs.rect
-                    # #     if self.player.rect.y < obs.rect.y+obs.ysize:
-                    #         if obs.rect.collidepoint(self.player.rect.x,self.player.rect.y):
-                                
-                    #             self.player.rect.x = obs.rect.x+obs.xsize
-                    #         else:
-                    #             self.player.rect.x  = obs.rect.x-50
-                    #     else:
-                    #         self.player.rect.y = obs.rect.y+obs.ysize
-                                
-                            
-                        # else:
-                        #     self.player.rect.y = obs.rect.y+obs.ysize
-                           
-                       #->  ###
-                            ###
-                        
-                    #                             #print()
-                    # elif obs.rect.collidepoint(self.player.rect.x,self.player.rect.y) or obs.rect.collidepoint(self.player.rect.x+50,self.player.rect.y):
-                    #     self.player.rect.y = obs.rect.y+obs.ysize
-                    
-                    # elif obs.rect.collidepoint(self.player.rect.x+50,self.player.rect.y) or obs.rect.collidepoint(self.player.rect.x+50,self.player.rect.y+50):
-                    #     self.player.rect.x = obs.rect.x-50
-                        
-                   # elif obs.rect.collidepoint(self.player.rect.x,self.player.rect.y):
-                    
-                                                
-                                                
-                                                
-                                                
-                                                
-                                                                     
-                                                
-                                                
-                    #elif obs.rect.collidepoint()
-                    # elif obs.rect.collidepoint(self.player.rect.x,self.player.rect.y):
-                    #     #AIGHT THIS IS IT WE DID IT 
-                    #     self.player.rect.y = obs.rect.y+obs.ysize
-                    # elif obs.rect.collidepoint(self.player.rect.x+50,self.player.rect.y):
-                    #     self.player.rect.x = obs.rect.x-50
-                    # elif obs.rect.collidepoint(self.player.rect.x,self.player.rect.y):
-                    #     self.player.rect.x = obs.rect.x+obs.xsize
-                        
-                        
-                        
-                    # if collid right side of obs, player cant move left
-                    # if keypressed[pygame.K_w]:
-                    #     self.playerupspeed =0()
-                    #     self.player.rect.y = obs.rect.y
-                        
-                    # elif keypressed[pygame.K_s]:
-                    #     self.playerdownspeed = 0    
-                    #     self.player.rect.y = obs.rect.top-50    
-                    # elif keypressed[pygame.K_a]:
-                    #     self.playerdownspeed = 0
-                    #     self.player.rect.x = obs.rect.x 
-                    # elif keypressed[pygame.K_d]:
-                    #     
-                        
-                    
-                    # elif  keypressed[pygame.K_a]:
-                    #     self.player.rect.x = obs.rect.right
-                    # elif keypressed[pygame.K_d]:
-                #     #     self.player.rect.x = obs.rect.left
-                # else:
-                #     self.playerupspeed = speed
-                #     self.playerdownspeed = speed
-                # #think i need to write 3 diretiosn for EACH statemtn like this
-                # # if self.player.rect.top <= obs.rect.bottom :#and self.player.rect.x == obs.rect.x::
-                #     if self.player.rect.colliderect(obs.rect) and self.player.rect.right >= obs.rect.left:
-                #         self.player.rect.x = obs.rect.left
-                        #print('reach?')
-                        #self.player.rect.y = obs.rect.bottom
-                # elif self.player.rect.left >= obs.rect.right:
-                #     if self.player.rect.colliderect(obs.rect):
-                #         self.player.rect.x = obs.rect.right
-                    # elif self.player.rect.bottom >= obs.rect.top :    # else:
-                    #     self.player.rect.y = obs.rect.top
-                # else:
-                #     self.playerupspeed = speed
-                    #continue*
-                    
-               # else:
-                    
-                    # if self.player.rect.collidepoint(obs.rect.bottomleft[0],obs.rect.bottom):
-                    #     print("YES IT WORKS")
-                    
-                    
-                    #if the player collides with this POINT only
-                    #then conditions apply
-                    
-                    
-                    #if the top part of the player  touches the bottom of the obstacle rect:
-                    #restrict moment from going UP
-                    
-                    
-                    #if the player bumps into an obstacle
-                    #movement should be restricted in that direction
-                    
-                    
-                    # print(self.player.rect.x)
-                    # print("serp")
-                    # print(self.player.rect.left)
-                    # print(obs.rect.left,obs.rect.top)
-                    # print(self.player.rect.x,self.player.rect.y)
-                    # if self.player.rect.x+self.player.rect.width == obs.rect.x:
-                    #     self.player.rect.x = obs.rect.left- self.player.rect.width
-                    # # print(obs.rect.x)
-                    # print("sepr")
-                    # print(obs.rect.left)
-                    #self.player.rect.y+=0 
+                   
         
             if LeftUp.colliderect(self.player.rect) or LeftDown.colliderect(self.player.rect):    #these statements make sure that the player does not go through the borders
                 self.player.rect.x = 40
-            if RightUp.colliderect(self.player.rect) or RightDown.colliderect(self.player.rect):
+            if RightUp.colliderect(self.player.rect) or RightDown.colliderect(self.player.rect):  #tried to use elif statements, but if the player inputs two directions when already agianst a while, the player goes through the wall
                 self.player.rect.x = 1830  
             if DownLeft.colliderect(self.player.rect) or DownRight.colliderect(self.player.rect):
                 self.player.rect.y = 990
@@ -439,7 +298,7 @@ class Game():
                         if self.Map[playerpos[0]-1][playerpos[1]] == 'E' or self.Map[playerpos[0]-1][playerpos[1]] == 'B':
                             if TopExit.colliderect(self.player.rect) :
                                 self.player.projectilegroup.empty()
-                                isBoss = self.BossOrNot(self.Map[playerpos[0]-1][playerpos[1]])
+                                IsBoss = self.BossOrNot(self.Map[playerpos[0]-1][playerpos[1]])
                                 self.player.rect.x = self._screenx/2
                                 self.player.rect.y = self._screeny-100
                                 EnemyInRoom = 1        
@@ -475,7 +334,7 @@ class Game():
                         if self.Map[playerpos[0]][playerpos[1]+1] == 'E' or self.Map[playerpos[0]][playerpos[1]+1] == 'B':
                             if RightExit.colliderect(self.player.rect): 
                                 self.player.projectilegroup.empty()
-                                isBoss = self.BossOrNot(self.Map[playerpos[0]][playerpos[1]+1])
+                                IsBoss = self.BossOrNot(self.Map[playerpos[0]][playerpos[1]+1])
                                 self.player.rect.x = 100
                                 self.player.rect.y = self._screeny/2
                                 self.Map[playerpos[0]][playerpos[1]] = 'R'
@@ -512,7 +371,7 @@ class Game():
                                 self.player.projectilegroup.empty()
                                 '''testing
                                 '''
-                                isBoss = self.BossOrNot(self.Map[playerpos[0]][playerpos[1]-1])
+                                IsBoss = self.BossOrNot(self.Map[playerpos[0]][playerpos[1]-1])
                                 self.player.rect.x = self._screenx-100
                                 self.player.rect.y = self._screeny/2 
                                 EnemyInRoom = 1
@@ -544,7 +403,7 @@ class Game():
                     pass
             else: #if EnemyInRoom is 1:
                 
-                if not isBoss:
+                if not IsBoss:
                     if TimesSpawned < 1:
                         #for i in range(0,3):
                         enemy = Enemy()
@@ -570,6 +429,20 @@ class Game():
                     self.player.rect.x = 40
                 
                 
+                for obs in ObstacleToDraw: 
+                    for enemies in self.enemies:
+                        if enemies.rect.colliderect(obs.rect):  #colliderect  = true
+                            if enemies.rect.y+45 > obs.rect.y and enemies.rect.y+10 < obs.rect.y+obs.ysize: 
+                                if obs.rect.collidepoint(enemies.rect.x,enemies.rect.y) or obs.rect.collidepoint(enemies.rect.x,enemies.rect.y+100):
+                                    enemies.rect.x = obs.rect.x+obs.xsize
+                                elif obs.rect.collidepoint(enemies.rect.x+100,enemies.rect.y) or obs.rect.collidepoint(enemies.rect.x+100,enemies.rect.y+100):
+                                    enemies.rect.x= obs.rect.x-100
+                            else:
+                                if obs.rect.collidepoint(enemies.rect.x,enemies.rect.y+100) or obs.rect.collidepoint(enemies.rect.x+100,enemies.rect.y+100):
+                                    enemies.rect.y = obs.rect.y-100
+                                elif  obs.rect.collidepoint(enemies.rect.x,enemies.rect.y) or obs.rect.collidepoint(enemies.rect.x+100,enemies.rect.y):
+                                    enemies.rect.y = obs.rect.y+obs.ysize
+                        #self.enemies.update()
                 for projectile in self.player.projectilegroup:  #checks if player attack projectiles has collided with the enemy
                     collision = pygame.sprite.spritecollide(projectile, self.enemies, 0) #checks within the sprite group whether if 'projectile' has collided with any sprites the sprite group self.enemies
                     for enemy in collision:

@@ -5,14 +5,14 @@ import pygame
 class Player(pygame.sprite.Sprite):  #Player class
     player_image = pygame.Surface((50,50)) 
     player_image.fill((0,255,0))
-    def __init__(self,screenx,screeny):   #screen values are passed in  
+    def __init__(self,screenx,screeny,centerx= None,centery= None):   #screen values are passed in  
         pygame.sprite.Sprite.__init__(self) 
         self.image = Player.player_image
         self.rect = self.image.get_rect()
-        self.rect.center = (screenx/2, screeny/2)
-        print(self.rect.center)
-        print(self.rect.x,self.rect.y)
-        print(self.rect.topleft)
+        if centerx == None:
+            self.rect.center = (screenx/2, screeny/2)
+        else:
+            self.rect.center = (centerx, centery)
         self.state = 1
         self.upspeed = 5
         self.downspeed = 5
@@ -50,7 +50,7 @@ class Player(pygame.sprite.Sprite):  #Player class
             self.rect.x += self.rightspeed
       
     def Attackup(self):  #attack functions for projectiles
-        projectileup = Attack(self.rect.centerx,self.rect.centery-100,self.screenx,self.screeny,1)
+        projectileup = Attack(self.rect.centerx,self.rect.centery-50,self.screenx,self.screeny,1)
         self.projectilegroup.add(projectileup)
 
     def Attackright(self):
@@ -62,6 +62,6 @@ class Player(pygame.sprite.Sprite):  #Player class
         self.projectilegroup.add(projectiledown)
         
     def Attackdown(self):
-        projectiledown = Attack(self.rect.centerx,self.rect.centery+100,self.screenx,self.screeny,4)
+        projectiledown = Attack(self.rect.centerx,self.rect.centery+50,self.screenx,self.screeny,4)
         self.projectilegroup.add(projectiledown)
         
