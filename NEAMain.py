@@ -6,6 +6,7 @@
 #Character creation with built in speical abilities for different classes    #PROGRESS
 #Spells 
 #Create self.Map 
+from re import I
 import time
 import threading as thread
 import pygame, sys, random
@@ -32,6 +33,8 @@ def Main():  #main function to call
 
 class Items(pygame.sprite.Sprite):
     def __init__(self):
+        
+        #luck will affect this 
         pygame.sprite.Sprite.__init__(self)
         powerup = pygame.Surface((25,25)) 
         random
@@ -68,7 +71,7 @@ class Game():
         self.enemyRooms = 12
         
         
-        self.luck = 0  
+        self.luck = 0
         self.badluck = 0 
         self.player = None
         self.Map = None
@@ -81,11 +84,11 @@ class Game():
     def checkifRoom(self,room,i,j,limit): #checks whether if a element in the self.Map/list is a room
         limit+=1
         if limit >100:
-            print('does this even reach HELLO')
             for row in range(0,len(room)-1):
                 for col in range(0,len(room[0])):
                     if room[row][col] == 'R':
                         return row,col
+                        break
         roomstate = room[i][j]
         new_i = random.randint(0,len(room)-1)
         new_j = random.randint(0,len(room[0])-1)
@@ -96,15 +99,17 @@ class Game():
     def GenerateMap(self):  #calls a class imported from a separate file to generate grid
         Grid = GridGenerator(self.rooms,self.enemyRooms) #calls the class 
         Rooms = Grid.Layout() #generates the room, outputs a list #no issues
+        
+        for i in Rooms:
+            print(i)
         Map = Grid.GenerateEnemyRoom(Rooms) #input is a list, the output is a modified version of the list
         return Map
             
     def Save(self):
-        print('reach')
         obslist=[]
         with open("file1", "wb") as file1: #write the obstacles in as well
             #oblist = []
-            
+
             pickle.dump(self.Map,file1)
             pickle.dump(self.globalpos,file1)
             pickle.dump(self.traversed,file1)
@@ -122,15 +127,17 @@ class Game():
             pickle.dump(obslist,file2)
             
     def Load(self):
-       
-        with open("file1","rb") as file1:
-           # oblist = []
-            map = pickle.load(file1)
-            position = pickle.load(file1)
-            traversed = pickle.load(file1)
-            playercenter = pickle.load(file1)
-        with open("file2","rb") as file2:
-            obstacles = pickle.load(file2)
+        try:
+            with open("file1","rb") as file1:
+            # oblist = []
+                map = pickle.load(file1)
+                position = pickle.load(file1)
+                traversed = pickle.load(file1)
+                playercenter = pickle.load(file1)
+            with open("file2","rb") as file2:
+                obstacles = pickle.load(file2)
+        except:
+            return False
        
             
         return map,position,obstacles,traversed,playercenter
@@ -193,11 +200,11 @@ class Game():
         check = 0
         GameHud = Hud(self._screen)
         self.playersp.add(self.player) 
-        print(playerpos) #playerpos is none?
+         #playerpos is none?
         while running:  
             self._clock.tick(60)
             self.traversed = ma.traversedlist
-            runningtime = pygame.time.get_ticks()
+            runningtime = pygame.time.get_ticks() #this will be logged to see how fast the player plays the game
        
             pygame.mouse.set_visible(0)
             self._screen.fill(self._White) 
@@ -369,8 +376,6 @@ class Game():
                         if self.Map[playerpos[0]][playerpos[1]-1] == 'E' or self.Map[playerpos[0]][playerpos[1]-1] == 'B':
                             if LeftExit.colliderect(self.player.rect):
                                 self.player.projectilegroup.empty()
-                                '''testing
-                                '''
                                 IsBoss = self.BossOrNot(self.Map[playerpos[0]][playerpos[1]-1])
                                 self.player.rect.x = self._screenx-100
                                 self.player.rect.y = self._screeny/2 
@@ -402,7 +407,6 @@ class Game():
                 if BossDefeated != 0:
                     pass
             else: #if EnemyInRoom is 1:
-                
                 if not IsBoss:
                     if TimesSpawned < 1:
                         #for i in range(0,3):
