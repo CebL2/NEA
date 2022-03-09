@@ -195,7 +195,6 @@ class Game():
         check = 0
         GameHud = Hud(self._screen)
         self.playersp.add(self.player) 
-         #playerpos is none?
         while running:  
             self._clock.tick(60)
             self.traversed = Map.traversedlist
@@ -272,11 +271,7 @@ class Game():
                                 self.Map[playerpos[0]+1][playerpos[1]] = '#' #the adjacent room gets changed into the player symbol
                                 currentpos = playerpos
                                 playerpos = (playerpos[0]+1,playerpos[1]) #then, the player position gets changed accordingly
-                                
                                 self.globalpos = (playerpos[0],playerpos[1])
-                                for i in Map.traversedlist:
-                                    print(i)
-    
                         else: 
                             if DownExit.colliderect(self.player.rect): #if the adjacent room has no enemies,
                                 self.player.projectilegroup.empty() 
@@ -287,8 +282,7 @@ class Game():
                                 currentpos = playerpos
                                 playerpos = (playerpos[0]+1,playerpos[1])
                                 self.globalpos = (playerpos[0],playerpos[1])   
-                                for i in Map.traversedlist:
-                                    print(i)        
+                                      
                     else:
                         DownExit= pygame.draw.rect(self._screen,self._Black,(700,1040,520,40)) #if there is no room available, then draw a self._Black rectangle
                         if DownExit.colliderect(self.player.rect): #if the player collides into it: 
@@ -412,6 +406,10 @@ class Game():
                     LeftExit =  pygame.draw.rect(self._screen, self._Black,(0,350,40,380))
                     if LeftExit.colliderect(self.player.rect):
                         self.player.rect.x = 40
+                if check == 1 and newtime< runningtime:
+                    self.player.player_image.fill((0,255,0))
+                    self.player.state = 1
+                    
                 if BossDefeated != 0:
                     pass
             else: #if EnemyInRoom is 1:
@@ -474,7 +472,7 @@ class Game():
                         newtime = runningtime +2000
                         pygame.event.post(iFrames)
                         check = 1
-                        #GameHud.Health(self._Red,self._Red,Self._)   
+                          
                    else:
                        running = 0
                        break               
