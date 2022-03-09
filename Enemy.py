@@ -22,7 +22,7 @@ class Enemy(pygame.sprite.Sprite):
         #print(xdist,ydist)
         
         
-        #if the enemy collided
+        
         if xdist > 0:
             self.rect.x-=1
             

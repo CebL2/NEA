@@ -18,7 +18,6 @@ class Player(pygame.sprite.Sprite):  #Player class
         self.downspeed = 5
         self.rightspeed = 5
         self.leftspeed = 5
-        
         self.screenx = screenx
         self.screeny = screeny
         self.gap = 0 

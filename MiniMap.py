@@ -5,7 +5,6 @@ class MiniMap():
     def __init__(self,screen,maplist,traversed=None):   #the screen itself and the map list
         self.map = maplist  
         self.image = pygame.Surface((300,150))
-        
         self.width = 1
         self.white = (200,200,200)
         self.Black = (0,0,0)
@@ -76,24 +75,28 @@ class MiniMap():
                         elif x == 0:
                             Directionlist.pop(1)
                         else:
-                            Directionlist.pop(0)           
+                            Directionlist.pop(0)       
+                
+                             
                 rect = pygame.Rect(1582.5+xval,39+yval,self.xval-4,self.yval-4)
                 pygame.draw.rect(self.screen,self.Black,rect) 
-               
-                if self.map[y][x] == '#':
-                    pygame.draw.rect(self.screen,self.green,rect)
+                
+                
                 # elif self.map[y][x] == 'B':
-                elif self.map[y][x] == 'R' or self.map[y][x] == 'E' or self.map[y][x] == 'B':
+                if self.map[y][x] == 'R' or self.map[y][x] == 'E' or self.map[y][x] == 'B':
                     for i in Directionlist:
                         if self.map[y+i[0]][x+i[1]] == '#':
+                            self.traversedlist[y][x] = 1
                             pygame.draw.rect(self.screen,self.gray,rect)
-                    if self.traversedlist[y][x] >0:
-                        
-                        pygame.draw.rect(self.screen,self.gray,rect)
+                if self.traversedlist[y][x] >0:
+                    pygame.draw.rect(self.screen,self.gray,rect)
+                if self.map[y][x] == '#':
+                    pygame.draw.rect(self.screen,self.green,rect)
+                            
+                            
 
-        
+                
     def update(self,x,y):
-        
         self.drawgrid(x,y)
         self.screen.blit(self.image,(1580,39))
        

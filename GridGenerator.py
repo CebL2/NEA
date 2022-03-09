@@ -1,7 +1,5 @@
-from ast import Return
-import random
-from tkinter import NE
 
+import random
 import numpy as np
 
 #loops=0
@@ -26,7 +24,6 @@ class GridGenerator:
                         if decision == 1:
                             layout[i][j] = 'E'
                             self.enemyrooms -=1
-        
         while BossToAdd>0:#heuristic approach
             for i in range(0,len(layout)-1):
                 for j in range(0,len(layout[0])): 
