@@ -28,10 +28,13 @@ class GridGenerator:
             for i in range(0,len(layout)-1):
                 for j in range(0,len(layout[0])): 
                     if layout[i][j] == 'E':
-                        layout[i][j] = 'B'
-                        BossToAdd -= 1
-                        return layout
-                            
+                        chance = [0,1]
+                        decision = np.random.choice(chance,p=[0.3,0.7])
+                        if decision == 1:
+                            layout[i][j] = 'B'
+                            BossToAdd -= 1
+                            return layout
+                        
     def RecursiveAdd(self,currenti,currentj,NewLayout,RoomsLeft):
         RoomsToAdd = RoomsLeft
         if RoomsToAdd == 0:

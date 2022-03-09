@@ -69,6 +69,7 @@ class Game():
         self._screeny = 1080
         self._textfont = pygame.font.Font(r'C:\Windows\Fonts\georgia.ttf', 50 ) 
         self._clock = pygame.time.Clock()
+        self.Level = 0
 
         self.enemies = pygame.sprite.Group()   #preset sprite groups to be used for colllision purposes
         self.playersp = pygame.sprite.Group()
@@ -80,6 +81,7 @@ class Game():
         
         self.luck = 0
         self.badluck = 0 
+        self.BossPos = None
         self.player = None
         self.Map = None
         self.globalpos = None
@@ -103,10 +105,15 @@ class Game():
         else:
             return i,j 
     def GenerateMap(self):  #calls a class imported from a separate file to generate grid
+        BossPos = None
         Grid = GridGenerator(self.rooms,self.enemyRooms) #calls the class 
         Rooms = Grid.Layout() #generates the room, outputs a list #no issues
         Map = Grid.GenerateEnemyRoom(Rooms) #input is a list, the output is a modified version of the list
-        return Map
+        for i in range(0,len(Map)-1):
+            for j in range(0,len(Map[0])):
+                if Map[i][j] == 'B':
+                    BossPos = i,j
+        return Map,BossPos
             
     def Save(self):
         obslist=[]
@@ -117,6 +124,7 @@ class Game():
             pickle.dump(self.globalpos,file1)
             pickle.dump(self.traversed,file1)
             pickle.dump(self.player.rect.center,file1)
+            pickle.dump(self.BossPos,file1)
         with open("file2","wb") as file2:
             for obstacle in self.ObstacleGroup:
                 newdict = {}
@@ -137,12 +145,13 @@ class Game():
                 position = pickle.load(file1)
                 traversed = pickle.load(file1)
                 playercenter = pickle.load(file1)
+                bosspos = pickle.load(file1)
             with open("file2","rb") as file2:
                 obstacles = pickle.load(file2)
         except:
             return False
        
-        return map,position,obstacles,traversed,playercenter
+        return map,position,obstacles,traversed,playercenter,bosspos
     def RunGame(self,File=None):  #runs the game 
          #calls the player class
         self.ObstacleGroup = pygame.sprite.Group()
@@ -153,18 +162,22 @@ class Game():
             obstaclelist = Load[2]
             traversedlist = Load[3]
             playercenter = Load[4]
+            BossPos = Load[5]
             self.player = Player(self._screenx,self._screeny,playercenter[0],playercenter[1])
             for obstacle in obstaclelist:
                 obs = RoomObstacles(obstacle['i'],obstacle['j'],obstacle['xsize'],obstacle['ysize'],obstacle['xcenter'],obstacle['ycenter'])
                 self.ObstacleGroup.add(obs)
             currentpos = playerpos
             self.globalpos = playerpos
+            self.BossPos = BossPos
             Map = MiniMap(self._screen,self.Map,traversedlist)
             
             
         else:
             self.player = Player(self._screenx,self._screeny)
-            self.Map = self.GenerateMap()
+            self.Map,BossPos = self.GenerateMap()
+            
+            self.BossPos = BossPos
             Roomi = random.randint(0,len(self.Map)-1) 
             Roomj = random.randint(0,len(self.Map[0])-1)
             roompos = self.checkifRoom(self.Map,Roomi,Roomj,0) #and pass it through a function to check whether if its a valid room with no enemies 
@@ -405,9 +418,13 @@ class Game():
                 if check == 1 and newtime< runningtime:
                     self.player.player_image.fill((0,255,0))
                     self.player.state = 1
-                    
-                if BossDefeated != 0:
-                    pygame.draw.rect(self._screen, (51,47,47),(960,800,150,150))
+                #NextLevel = pygame.Rect((960,800,150,150))
+                if BossDefeated != 0 and (playerpos[0],playerpos[1]) == self.BossPos:
+                    NextLevel= pygame.draw.rect(self._screen, (51,47,47),(960,800,150,150))
+                    if NextLevel.colliderect(self.player.rect):
+                        running = 0
+                        self.LevelBetween()
+                
             else: #if EnemyInRoom is 1:
                 if not IsBoss:
                     if TimesSpawned < 1:
@@ -527,7 +544,34 @@ class Game():
         running = 1
         while running:
             pass
-    
+    def LevelBetween(self):
+        self.Level+=1
+       # print(level)
+        leveltext = "Level "+str(self.Level)
+        running = 1
+        click = 0
+        self.playersp.empty()
+        while running:
+            pygame.mouse.set_visible(1)
+            self._screen.fill(self._Black) 
+            
+            mousex, mousey = pygame.mouse.get_pos()
+            self._screen.blit(self._textfont.render(leveltext ,1, self._White),(100,200))
+            Play = self._screen.blit(self._textfont.render("Play",1, self._White), (900,300))
+            if Play.collidepoint(mousex,mousey) and click == 1:
+                
+                self.RunGame()
+                running = 0
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT: # Did the user click the window close button?
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    click = 1
+                else:
+                    click =0 
+            pygame.display.update()
+            #pygame.draw.rect(self._screen,self._White())
     def Pause(self): #pause menu
         running = 1
         click = 0
@@ -651,11 +695,12 @@ class Game():
                     click = 0
             if play.collidepoint(mousex,mousey) and event.type == pygame.MOUSEBUTTONDOWN:
                 running = 0
+                break
                 #return charclass[i],stats
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT: # Did the user click the window close button?
-                    running = 0
+                    pygame.quit()
                     sys.exit()
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
@@ -685,7 +730,8 @@ class Game():
                 
             if Play.collidepoint(mousex,mousey) and click  == 1:
                 self.CharacterCreation()
-                self.RunGame()
+                self.LevelBetween()
+                #self.RunGame()
                 running = 0
                 return 0
             if Load.collidepoint(mousex,mousey) and click == 1:

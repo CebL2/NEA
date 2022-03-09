@@ -14,10 +14,8 @@ class Player(pygame.sprite.Sprite):  #Player class
         else:
             self.rect.center = (centerx, centery)
         self.state = 1
-        self.upspeed = 5
-        self.downspeed = 5
-        self.rightspeed = 5
-        self.leftspeed = 5
+        
+        self.speed = 10
         self.screenx = screenx
         self.screeny = screeny
         self.gap = 0 
@@ -40,13 +38,13 @@ class Player(pygame.sprite.Sprite):  #Player class
         keypressed = pygame.key.get_pressed()
         
         if keypressed[pygame.K_s] and self.rect.y < self.screeny:
-            self.rect.y += self.downspeed
+            self.rect.y += self.speed
         if keypressed[pygame.K_w] and self.rect.y > 0:
-            self.rect.y  -= self.upspeed
+            self.rect.y  -= self.speed
         if keypressed[pygame.K_a] and self.rect.x > 0:
-            self.rect.x -= self.leftspeed
+            self.rect.x -= self.speed
         if keypressed[pygame.K_d] and self.rect.x <  self.screenx:
-            self.rect.x += self.rightspeed
+            self.rect.x += self.speed
       
     def Attackup(self):  #attack functions for projectiles
         projectileup = Attack(self.rect.centerx,self.rect.centery-50,self.screenx,self.screeny,1)
