@@ -59,121 +59,88 @@ class MiniMap():
         indexing =0 
         mapi_length = len(self.map)
         mapj_length = len(self.map[0])
+        Directionlist = [(0,1),(0,-1),(1,0),(-1,0)]
         #(1,0), (-1,0),  (0,1), (0,-1)
         for y, row in enumerate(self.map):  #element, value
             for x , col in enumerate(row):
                 
-                
+                #for every direction
                 xval = x*self.xval
                 yval = y*self.yval
                 if y == posx and x == posy:
 
                     self.traversedlist[y][x] = 1
-                #print(xval,yval)
-                # if indexing >3:
-                #     indexing =0
+                    
                 
-                   # if self.map[y][x] == '#':
-                #     pygame.draw.rect(self.screen,self.green,rect)
-                #     if self.traversedlist[y][x]!=1:
-                #         if self.map[y+1][x] !=' ' or self.map[y-1][x] !=' ' or self.map[y][x+1] !=' 'or self.map[y][x-1]!=' ':
-                #             pygame.draw.rect(self.screen,self.gray,pygame.Rect(1582.5+(x-1)*self.xval,39+yval,self.xval-4,self.yval-4))
+                #take a place in this 2d grid
+                #make everything surrounding the room black and the room that the player is in green
+                #make neighbouring available rooms to traverse to grey to indicate that it can be reached, but will not show the entire layout of the level
+                
+                
 
+                # Directionlist = [(0,1),(0,-1),(1,0),(-1,0)]
+                # if self.isBorder(currenti,len(NewLayout)-1,currentj,len(NewLayout[0])-1):
+                #     if self.isCorner(currenti,len(NewLayout)-1,currentj,len(NewLayout[0])-1):
+                #         if currenti == 0 and currentj == 0: #remove left and up
+                #             Directionlist.pop(1) 
+                #             Directionlist.pop(2)
+                #         elif currenti == 0 and currentj == len(NewLayout[0])-1: #remove right and up
+                #             Directionlist.pop(0) 
+                #             Directionlist.pop(2)
+                #         elif currenti == len(NewLayout)-1 and currentj == len(NewLayout[0])-1: #remove down and right
+                #             Directionlist.pop(0) 
+                #             Directionlist.pop(1)
+                #         elif currenti == len(NewLayout)-1 and currentj == 0: #remove left and down
+                #             Directionlist.pop(1) 
+                #             Directionlist.pop(1)
+                #     else:
+                #         if currenti == 0: 
+                #             Directionlist.pop(3)
+                #         elif currenti == len(NewLayout)-1:
+                #             Directionlist.pop(2)  
+                #         elif currentj == 0:
+                #             Directionlist.pop(1)
+                #         else:
+                #             Directionlist.pop(0)   
+                #rect = pygame.Rect(1582.5+xval,39+yval,self.xval-4,self.yval-4)
+                # pygame.draw.rect(self.screen,self.Black,rect) #          
                 rect = pygame.Rect(1582.5+xval,39+yval,self.xval-4,self.yval-4)
-                #pygame.draw.rect(self.screen,self.Black,rect) #
+                pygame.draw.rect(self.screen,self.Black,rect) 
+               
                 # distancei = posy - y
                 # distancej = posx - x
-                # if self.map[y][x] == '#':
-                #     pygame.draw.rect(self.screen,self.green,rect)
+                
                 #     if self.map[y][x+1] !=' ':
                 #        # print('reach')
                 #         rect = pygame.Rect(1582.5+((x+1)*self.xval),39+yval,self.xval-4,self.yval-4)
                 #         pygame.draw.rect(self.screen,self.gray,rect)
-                if self.map[y][x] == ' ':
-                    pygame.draw.rect(self.screen,self.Black,rect)
-                elif self.map[y][x] == '#':
-                    pygame.draw.rect(self.screen,self.green,rect)
-                # if self.isBorder(x,mapi_length-1,y,mapj_length-1):
-                #     if self.isCorner(x,mapi_length-1,y,mapj_length-1):
-                #         pass
-                #     else:
-                #         if x == 0: #right,up,down
-                #              # else:
-                #             if self.map[y][x+1] !=' ' and self.traversedlist[y][x+1] != 1:
-                               
-                #                 rect = pygame.Rect(1582.5+((x+1)*self.xval),39+yval,self.xval-4,self.yval-4) #just need to modify values THIS AINT HARD (yet) 
-                #                 pygame.draw.rect(self.screen,self.gray,rect)
-                #             elif self.map[y+1][x] !=' ' and self.traversedlist[y+1][x] != 1:
-                #                 rect = pygame.Rect(1582.5+xval,39+((y+1)*self.yval),self.xval-4,self.yval-4) #just need to modify values THIS AINT HARD (yet) 
-                #                 pygame.draw.rect(self.screen,self.gray,rect)
-                #             elif self.map[y-1][x] !=' ' and self.traversedlist[y-1][x] != 1:
-                #                 rect = pygame.Rect(1582.5+xval,39+((y-1)*self.yval),self.xval-4,self.yval-4) #just need to modify values THIS AINT HARD (yet) 
-                #                 pygame.draw.rect(self.screen,self.gray,rect)
-                #         elif x == mapi_length-1: #left, down, up
-                #             if self.map[y][x-1] !=' ' and self.traversedlist[y][x+1] != 1:  
-                #                 rect = pygame.Rect(1582.5+((x-1)*self.xval),39+yval,self.xval-4,self.yval-4) #just need to modify values THIS AINT HARD (yet) 
-                #                 pygame.draw.rect(self.screen,self.gray,rect)
-                #             elif self.map[y+1][x] !=' ' and self.traversedlist[y+1][x] != 1:
-                #                 rect = pygame.Rect(1582.5+xval,39+((y+1)*self.yval),self.xval-4,self.yval-4) #just need to modify values THIS AINT HARD (yet) 
-                #                 pygame.draw.rect(self.screen,self.gray,rect)
-                #             elif self.map[y-1][x] !=' ' and self.traversedlist[y-1][x] != 1:
-                #                 rect = pygame.Rect(1582.5+xval,39+((y-1)*self.yval),self.xval-4,self.yval-4) #just need to modify values THIS AINT HARD (yet) 
-                #                 pygame.draw.rect(self.screen,self.gray,rect)
-                #         elif y == 0: #right,down,left
-                #             if self.map[y][x+1] !=' ' and self.traversedlist[y][x+1] != 1:
-                #                 rect = pygame.Rect(1582.5+((x+1)*self.xval),39+yval,self.xval-4,self.yval-4) #just need to modify values THIS AINT HARD (yet) 
-                #                 pygame.draw.rect(self.screen,self.gray,rect)
-                            
-                #             elif self.map[y][x-1] !=' ' and self.traversedlist[y][x-1] != 1:
-                #                 rect = pygame.Rect(1582.5+((x-1)*self.xval),39+yval,self.xval-4,self.yval-4) #just need to modify values THIS AINT HARD (yet) 
-                #                 pygame.draw.rect(self.screen,self.gray,rect)
-                          
-                #             elif self.map[y-1][x] !=' ' and self.traversedlist[y-1][x] != 1:
-                #                 rect = pygame.Rect(1582.5+xval,39+((y-1)*self.yval),self.xval-4,self.yval-4) #just need to modify values THIS AINT HARD (yet) 
-                #                 pygame.draw.rect(self.screen,self.gray,rect)
-                #         elif y == mapj_length-1: #up,left,right
-                #             if self.map[y][x+1] !=' ' and self.traversedlist[y][x+1] != 1:
-                                
-                #                 rect = pygame.Rect(1582.5+((x+1)*self.xval),39+yval,self.xval-4,self.yval-4) #just need to modify values THIS AINT HARD (yet) 
-                #                 pygame.draw.rect(self.screen,self.gray,rect)
-                                
-                #             elif self.map[y][x-1] !=' ' and self.traversedlist[y][x-1] != 1:
-                #                 rect = pygame.Rect(1582.5+((x-1)*self.xval),39+yval,self.xval-4,self.yval-4) #just need to modify values THIS AINT HARD (yet) 
-                #                 pygame.draw.rect(self.screen,self.gray,rect)
-                #             elif self.map[y-1][x] !=' ' and self.traversedlist[y-1][x] != 1:
-                #                 rect = pygame.Rect(1582.5+xval,39+((y-1)*self.yval),self.xval-4,self.yval-4) #just need to modify values THIS AINT HARD (yet) 
-                #                 pygame.draw.rect(self.screen,self.gray,rect)
-                # else:
-                #     if self.map[y][x] == ' ' or self.map[y][x] == 'R' or self.map[y][x] == 'E' or self.map[y][x] == 'B' and self.traversedlist[y][x] == 0:
-                #         if self.map[y-1][x]!= '#' and self.map[y+1][x]!= '#' and self.map[y][x-1] != '#' and self.map[y][x+1] != '#':
-                #             pygame.draw.rect(self.screen,self.Black,rect)
-                    
-                #         if self.map[y][x+1] !=' ' and self.traversedlist[y][x+1] != 1:
-                #             print('reach')
-                #             rect = pygame.Rect(1582.5+((x+1)*self.xval),39+yval,self.xval-4,self.yval-4) #just need to modify values THIS AINT HARD (yet) 
-                #             pygame.draw.rect(self.screen,self.gray,rect)
-                            
-                #         elif self.map[y][x-1] !=' ' and self.traversedlist[y][x-1] != 1:
-                #             rect = pygame.Rect(1582.5+((x-1)*self.xval),39+yval,self.xval-4,self.yval-4) #just need to modify values THIS AINT HARD (yet) 
-                #             pygame.draw.rect(self.screen,self.gray,rect)
-                #         elif self.map[y+1][x] !=' ' and self.traversedlist[y+1][x] != 1:
-                #             rect = pygame.Rect(1582.5+xval,39+((y+1)*self.yval),self.xval-4,self.yval-4) #just need to modify values THIS AINT HARD (yet) 
-                #             pygame.draw.rect(self.screen,self.gray,rect)
-                #         elif self.map[y-1][x] !=' ' and self.traversedlist[y-1][x] != 1:
-                #             rect = pygame.Rect(1582.5+xval,39+((y-1)*self.yval),self.xval-4,self.yval-4) #just need to modify values THIS AINT HARD (yet) 
-                #             pygame.draw.rect(self.screen,self.gray,rect)
-                #         else:
-                #             #if self.traversedlist[y][x] >0:
-                #             pygame.draw.rect(self.screen,self.yellow,rect)
+                # if self.map[y][x] == ' ' :
+                #     pygame.draw.rect(self.screen,self.Black,rect)
                 
-                elif self.map[y][x] == 'B':
+                
+                if self.map[y][x] == '#':
+                    pygame.draw.rect(self.screen,self.green,rect)
+                # elif self.map[y][x] == 'B':
+                elif self.map[y][x] == 'R' or self.map[y][x] == 'E' or self.map[y][x] == 'B':
+                    for i in Directionlist:
+                        if self.map[y+i[0]][x+i[1]] == '#':
+                            pygame.draw.rect(self.screen,self.gray,rect)
                     
-                    pygame.draw.rect(self.screen,self.red,rect)
-                else:
+                # #     pygame.draw.rect(self.screen,self.red,rect)
+                # if self.map[y][x] == '#':
+                #     pygame.draw.rect(self.screen,self.green,rect)
+                #     for i in Directionlist:
+                #         if self.map[y+i[0]][x+i[1]] == 'R' or self.map[y+i[0]][x+i[1]] == 'E' or self.map[y+i[0]][x+i[1]] == 'B' and self.traversedlist[y+i[0]][x+i[1]] <0:
+                #             rect = pygame.Rect(1582.5+((x+i[1])*self.xval),39+((y+i[0])*self.yval),self.xval-4,self.yval-4)
+                #             pygame.draw.rect(self.screen,self.gray,rect)
+                        
+                            
+                # else:
                     if self.traversedlist[y][x] >0:
-                        pygame.draw.rect(self.screen,self.yellow,rect)
-                    else:
+                        
                         pygame.draw.rect(self.screen,self.gray,rect)
+                # # else:
+                #     pygame.draw.rect(self.screen,self.Black,rect)
                 
               
                     

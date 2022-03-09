@@ -88,7 +88,6 @@ class Game():
                 for col in range(0,len(room[0])):
                     if room[row][col] == 'R':
                         return row,col
-                        break
         roomstate = room[i][j]
         new_i = random.randint(0,len(room)-1)
         new_j = random.randint(0,len(room[0])-1)
@@ -99,9 +98,6 @@ class Game():
     def GenerateMap(self):  #calls a class imported from a separate file to generate grid
         Grid = GridGenerator(self.rooms,self.enemyRooms) #calls the class 
         Rooms = Grid.Layout() #generates the room, outputs a list #no issues
-        
-        for i in Rooms:
-            print(i)
         Map = Grid.GenerateEnemyRoom(Rooms) #input is a list, the output is a modified version of the list
         return Map
             
@@ -146,7 +142,6 @@ class Game():
         self.ObstacleGroup = pygame.sprite.Group()
         Load = File
         if Load != None:
-            
             self.Map = Load[0]
             playerpos = Load[1]
             obstaclelist = Load[2]
@@ -158,7 +153,7 @@ class Game():
                 self.ObstacleGroup.add(obs)
             currentpos = playerpos
             self.globalpos = playerpos
-            ma = MiniMap(self._screen,self.Map,traversedlist)
+            Map = MiniMap(self._screen,self.Map,traversedlist)
             
             
         else:
@@ -172,7 +167,7 @@ class Game():
             #by default, there are no enemies in the room 
             currentpos = playerpos
            
-            ma = MiniMap(self._screen,self.Map)
+            Map = MiniMap(self._screen,self.Map)
         
             self.globalpos = (playerpos[0],playerpos[1])
              #preset values to check how many times has the enemy spaned
@@ -203,7 +198,7 @@ class Game():
          #playerpos is none?
         while running:  
             self._clock.tick(60)
-            self.traversed = ma.traversedlist
+            self.traversed = Map.traversedlist
             runningtime = pygame.time.get_ticks() #this will be logged to see how fast the player plays the game
        
             pygame.mouse.set_visible(0)
@@ -279,6 +274,8 @@ class Game():
                                 playerpos = (playerpos[0]+1,playerpos[1]) #then, the player position gets changed accordingly
                                 
                                 self.globalpos = (playerpos[0],playerpos[1])
+                                for i in Map.traversedlist:
+                                    print(i)
     
                         else: 
                             if DownExit.colliderect(self.player.rect): #if the adjacent room has no enemies,
@@ -289,7 +286,9 @@ class Game():
                                 self.Map[playerpos[0]+1][playerpos[1]] = '#'
                                 currentpos = playerpos
                                 playerpos = (playerpos[0]+1,playerpos[1])
-                                self.globalpos = (playerpos[0],playerpos[1])           
+                                self.globalpos = (playerpos[0],playerpos[1])   
+                                for i in Map.traversedlist:
+                                    print(i)        
                     else:
                         DownExit= pygame.draw.rect(self._screen,self._Black,(700,1040,520,40)) #if there is no room available, then draw a self._Black rectangle
                         if DownExit.colliderect(self.player.rect): #if the player collides into it: 
@@ -314,6 +313,8 @@ class Game():
                                 currentpos = playerpos
                                 playerpos = (playerpos[0]-1,playerpos[1])
                                 self.globalpos = (playerpos[0],playerpos[1])
+                                for i in Map.traversedlist:
+                                    print(i)
                               
                         else: 
                             
@@ -326,7 +327,8 @@ class Game():
                                 currentpos = playerpos
                                 playerpos = (playerpos[0]-1,playerpos[1])
                                 self.globalpos = (playerpos[0],playerpos[1])
-                               
+                                for i in Map.traversedlist:
+                                    print(i)
                     else:
                         TopExit= pygame.draw.rect(self._screen,self._Black,(700,0,520,40))
                         if TopExit.colliderect(self.player.rect):
@@ -350,6 +352,8 @@ class Game():
                                 currentpos = playerpos
                                 playerpos = (playerpos[0],playerpos[1]+1)
                                 self.globalpos = (playerpos[0],playerpos[1])
+                                for i in Map.traversedlist:
+                                    print(i)
                                    
                         else:
                             if RightExit.colliderect(self.player.rect): 
@@ -361,7 +365,8 @@ class Game():
                                 currentpos = playerpos
                                 playerpos = (playerpos[0],playerpos[1]+1)
                                 self.globalpos = (playerpos[0],playerpos[1])
-                              
+                                for i in Map.traversedlist:
+                                    print(i)
                     else:
                         RightExit =  pygame.draw.rect(self._screen, self._Black,(1880,350,40,380))
                         if RightExit.colliderect(self.player.rect):
@@ -385,7 +390,8 @@ class Game():
                                 currentpos = playerpos
                                 playerpos = (playerpos[0],playerpos[1]-1) 
                                 self.globalpos = (playerpos[0],playerpos[1])
-                             
+                                for i in Map.traversedlist:
+                                    print(i)
                         else:
                             if LeftExit.colliderect(self.player.rect):
                                 self.player.projectilegroup.empty()
@@ -396,6 +402,8 @@ class Game():
                                 currentpos = playerpos  
                                 playerpos = (playerpos[0],playerpos[1]-1) 
                                 self.globalpos = (playerpos[0],playerpos[1])
+                                for i in Map.traversedlist:
+                                    print(i)
                     else:
                         LeftExit =  pygame.draw.rect(self._screen, self._Black,(0,350,40,380))
                         if LeftExit.colliderect(self.player.rect):
@@ -493,7 +501,7 @@ class Game():
             self.playersp.update()
             ObstacleToDraw.draw(self._screen)
             ObstacleToDraw.update()
-            ma.update(playerpos[0],playerpos[1]) 
+            Map.update(playerpos[0],playerpos[1]) 
             GameHud.update()
             
             for event in pygame.event.get():
