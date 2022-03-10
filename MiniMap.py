@@ -6,7 +6,7 @@ class MiniMap():
         self.map = maplist  
         self.image = pygame.Surface((300,150))
         self.width = 1
-        self.white = (200,200,200)
+        self.background = (200,200,200)
         self.Black = (0,0,0)
         self.xval = self.image.get_width()//len(self.map[0])
         self.yval = self.image.get_height()//len(self.map)
@@ -16,7 +16,7 @@ class MiniMap():
         self.yellow =(255,255,0)
         self.red = (255,0,0)
         self.screen = screen
-        self.image.fill(self.white)
+        self.image.fill(self.background)
         if traversed == None:
             self.traversedlist = self.traversed()
         else:

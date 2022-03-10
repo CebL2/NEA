@@ -1,5 +1,6 @@
 
 import random
+from tkinter import Grid
 import numpy as np
 
 #loops=0
@@ -86,4 +87,3 @@ class GridGenerator:
         return Rooms
         
        
-   

@@ -48,15 +48,21 @@ class Items(pygame.sprite.Sprite,Hud):
 class Spells:
     def __init__(self):
         pass
-class Warrior:
+class CharClass:
+    def __init__(self,charclass):
+        self.charclass = charclass
+      
+    
+class Warrior(CharClass):
     def __init__(self):
-        pass
-class Mage:
+        super().__init__(0)
+        
+class Mage(CharClass):
     def __init__(self):
-        pass
-class Rogue:
+        super().__init__(1)
+class Rogue(CharClass):
     def __init__(self):
-        pass
+        super().__init__(2)
 
 class Game(): 
     def __init__(self):
@@ -88,7 +94,7 @@ class Game():
         self.border_gap = 0
         self.ObstacleGroup = None
         self.traversed = None
-        
+        self.Health = None
 
     def checkifRoom(self,room,i,j,limit): #checks whether if a element in the self.Map/list is a room
         limit+=1
@@ -125,6 +131,7 @@ class Game():
             pickle.dump(self.traversed,file1)
             pickle.dump(self.player.rect.center,file1)
             pickle.dump(self.BossPos,file1)
+            pickle.dump(self.Health,file1)
         with open("file2","wb") as file2:
             for obstacle in self.ObstacleGroup:
                 newdict = {}
@@ -146,13 +153,14 @@ class Game():
                 traversed = pickle.load(file1)
                 playercenter = pickle.load(file1)
                 bosspos = pickle.load(file1)
+                health = pickle.load(file1)
             with open("file2","rb") as file2:
                 obstacles = pickle.load(file2)
         except:
             return False
        
-        return map,position,obstacles,traversed,playercenter,bosspos
-    def RunGame(self,File=None):  #runs the game 
+        return map,position,obstacles,traversed,playercenter,bosspos,health
+    def RunGame(self,File=None,health=3):  #runs the game 
          #calls the player class
         self.ObstacleGroup = pygame.sprite.Group()
         Load = File
@@ -163,6 +171,8 @@ class Game():
             traversedlist = Load[3]
             playercenter = Load[4]
             BossPos = Load[5]
+            currHealth = Load[6]
+            GameHud = Hud(self._screen,currHealth)
             self.player = Player(self._screenx,self._screeny,playercenter[0],playercenter[1])
             for obstacle in obstaclelist:
                 obs = RoomObstacles(obstacle['i'],obstacle['j'],obstacle['xsize'],obstacle['ysize'],obstacle['xcenter'],obstacle['ycenter'])
@@ -172,8 +182,9 @@ class Game():
             self.BossPos = BossPos
             Map = MiniMap(self._screen,self.Map,traversedlist)
             
-            
+                        
         else:
+            GameHud = Hud(self._screen,health)
             self.player = Player(self._screenx,self._screeny)
             self.Map,BossPos = self.GenerateMap()
             
@@ -199,6 +210,7 @@ class Game():
                         obs = RoomObstacles(i,j)
                         self.ObstacleGroup.add(obs)
         ObstacleToDraw = pygame.sprite.Group()  
+        alphaset = 0
         TimesSpawned = 0 
         EnemyInRoom = 0
         running = 1
@@ -209,7 +221,11 @@ class Game():
         iFrames_time = pygame.USEREVENT+0
         iFrames= pygame.event.Event(iFrames_time)
         check = 0
-        GameHud = Hud(self._screen)
+        #GameHud = Hud(self._screen)
+        NextLevel = pygame.Surface((150,150))
+        NextLevel.set_alpha(0)
+        NextLevel.fill((50,50,50))
+        #nextRect = NextLevel.get_rect()
         self.playersp.add(self.player)
         for i in self.Map:
             print(i) 
@@ -217,7 +233,6 @@ class Game():
             self._clock.tick(60)
             self.traversed = Map.traversedlist
             runningtime = pygame.time.get_ticks() #this will be logged to see how fast the player plays the game
-       
             pygame.mouse.set_visible(0)
             self._screen.fill(self._White) 
             TopLeft = pygame.draw.rect(self._screen,self._Black,(0,0,700,40))    #walls/borders, there are variants of wall as the 'exit' to different rooms will be a separate wall
@@ -248,7 +263,8 @@ class Game():
             
             for obs in ObstacleToDraw: 
                 if self.player.rect.colliderect(obs.rect):  #colliderect  = true
-                    if self.player.rect.y+45 > obs.rect.y and self.player.rect.y+10 < obs.rect.y+obs.ysize: 
+                    if self.player.rect.y+40 > obs.rect.y and self.player.rect.y+10 < obs.rect.y+obs.ysize: #and self.player.rect.y <= obs.rect.y+obs.ysize:
+                        #(self.player.rect.y+45 , obs.rect.y)
                         if obs.rect.collidepoint(self.player.rect.x,self.player.rect.y) or obs.rect.collidepoint(self.player.rect.x,self.player.rect.y+50):
                             self.player.rect.x = obs.rect.x+obs.xsize
                         elif obs.rect.collidepoint(self.player.rect.x+50,self.player.rect.y) or obs.rect.collidepoint(self.player.rect.x+50,self.player.rect.y+50):
@@ -256,7 +272,7 @@ class Game():
                     else:
                         if obs.rect.collidepoint(self.player.rect.x,self.player.rect.y+50) or obs.rect.collidepoint(self.player.rect.x+50,self.player.rect.y+50):
                             self.player.rect.y = obs.rect.y-50
-                        elif obs.rect.collidepoint(self.player.rect.x,self.player.rect.y) or obs.rect.collidepoint(self.player.rect.x+50,self.player.rect.y):
+                        elif  obs.rect.collidepoint(self.player.rect.x,self.player.rect.y) or obs.rect.collidepoint(self.player.rect.x+50,self.player.rect.y):
                             self.player.rect.y = obs.rect.y+obs.ysize
                 for projectile in self.player.projectilegroup:
                     if pygame.sprite.spritecollideany(obs,self.player.projectilegroup):
@@ -419,12 +435,36 @@ class Game():
                     self.player.player_image.fill((0,255,0))
                     self.player.state = 1
                 #NextLevel = pygame.Rect((960,800,150,150))
-                if BossDefeated != 0 and (playerpos[0],playerpos[1]) == self.BossPos:
-                    NextLevel= pygame.draw.rect(self._screen, (51,47,47),(960,800,150,150))
-                    if NextLevel.colliderect(self.player.rect):
-                        running = 0
-                        self.LevelBetween()
                 
+                if BossDefeated != 0 and (playerpos[0],playerpos[1]) == self.BossPos:
+                    self._screen.blit(NextLevel,(960,800))                   
+                    
+                    alphaset+=1
+                    NextLevel.set_alpha(alphaset)
+                    #print(NextLevel.get_alpha())
+                NextAlpha = NextLevel.get_alpha()
+                if NextAlpha == 255:
+                    nextRect = pygame.draw.rect(self._screen,(50,50,50),((960,800,150,150)))
+                    if nextRect.colliderect(self.player.rect):
+                        running = 0
+                        self.LevelBetween(GameHud.health)
+                        
+                        
+                    # else:
+                    #     if NextLevel.colliderect(self.player.rect):
+                    #         
+                 # def update(self,x,y):
+                #     self.drawgrid(x,y)
+                #     self.screen.blit(self.image,(1580,39))
+                
+                #     keypressed = pygame.key.get_pressed()
+                #     if keypressed[pygame.K_m]:
+                #         #self.inner.set_alpha(200)
+                        
+                #         self.image.set_alpha(100)
+                #     else:
+                #         #self.inner.set_alpha(255)
+                #         self.image.set_alpha(200)
             else: #if EnemyInRoom is 1:
                 if not IsBoss:
                     if TimesSpawned < 1:
@@ -464,7 +504,7 @@ class Game():
                                     enemies.rect.y = obs.rect.y-100
                                 elif  obs.rect.collidepoint(enemies.rect.x,enemies.rect.y) or obs.rect.collidepoint(enemies.rect.x+100,enemies.rect.y):
                                     enemies.rect.y = obs.rect.y+obs.ysize
-                        #self.enemies.update()
+                    
                 for projectile in self.player.projectilegroup:  #checks if player attack projectiles has collided with the enemy
                     collision = pygame.sprite.spritecollide(projectile, self.enemies, 0) #checks within the sprite group whether if 'projectile' has collided with any sprites the sprite group self.enemies
                     for enemy in collision:
@@ -479,7 +519,7 @@ class Game():
                 if len(playercol)!=0 and self.player.state == 1:
                    GameHud.health -=1
                    if GameHud.health >0:
-                        
+                        self.Health = GameHud.health
                         #print(GameHud.health)
                         newtime = runningtime +2000
                         pygame.event.post(iFrames)
@@ -544,7 +584,7 @@ class Game():
         running = 1
         while running:
             pass
-    def LevelBetween(self):
+    def LevelBetween(self,Health=3):
         self.Level+=1
        # print(level)
         leveltext = "Level "+str(self.Level)
@@ -554,14 +594,12 @@ class Game():
         while running:
             pygame.mouse.set_visible(1)
             self._screen.fill(self._Black) 
-            
             mousex, mousey = pygame.mouse.get_pos()
             self._screen.blit(self._textfont.render(leveltext ,1, self._White),(100,200))
             Play = self._screen.blit(self._textfont.render("Play",1, self._White), (900,300))
             if Play.collidepoint(mousex,mousey) and click == 1:
-                
-                self.RunGame()
                 running = 0
+                self.RunGame(None,Health)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT: # Did the user click the window close button?
                     pygame.quit()
@@ -571,7 +609,6 @@ class Game():
                 else:
                     click =0 
             pygame.display.update()
-            #pygame.draw.rect(self._screen,self._White())
     def Pause(self): #pause menu
         running = 1
         click = 0
@@ -587,7 +624,6 @@ class Game():
             if SaveGame.collidepoint(mousex,mousey) and click == 1:
                 click = 0 
                 self.Save()
-                
             if BackToGame.collidepoint(mousex,mousey):
                 if click == 1:
                     running = 0 
@@ -731,7 +767,7 @@ class Game():
             if Play.collidepoint(mousex,mousey) and click  == 1:
                 self.CharacterCreation()
                 self.LevelBetween()
-                #self.RunGame()
+                
                 running = 0
                 return 0
             if Load.collidepoint(mousex,mousey) and click == 1:

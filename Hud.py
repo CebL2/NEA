@@ -2,10 +2,10 @@ from tkinter import E
 import pygame
 pygame.init()
 class Hud:  #WIP
-    def __init__(self,screen):
+    def __init__(self,screen,health =3):
         #healht bar are 3 squares
         self.screen = screen
-        self.health = 3
+        self.health = health
         self._Red = ((255,0,0))
         self._Black = ((0,0,0))
         self.Colour1 = self._Red
@@ -21,14 +21,15 @@ class Hud:  #WIP
         health_2 =pygame.draw.rect(self.screen,self.Colour2,(100,0,80,40))
         health_3 =pygame.draw.rect(self.screen,self.Colour3,(200,0,80,40))
     def update(self):
-        self.DrawHealth()
+        
         if self.health == 3:
             pass
         elif self.health == 2:
             self.Colour3 = self._Black
         else:
+            self.Colour3 = self._Black
             self.Colour2 = self._Black
-        
+        self.DrawHealth()
         #if self.health == 3:
             
         
