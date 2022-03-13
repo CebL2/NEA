@@ -16,15 +16,22 @@ class GridGenerator:
             return True 
     def GenerateEnemyRoom(self,layout):
         BossToAdd = 1
-        while self.enemyrooms > 0:
+        roomadd = 6
+        while roomadd >0:
+            print(roomadd)
+        #while self.enemyrooms > 0:
             for i in range(0,len(layout)-1):
                 for j in range(0,len(layout[0])):
-                    if layout[i][j] == 'R':
+                    if roomadd == 0:
+                        break
+                    elif layout[i][j] == 'R':
                         chance = [0,1]
                         decision = np.random.choice(chance,p=[0.3,0.7])
                         if decision == 1:
+                           # print(how many times did this reach)
                             layout[i][j] = 'E'
-                            self.enemyrooms -=1
+                            roomadd-=1
+                            #self.enemyrooms -=1
         while BossToAdd>0:#heuristic approach
             for i in range(0,len(layout)-1):
                 for j in range(0,len(layout[0])): 
@@ -34,8 +41,7 @@ class GridGenerator:
                         if decision == 1:
                             layout[i][j] = 'B'
                             BossToAdd -= 1
-                            return layout
-                        
+                            return layout    
     def RecursiveAdd(self,currenti,currentj,NewLayout,RoomsLeft):
         RoomsToAdd = RoomsLeft
         if RoomsToAdd == 0:

@@ -2,19 +2,17 @@
 #Implement Projectiles #DONE 
 #Room traversal with restrictiosn #DONE
 #Enemy spawn DONE
-#Room modifications (obstacles)         
+#Room modifications (obstacles)  @DONE        
 #Character creation with built in speical abilities for different classes    #PROGRESS
 #Spells 
-#Create self.Map 
 from re import I
 import time
 import threading as thread
 import pygame, sys, random
-from Enemy import *
 from GridGenerator import *
 from Stats import *
 from Obstacles import *
-from Player import *
+from Units import *
 from MiniMap import*
 from Hud import*
 import pickle
@@ -63,14 +61,31 @@ class Mage(CharClass):
 class Rogue(CharClass):
     def __init__(self):
         super().__init__(2)
-
-class Game(): 
+class PlayerStats():
     def __init__(self):
+        self.luck = 0
+        self.badluck = 0 
+        self.BossPos = None
+        self.player = None
+        self.Map = None
+        self.globalpos = None
+        self.ObstacleGroup = None
+        self.traversed = None
+        self.Health = None
+
+        
+class Game(PlayerStats): 
+    def __init__(self):
+        PlayerStats.__init__(self)
+        #print(PlayerStats)
+        #self.a = PlayerStats()
+       # p#rint(self.a.luck)
         self._screen = pygame.display.set_mode((WIDTH,HEIGHT))
         self._White = (255,255,255) #preset values for colour and resolution
         self._Black = (0,0,0)
         self._Red = (255,0,0)
         self._Gray = (220,220,220)
+        self._Green = (0,255,0)
         self._screenx = 1920
         self._screeny = 1080
         self._textfont = pygame.font.Font(r'C:\Windows\Fonts\georgia.ttf', 50 ) 
@@ -83,18 +98,8 @@ class Game():
         self.rooms = 20
         self.health = 3
         self.enemyRooms = 12
+        self.playerstats = PlayerStats()
         
-        
-        self.luck = 0
-        self.badluck = 0 
-        self.BossPos = None
-        self.player = None
-        self.Map = None
-        self.globalpos = None
-        self.border_gap = 0
-        self.ObstacleGroup = None
-        self.traversed = None
-        self.Health = None
 
     def checkifRoom(self,room,i,j,limit): #checks whether if a element in the self.Map/list is a room
         limit+=1
@@ -124,14 +129,14 @@ class Game():
     def Save(self):
         obslist=[]
         with open("file1", "wb") as file1: #write the obstacles in as well
-            #oblist = []
-
             pickle.dump(self.Map,file1)
             pickle.dump(self.globalpos,file1)
             pickle.dump(self.traversed,file1)
             pickle.dump(self.player.rect.center,file1)
             pickle.dump(self.BossPos,file1)
             pickle.dump(self.Health,file1)
+            pickle.dump(self.colour,file1)
+            pickle.dump(self.size,file1)
         with open("file2","wb") as file2:
             for obstacle in self.ObstacleGroup:
                 newdict = {}
@@ -163,17 +168,17 @@ class Game():
     def RunGame(self,File=None,health=3):  #runs the game 
          #calls the player class
         self.ObstacleGroup = pygame.sprite.Group()
-        Load = File
-        if Load != None:
-            self.Map = Load[0]
-            playerpos = Load[1]
-            obstaclelist = Load[2]
-            traversedlist = Load[3]
-            playercenter = Load[4]
-            BossPos = Load[5]
-            currHealth = Load[6]
+        #Load = File
+        if File != None:
+            self.Map = File[0]
+            playerpos = File[1]
+            obstaclelist = File[2]
+            traversedlist = File[3]
+            playercenter = File[4]
+            BossPos = File[5]
+            currHealth = File[6]
             GameHud = Hud(self._screen,currHealth)
-            self.player = Player(self._screenx,self._screeny,playercenter[0],playercenter[1])
+            self.player = Player(self._screenx,self._screeny,(50,50),self._Green,playercenter[0],playercenter[1])
             for obstacle in obstaclelist:
                 obs = RoomObstacles(obstacle['i'],obstacle['j'],obstacle['xsize'],obstacle['ysize'],obstacle['xcenter'],obstacle['ycenter'])
                 self.ObstacleGroup.add(obs)
@@ -181,13 +186,13 @@ class Game():
             self.globalpos = playerpos
             self.BossPos = BossPos
             Map = MiniMap(self._screen,self.Map,traversedlist)
-            
                         
         else:
             GameHud = Hud(self._screen,health)
-            self.player = Player(self._screenx,self._screeny)
+               # self.image = pygame.Surface((50,50)) 
+    # self.image.fill((0,255,0))
+            self.player = Player(self._screenx,self._screeny,(50,50),self._Green)
             self.Map,BossPos = self.GenerateMap()
-            
             self.BossPos = BossPos
             Roomi = random.randint(0,len(self.Map)-1) 
             Roomj = random.randint(0,len(self.Map[0])-1)
@@ -432,23 +437,45 @@ class Game():
                     if LeftExit.colliderect(self.player.rect):
                         self.player.rect.x = 40
                 if check == 1 and newtime< runningtime:
-                    self.player.player_image.fill((0,255,0))
+                    self.player.image.fill((0,255,0))
                     self.player.state = 1
                 #NextLevel = pygame.Rect((960,800,150,150))
                 
-                if BossDefeated != 0 and (playerpos[0],playerpos[1]) == self.BossPos:
-                    self._screen.blit(NextLevel,(960,800))                   
+                #NextLevel.set_alpha(0)
+                # print(playerpos[0],playerpos[1])
+                # print(self.BossPos)
+                #NextLevel.set_alpha(0)
+                if BossDefeated != 0:
                     
-                    alphaset+=1
-                    NextLevel.set_alpha(alphaset)
-                    #print(NextLevel.get_alpha())
+                    print(NextLevel.get_alpha())
+                    if (playerpos[0],playerpos[1]) == self.BossPos:
+                        #print(NextLevel.get_alpha())
+                        self._screen.blit(NextLevel,(960,800))                   
+                        alphaset+=5
+                        NextLevel.set_alpha(alphaset)
+                    
+                    #print(NextAlpha)  
+                    else:
+                        
+                        #print("reach?")
+                        alphaset = 0
+                        NextLevel.set_alpha(0)
+                        #NextAlpha = 0
                 NextAlpha = NextLevel.get_alpha()
-                if NextAlpha == 255:
+                #print(NextAlpha)
+                if NextAlpha == 255:#and (playerpos[0],playerpos[1]) == self.BossPos:
                     nextRect = pygame.draw.rect(self._screen,(50,50,50),((960,800,150,150)))
                     if nextRect.colliderect(self.player.rect):
                         running = 0
                         self.LevelBetween(GameHud.health)
-                        
+                    
+                    
+                        #print(NextLevel.get_alpha())
+                    #print(NextLevel.get_alpha())
+                
+                    
+                  
+                            
                         
                     # else:
                     #     if NextLevel.colliderect(self.player.rect):
@@ -466,16 +493,18 @@ class Game():
                 #         #self.inner.set_alpha(255)
                 #         self.image.set_alpha(200)
             else: #if EnemyInRoom is 1:
-                if not IsBoss:
+               # print(IsBoss)
+                if IsBoss:
+
                     if TimesSpawned < 1:
                         #for i in range(0,3):
-                        enemy = Enemy()
-                        self.enemies.add(enemy)
+                        boss = Boss(self._screenx,self._screeny,(100,100),(0,0,0))
+                        self.enemies.add(boss)
                         TimesSpawned +=1 
                 else:
                     if TimesSpawned < 1:
                         #for i in range(0,3):
-                        enemy = Enemy()
+                        enemy = Enemy(self._screenx,self._screeny,(100,100),(0,0,0))
                         self.enemies.add(enemy)
                         TimesSpawned +=1 
                 DownExit= pygame.draw.rect(self._screen,self._Black,(700,1040,520,40)) #seal all walls shut
@@ -520,8 +549,8 @@ class Game():
                    GameHud.health -=1
                    if GameHud.health >0:
                         self.Health = GameHud.health
-                        #print(GameHud.health)
-                        newtime = runningtime +2000
+                        #print(GameHud.health)s
+                        newtime = runningtime +1500
                         pygame.event.post(iFrames)
                         check = 1
                           
@@ -530,7 +559,7 @@ class Game():
                        break               
 
                 if check == 1 and newtime< runningtime:
-                    self.player.player_image.fill((0,255,0))
+                    self.player.image.fill((0,255,0))
                     self.player.state = 1
 
                 if len(self.enemies) == 0 and not IsBoss: #if the sprite group is enpty, return to normal state 
@@ -559,7 +588,7 @@ class Game():
                 
                 if event == iFrames: 
                     if newtime > runningtime:
-                        self.player.player_image.fill((0,0,255))
+                        self.player.image.fill((0,0,255))
                         self.player.state = 0
                     
                 if event.type == pygame.KEYDOWN: 
