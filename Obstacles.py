@@ -8,7 +8,8 @@ class RoomObstacles(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.i = i
         self.j = j
-        self.randomchoice = random.randint(1,2)
+        
+        self.randomchoice = random.randint(1,2) #random values to assign positions to where the obstacles can spawn
         self.randomxcenter1 = random.randint(300,800)
         self.randomxcenter2 = random.randint(1000,1500)
         self.randomycenter1 = random.randint(300,400)
@@ -37,8 +38,6 @@ class RoomObstacles(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (self.xcenter,self.ycenter)  
 
-        
-        #self.rect.center = (300,500)
-    
+
     
 

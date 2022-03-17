@@ -1,60 +1,20 @@
 
-from Attack import *
+from Attack import * #imports the attack module from local files
 import random
 
 import pygame 
 
 
-class Unit(pygame.sprite.Sprite):
+class Unit(pygame.sprite.Sprite): #general unit class to be used for other objects, since all units are sprites, the class must inherit the sprite class from pygame
     def __init__(self,screenx,screeny,size=None,colour=None):
-        pygame.sprite.Sprite.__init__(self) 
-        self.screenx = screenx
+        pygame.sprite.Sprite.__init__(self) #initialises the sprite object to access and assign variables
+        self.screenx = screenx #
         self.screeny = screeny
-        self.image = pygame.Surface(size)
-        self.image.fill(colour)
-        self.rect = self.image.get_rect()
+        self.image = pygame.Surface(size) #creates a image of the size given
+        self.image.fill(colour) #and fills it with the colour passed through the class
+        self.rect = self.image.get_rect() #gets the rectangle object
+        self.projectilegroup = pygame.sprite.Group() 
     
-
-
-
-class Player(Unit):  #Player class
-    def __init__(self,screenx,screeny,size,colour,centerx= None,centery= None):   #screen values are passed in  
-        self.centerx = centerx
-        self.centery = centery
-        super().__init__(screenx,screeny,size,colour)
-        
-        if self.centerx == None:
-            self.rect.center = (self.screenx/2, self.screeny/2)
-        else:
-            self.rect.center = (self.centerx, self.centery)
-        self.state = 1
-        self.speed = 10
-        self.projectilegroup = pygame.sprite.Group()  #projectile group 
-        # self.charClass = charclass
-        # self.statblock = statblock
-        # self.charlist = charclasslist
-    # def PlayerClass(self):
-    #     if self.charClass == self.charlist[0]:#warrior #charclass = ["Warrior","Mage","Paladin","Rogue"]
-    #         bonuses = Warrior()  #planning to add classes
-    #     elif self.charclass == self.charlist[1]:
-    #         bonuses = Mage()
-    #     elif self.charclass == self.charlist[2]:
-    #         bonuses = Paladin()     
-    #     else:
-    #         bonuses = Rogue()     #add bonuses to statblock
-    # def Spell(self,charclass,charlist):
-    #     thing = Spells()    
-    def update(self):  #update function to move player
-        keypressed = pygame.key.get_pressed()
-        
-        if keypressed[pygame.K_s] and self.rect.y < self.screeny:
-            self.rect.y += self.speed
-        if keypressed[pygame.K_w] and self.rect.y > 0:
-            self.rect.y  -= self.speed
-        if keypressed[pygame.K_a] and self.rect.x > 0:
-            self.rect.x -= self.speed
-        if keypressed[pygame.K_d] and self.rect.x <  self.screenx:
-            self.rect.x += self.speed
     def Attackup(self):  #attack functions for projectiles
         projectileup = Attack(self.rect.centerx,self.rect.centery-50,self.screenx,self.screeny,1)
         self.projectilegroup.add(projectileup)
@@ -70,101 +30,138 @@ class Player(Unit):  #Player class
     def Attackdown(self):
         projectiledown = Attack(self.rect.centerx,self.rect.centery+50,self.screenx,self.screeny,4)
         self.projectilegroup.add(projectiledown)
+
+
+
+class Player(Unit):  #Player class
+    def __init__(self,screenx,screeny,size,colour,centerx= None,centery= None):   #screen values are passed in  
+        self.centerx = centerx
+        self.centery = centery
+        super().__init__(screenx,screeny,size,colour) #initiliases the unit class with it's own values
         
+        if self.centerx == None: #if either of the center of the player's position is None
+            self.rect.center = (self.screenx/2, self.screeny/2) #then by default, the player is at the center of the screen
+        else:
+            self.rect.center = (self.centerx, self.centery) #otherwise, the center is the value of what was passed in
+        self.state = 1 #vulnerable state is 1, if the player is hit, state changes to 0 for 1.5 seconds before turning back into 1
+        self.speed = 10 
+            
+    def Movement(self):
+        keypressed = pygame.key.get_pressed()
+        if keypressed[pygame.K_s] and self.rect.y < self.screeny: 
+            self.rect.y += self.speed
+        if keypressed[pygame.K_w] and self.rect.y > 0:
+            self.rect.y  -= self.speed
+        if keypressed[pygame.K_a] and self.rect.x > 0:
+            self.rect.x -= self.speed
+        if keypressed[pygame.K_d] and self.rect.x <  self.screenx:
+            self.rect.x += self.speed
+    def update(self,obstaclegroup):  #update function to move player
+        self.Movement()
+        for obs in obstaclegroup: 
+            if self.rect.colliderect(obs.rect): #if the player collides with the obstacle
+                if self.rect.y+40 > obs.rect.y and self.rect.y+10 < obs.rect.y+obs.ysize: #and player collides at either left or right side of the obstacle 
+                    if obs.rect.collidepoint(self.rect.x,self.rect.y) or obs.rect.collidepoint(self.rect.x,self.rect.y+50): #check if the top left and bottom left corners of the player has collided
+                        self.rect.x = obs.rect.x+obs.xsize #if collided, then the player remains the same where it collided, in this case, right of the obstacle
+                    elif obs.rect.collidepoint(self.rect.x+50,self.rect.y) or obs.rect.collidepoint(self.rect.x+50,self.rect.y+50): #if the top right and bottom right corners collide
+                        self.rect.x= obs.rect.x-50 #then the player stays at the left size of the obstacle   
+                else:  #similar process, but for the bottom and top parts of the obstacle
+                    if obs.rect.collidepoint(self.rect.x,self.rect.y+50) or obs.rect.collidepoint(self.rect.x+50,self.rect.y+50):
+                        self.rect.y = obs.rect.y-50
+                    elif  obs.rect.collidepoint(self.rect.x,self.rect.y) or obs.rect.collidepoint(self.rect.x+50,self.rect.y):
+                        self.rect.y = obs.rect.y+obs.ysize
+            for projectile in self.projectilegroup: #goes through each projectile in the projectile group of the player
+                if pygame.sprite.spritecollideany(projectile,obstaclegroup):  #if any of the existing projectiles collide with any of the obstacles
+                    projectile.kill()  #destroy the projectile
 
 
 class Enemy(Unit):
-    #Enemy  = pygame.Surface((200,200)) #pygame.image.load("spritegroup//test enemy.png").convert()
     def __init__(self,screenx,screeny,size,colour):
         super().__init__(screenx,screeny,size,colour)
-        self.playerx = 1
-        #self.ObstacleClass = obstacle
-        self.playery = 1
-        #self.image = pygame.Surface((100,100)) #Enemy.Enemy
-        #self.rect = self.image.get_rect()
-        self.rect.center = ((random.randint(0,1280),(random.randint(0,1024))))   
+        self.rect.center = ((random.randint(500,1000),(random.randint(300,900))))   
         self.health = random.randint(1,5)
-        self.difficulty = 1
-     
-        self.speed = 10
-  
-#    #1840x1000 
-   
-#    #this is the amount of space that can be worked with 
-# #  def drawgrid(self,posx,posy):
-# #             for y, row in enumerate(self.map):  #element, value
-# #             for x , col in enumerate(row):
-                
-# #                 #for every direction
-# #                 xval = x*self.xval
-# #                 yval = y*self.yval
-# #                 if y == posx and x == posy:
+        self.speed = 1
+        
 
-# #                     self.traversedlist[y][x] = 1
-    
-#     def PathFind(self,x,y):
-#         xval = 1840//len(self.map[0])
-#         yval = 1000//len(self.map)
-#         xdist= self.rect.x - x
-#         ydist = self.rect.y - y
-#         #for y, 
-        
-        
-        
-#         #get the distance between the enemy and player
-#         #in that distance check whether if in that path there is an obstacle 
-        
-#         pass
-   
-#     #we can parse in a obstacle object by default so that it can be accessed at any time, then based on the values of the obstacle size and center, the enemy can then move 
-#     #away from the obstacle or try new paths to get to the enemy
-    def update(self,x,y): #simple enemy movement to move to player
+    def update(self,x,y,obstaclegroup): #simple enemygroup movement to move to player
+        for obs in obstaclegroup: 
+            if self.rect.colliderect(obs.rect):  #colliderect  = true
+                if self.rect.y+45 > obs.rect.y and self.rect.y+10 < obs.rect.y+obs.ysize: 
+                    if obs.rect.collidepoint(self.rect.x,self.rect.y) or obs.rect.collidepoint(self.rect.x,self.rect.y+100): #left colilde
+                        self.rect.x = obs.rect.x+obs.xsize
+                    elif obs.rect.collidepoint(self.rect.x+100,self.rect.y) or obs.rect.collidepoint(self.rect.x+100,self.rect.y+100): #right collide
+                        self.rect.x= obs.rect.x-100
+                else:
+                    if obs.rect.collidepoint(self.rect.x,self.rect.y+100) or obs.rect.collidepoint(self.rect.x+100,self.rect.y+100):
+                        self.rect.y = obs.rect.y-100
+                    elif  obs.rect.collidepoint(self.rect.x,self.rect.y) or obs.rect.collidepoint(self.rect.x+100,self.rect.y):
+                        self.rect.y = obs.rect.y+obs.ysize
 
-        
-        
-        xdist= self.rect.x - x
-        ydist = self.rect.y - y
-        #print(xdist,ydist)
-        
-        
-        
-        if xdist > 0:
-            self.rect.x-=1
-            
-        elif xdist <0 :
-            self.rect.x+=1
-            
-        elif  ydist>0:
-            self.rect.y-=1
-           
-        elif  ydist<0:
-            self.rect.y +=1
+            else:
+                if self.rect.centerx < x:
+                    self.rect.x += self.speed
+                elif self.rect.centerx > x:
+                    self.rect.x -= self.speed
+                if self.rect.centery < y:
+                    self.rect.y +=  self.speed
+                elif self.rect.centery > y:
+                    self.rect.y -= self.speed
+              
 
 class Boss(Enemy):
     def __init__(self,screenx,screeny,size,colour):
         super().__init__(screenx,screeny,size,colour)
+        self.state = 1
         self.health = 10
-    # def update(self,x,y): #simple enemy movement to move to player
+        self.cooldown =0
+    def Attackup(self):  #attack functions for projectiles
+        
+        projectileup = Attack(self.rect.centerx,self.rect.centery-100,self.screenx,self.screeny,1)
+        self.projectilegroup.add(projectileup)
 
+    def Attackright(self):
+        projectiledown = Attack(self.rect.centerx+100,self.rect.centery,self.screenx,self.screeny,2)
+        self.projectilegroup.add(projectiledown)
+        
+    def Attackleft(self):
+        projectiledown = Attack(self.rect.centerx-100,self.rect.centery,self.screenx,self.screeny,3)
+        self.projectilegroup.add(projectiledown)
+        
+    def Attackdown(self):
+        projectiledown = Attack(self.rect.centerx,self.rect.centery+100,self.screenx,self.screeny,4)
+        self.projectilegroup.add(projectiledown)
+    
+class MeleeEnemy(Enemy):
+    def __init__(self,screenx,screeny,size,colour):
+        super().__init__(screenx,screeny,size,colour)
+        self.state = 0
         
         
-    #     xdist= self.rect.x - x
-    #     ydist = self.rect.y - y
-    #     #print(xdist,ydist)
         
         
+class RangedEnemy(Enemy):
+    def __init__(self,screenx,screeny,size,colour):
+        super().__init__(screenx,screeny,size,colour)
+        self.state = 1
+        self.cooldown = 0
+       
+    
+    def Attackup(self):  #attack functions for projectiles
         
-    #     if xdist > 0:
-    #         self.rect.x-=1
-            
-    #     elif xdist <0 :
-    #         self.rect.x+=1
-            
-    #     elif  ydist>0:
-    #         self.rect.y-=1
-           
-    #     elif  ydist<0:
-    #         self.rect.y +=1
+        projectileup = Attack(self.rect.centerx,self.rect.centery-100,self.screenx,self.screeny,1)
+        self.projectilegroup.add(projectileup)
+
+    def Attackright(self):
+        projectiledown = Attack(self.rect.centerx+100,self.rect.centery,self.screenx,self.screeny,2)
+        self.projectilegroup.add(projectiledown)
         
-            
+    def Attackleft(self):
+        projectiledown = Attack(self.rect.centerx-100,self.rect.centery,self.screenx,self.screeny,3)
+        self.projectilegroup.add(projectiledown)
+        
+    def Attackdown(self):
+        projectiledown = Attack(self.rect.centerx,self.rect.centery+100,self.screenx,self.screeny,4)
+        self.projectilegroup.add(projectiledown)
+  
+
         
