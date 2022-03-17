@@ -87,7 +87,7 @@ class MiniMap():
     def update(self,x,y):
         self.drawgrid(x,y)
         self.screen.blit(self.image,(1580,39)) #projects the background of the minimap
-       
+        
         keypressed = pygame.key.get_pressed()
         if keypressed[pygame.K_m]:
         
