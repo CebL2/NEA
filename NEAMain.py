@@ -3,7 +3,6 @@ import pygame, sys, random
 from GridGenerator import *
 from Obstacles import *
 from Units import *
-from MiniMap import*
 from Hud import*
 import pickle
 #custom and built in libraries imported
@@ -20,8 +19,6 @@ def Main():  #main function to call
 
 class GameStats():  #separate class to store information for the game
     def __init__(self):
-        self.luck = 0
-        self.badluck = 0 
         self.BossPos = None
         self.player = None
         self.Map = None
@@ -35,7 +32,6 @@ class GameStats():  #separate class to store information for the game
 class Game(GameStats):  #inherits the GameStats class
     def __init__(self):
         GameStats.__init__(self)
-        
         self._screen = pygame.display.set_mode((WIDTH,HEIGHT))
         self._White = (255,255,255) #preset values for colour and resolution
         self._Black = (0,0,0)
@@ -199,7 +195,7 @@ class Game(GameStats):  #inherits the GameStats class
         NextLevel.set_alpha(0) 
         NextLevel.fill((50,50,50))
         
-     
+        
         self.playersp.add(self.player)
         for i in self.Map:
             print(i)

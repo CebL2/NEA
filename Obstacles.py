@@ -5,7 +5,7 @@ import pygame, random
 #pos, size
 class RoomObstacles(pygame.sprite.Sprite):
     def __init__(self,i,j,xsize=None,ysize=None,xcenter=None,ycenter = None): #map indexes
-        pygame.sprite.Sprite.__init__(self)
+        super().__init__()
         self.i = i
         self.j = j
         

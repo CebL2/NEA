@@ -1,13 +1,13 @@
 
 from Attack import * #imports the attack module from local files
 import random
-
+from Hud import *
 import pygame 
 
 
 class Unit(pygame.sprite.Sprite): #general unit class to be used for other objects, since all units are sprites, the class must inherit the sprite class from pygame
     def __init__(self,screenx,screeny,size=None,colour=None):
-        pygame.sprite.Sprite.__init__(self) #initialises the sprite object to access and assign variables
+        super().__init__() #initialises the sprite object to access and assign variables
         self.screenx = screenx #
         self.screeny = screeny
         self.image = pygame.Surface(size) #creates a image of the size given
@@ -37,8 +37,7 @@ class Player(Unit):  #Player class
     def __init__(self,screenx,screeny,size,colour,centerx= None,centery= None):   #screen values are passed in  
         self.centerx = centerx
         self.centery = centery
-        super().__init__(screenx,screeny,size,colour) #initiliases the unit class with it's own values
-        
+        super().__init__(screenx,screeny,size,colour) #initiliases the unit class with it's own values8
         if self.centerx == None: #if either of the center of the player's position is None
             self.rect.center = (self.screenx/2, self.screeny/2) #then by default, the player is at the center of the screen
         else:
