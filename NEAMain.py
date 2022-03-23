@@ -103,14 +103,6 @@ class Game:
         save function to save player progress
         '''
         obslist=[]
-        # with open("file1", "wb") as file1:   #in this file, it saves the map, the current position of the player, the rooms traversed, player health,
-        #     pickle.dump(self.stats.Map,file1)      #avatar size and colour, the x and y position of the player, and the boss room element position
-        #     pickle.dump(self.stats.globalpos,file1)
-        #     pickle.dump(self.stats.traversed,file1)
-        #     pickle.dump(self.player.rect.center,file1)
-        #     pickle.dump(self.stats.BossPos,file1)
-        #     pickle.dump(self.stats.Health,file1)
-        #     pickle.dump(self.stats.Level,file1)
         with open("file1", "wb") as file1:
             pickle.dump(self.stats,file1)
             pickle.dump(self.player.rect.center,file1)
@@ -132,13 +124,12 @@ class Game:
         '''
         try: #error handle in case if the file does not exist
             with open("file1","rb") as file1:
-                statsobj = pickle.load(file1) 
+                statsobj = pickle.load(file1)  
                 playercenter = pickle.load(file1)
             with open("file2","rb") as file2:
                 obstacles = pickle.load(file2)
         except:
             return False
-        # return map,position,obstacles,traversed,playercenter,bosspos,health,level
         return statsobj,playercenter,obstacles
     def RunGame(self,File=None,health=3,enemyHealthInc=0): 
         '''
@@ -610,10 +601,10 @@ class Game:
             
     def LevelBetween(self,Health=3,runningtime=0): 
         '''
-        the intermission betweeen levels, with the default parameter of the health being 3, any changes to this parameter
+        the intermission betweeen levels, with the default parameter of the health being 3
         '''
         self.stats.Level+=1                #will be passed through and carried on to the next level
-        if self.cooldowntime > self.cooldowncap and self.stats.Level != 1:
+        if self.cooldowntime > self.cooldowncap and self.stats.Level != 1: #reduces cooldown between attacks for ranged enemies to a cap
             self.cooldowntime -= 10*self.stats.Level
         if self.AmountOfRooms < self.MaxRooms and self.AmountOfEnemyRooms < self.MaxEnemy and self.AmountOfEnemyRooms < self.AmountOfRooms: #there is limit to how many rooms can exist as the algorithm to generate rooms may reach the recursive depth if too many rooms are added
             if runningtime < 1000*60*2:
@@ -622,10 +613,6 @@ class Game:
             else:
                 self.AmountOfRooms+=random.randint(3,5)
                 self.AmountOfEnemyRooms+=random.randint(2,3)
-         #same goes with the maximum enemy rooms, whilst a similar algorithm, it may not break out of the loop if there are too many enemy rooms to be added
-            
-       
-            
         leveltext = "Level "+str(self.stats.Level)
         running = 1
         click = 0
@@ -658,7 +645,7 @@ class Game:
             pygame.display.update()
     def Pause(self): 
         '''
-        pause menu
+        Pause menu
         '''
         running = 1
         click = 0
@@ -762,6 +749,7 @@ class Game:
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         running = 0
+                        return 0
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     click = 1
                 else:
@@ -811,6 +799,7 @@ class Game:
                     self.LevelBetween()
                     running = 0
                     return 0
+                
                 
             
             if Load.collidepoint(mousex,mousey) and click == 1 and Remove!=1:
