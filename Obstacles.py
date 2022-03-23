@@ -1,14 +1,9 @@
-from tkinter.messagebox import NO
 import pygame, random
-
-
-#pos, size
 class RoomObstacles(pygame.sprite.Sprite):
     def __init__(self,i,j,xsize=None,ysize=None,xcenter=None,ycenter = None): #map indexes
         super().__init__()
         self.i = i
         self.j = j
-        
         self.randomchoice = random.randint(1,2) #random values to assign positions to where the obstacles can spawn
         self.randomxcenter1 = random.randint(300,800)
         self.randomxcenter2 = random.randint(1000,1500)
@@ -38,6 +33,4 @@ class RoomObstacles(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (self.xcenter,self.ycenter)  
 
-
-    
 

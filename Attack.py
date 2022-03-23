@@ -1,5 +1,4 @@
 import pygame 
-
 class Attack(pygame.sprite.Sprite):
     projectile =  pygame.Surface((10,10))
     def __init__(self,unitx,unity,screenx,screeny,Direction): #takes in the unit's x and y position, the width and length of the screen, and the direction
@@ -11,7 +10,16 @@ class Attack(pygame.sprite.Sprite):
         self.Direction = Direction
         self.screenx = screenx
         self.screeny = screeny
-
+        
+        if self.Direction == 1:
+            self.rect.centery -=50
+        elif self.Direction ==2:
+            self.rect.centerx+=50
+        elif self.Direction == 3:
+            self.rect.centerx-=50
+        else:
+            self.rect.centery+=50
+        
     def update(self):
         if self.Direction == 1:     
             self.rect.y -= self.speed
@@ -29,15 +37,3 @@ class Attack(pygame.sprite.Sprite):
             self.rect.y += self.speed
             if self.rect.y > self.screeny-40:
                 self.kill()
-        
-         
-        
-
-
-        
-        
-        
-
-        
-        
-        

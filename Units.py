@@ -1,12 +1,13 @@
-
 from Attack import * #imports the attack module from local files
 import random
-from Hud import *
 import pygame 
 
 
-class Unit(pygame.sprite.Sprite): #general unit class to be used for other objects, since all units are sprites, the class must inherit the sprite class from pygame
-    def __init__(self,screenx,screeny,size=None,colour=None):
+class Unit(pygame.sprite.Sprite): 
+    '''
+    general unit class to be used for other objects, since all units are sprites, the class must inherit the sprite class from pygame
+    '''
+    def __init__(self,screenx,screeny,size,colour):
         super().__init__() #initialises the sprite object to access and assign variables
         self.screenx = screenx #
         self.screeny = screeny
@@ -15,25 +16,15 @@ class Unit(pygame.sprite.Sprite): #general unit class to be used for other objec
         self.rect = self.image.get_rect() #gets the rectangle object
         self.projectilegroup = pygame.sprite.Group() 
     
-    def Attackup(self):  #attack functions for projectiles
-        projectileup = Attack(self.rect.centerx,self.rect.centery-50,self.screenx,self.screeny,1)
+    def Attack(self,direction):  #attack functions for projectiles
+        projectileup = Attack(self.rect.centerx,self.rect.centery,self.screenx,self.screeny,direction)
         self.projectilegroup.add(projectileup)
+    
 
-    def Attackright(self):
-        projectiledown = Attack(self.rect.centerx+50,self.rect.centery,self.screenx,self.screeny,2)
-        self.projectilegroup.add(projectiledown)
-        
-    def Attackleft(self):
-        projectiledown = Attack(self.rect.centerx-50,self.rect.centery,self.screenx,self.screeny,3)
-        self.projectilegroup.add(projectiledown)
-        
-    def Attackdown(self):
-        projectiledown = Attack(self.rect.centerx,self.rect.centery+50,self.screenx,self.screeny,4)
-        self.projectilegroup.add(projectiledown)
-
-
-
-class Player(Unit):  #Player class
+class Player(Unit): 
+    '''
+    Player class
+    '''
     def __init__(self,screenx,screeny,size,colour,centerx= None,centery= None):   #screen values are passed in  
         self.centerx = centerx
         self.centery = centery
@@ -46,6 +37,9 @@ class Player(Unit):  #Player class
         self.speed = 10 
             
     def Movement(self):
+        '''
+        Player movement based on input keys
+        '''
         keypressed = pygame.key.get_pressed()
         if keypressed[pygame.K_s] and self.rect.y < self.screeny: 
             self.rect.y += self.speed
@@ -76,13 +70,19 @@ class Player(Unit):  #Player class
 
 class Enemy(Unit):
     def __init__(self,screenx,screeny,size,colour):
+        '''
+        Enemy class
+        '''
         super().__init__(screenx,screeny,size,colour)
         self.rect.center = ((random.randint(500,1000),(random.randint(300,900))))   
         self.health = random.randint(1,5)
         self.speed = 1
         
 
-    def update(self,x,y,obstaclegroup): #simple enemygroup movement to move to player
+    def update(self,x,y,obstaclegroup): 
+        '''
+        Movement to follow player based on player position on the screen and obstacle collision
+        '''
         for obs in obstaclegroup: 
             if self.rect.colliderect(obs.rect):  #colliderect  = true
                 if self.rect.y+45 > obs.rect.y and self.rect.y+10 < obs.rect.y+obs.ysize: 
@@ -95,7 +95,6 @@ class Enemy(Unit):
                         self.rect.y = obs.rect.y-100
                     elif  obs.rect.collidepoint(self.rect.x,self.rect.y) or obs.rect.collidepoint(self.rect.x+100,self.rect.y):
                         self.rect.y = obs.rect.y+obs.ysize
-
             else:
                 if self.rect.centerx < x:
                     self.rect.x += self.speed
@@ -107,60 +106,24 @@ class Enemy(Unit):
                     self.rect.y -= self.speed
               
 
-class Boss(Enemy):
-    def __init__(self,screenx,screeny,size,colour):
-        super().__init__(screenx,screeny,size,colour)
-        self.state = 1
-        self.health = 10
-        self.cooldown =0
-    def Attackup(self):  #attack functions for projectiles
-        
-        projectileup = Attack(self.rect.centerx,self.rect.centery-100,self.screenx,self.screeny,1)
-        self.projectilegroup.add(projectileup)
 
-    def Attackright(self):
-        projectiledown = Attack(self.rect.centerx+100,self.rect.centery,self.screenx,self.screeny,2)
-        self.projectilegroup.add(projectiledown)
-        
-    def Attackleft(self):
-        projectiledown = Attack(self.rect.centerx-100,self.rect.centery,self.screenx,self.screeny,3)
-        self.projectilegroup.add(projectiledown)
-        
-    def Attackdown(self):
-        projectiledown = Attack(self.rect.centerx,self.rect.centery+100,self.screenx,self.screeny,4)
-        self.projectilegroup.add(projectiledown)
-    
+'''
+Types of enemies that could spawn
+'''
 class MeleeEnemy(Enemy):
     def __init__(self,screenx,screeny,size,colour):
         super().__init__(screenx,screeny,size,colour)
         self.state = 0
         
-        
-        
-        
+ 
 class RangedEnemy(Enemy):
     def __init__(self,screenx,screeny,size,colour):
         super().__init__(screenx,screeny,size,colour)
         self.state = 1
         self.cooldown = 0
-       
-    
-    def Attackup(self):  #attack functions for projectiles
         
-        projectileup = Attack(self.rect.centerx,self.rect.centery-100,self.screenx,self.screeny,1)
-        self.projectilegroup.add(projectileup)
-
-    def Attackright(self):
-        projectiledown = Attack(self.rect.centerx+100,self.rect.centery,self.screenx,self.screeny,2)
-        self.projectilegroup.add(projectiledown)
-        
-    def Attackleft(self):
-        projectiledown = Attack(self.rect.centerx-100,self.rect.centery,self.screenx,self.screeny,3)
-        self.projectilegroup.add(projectiledown)
-        
-    def Attackdown(self):
-        projectiledown = Attack(self.rect.centerx,self.rect.centery+100,self.screenx,self.screeny,4)
-        self.projectilegroup.add(projectiledown)
-  
-
-        
+class Boss(RangedEnemy):
+    def __init__(self,screenx,screeny,size,colour):
+        super().__init__(screenx,screeny,size,colour)
+        self.health = 10
+      

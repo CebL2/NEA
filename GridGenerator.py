@@ -1,9 +1,5 @@
-
 import random
-
 import numpy as np
-
-#loops=0
 class GridGenerator: 
     def __init__(self, rooms,enemyrooms):
         self.rooms = rooms
@@ -34,7 +30,7 @@ class GridGenerator:
                 for j in range(0,len(layout[0])): 
                     if layout[i][j] == 'E':
                         chance = [0,1]
-                        decision = np.random.choice(chance,p=[0.3,0.7])
+                        decision = np.random.choice(chance,p=[0.9,0.1])
                         if decision == 1:
                             layout[i][j] = 'B'
                             BossToAdd -= 1
@@ -55,7 +51,8 @@ class GridGenerator:
                 elif currenti == len(NewLayout)-1 and currentj == len(NewLayout[0])-1: 
                     Directionlist.pop(0) #remove down and right
                     Directionlist.pop(1)
-                elif currenti == len(NewLayout)-1 and currentj == 0: 
+                else:
+                   
                     Directionlist.pop(1) #remove left and down
                     Directionlist.pop(1)
             else:
@@ -66,14 +63,21 @@ class GridGenerator:
                 elif currentj == 0:
                     Directionlist.pop(1)
                 else:
-                    Directionlist.pop(0)             
+                    Directionlist.pop(0)
+        chance = [0,1]
+        RandomPop = np.random.choice(chance,p=[0.7,0.3])
+        if RandomPop == 1:
+            Directionlist.pop(random.randint(0,len(Directionlist)-1))
         RandomDirection = Directionlist[random.randint(0,len(Directionlist)-1)] #takes a random direction based on how long the Directionlist is
         if NewLayout[currenti+RandomDirection[0]][currentj+RandomDirection[1]] == 'R': #it then adds that value of the chosen direction to each of the elements and checks if it's a available room
             currenti+=RandomDirection[0] #if the current position does contain 'R'
             currentj+=RandomDirection[1] #then add the current directions to the positions and start from there again
         else:
-            NewLayout[currenti+RandomDirection[0]][currentj+RandomDirection[1]] = 'R' #otherwise, assign that position with 'R'
+            currenti+=RandomDirection[0] 
+            currentj+=RandomDirection[1]
+            NewLayout[currenti][currentj] = 'R' #otherwise, assign that position with 'R'
             RoomsToAdd-=1 #and decrease the roomstoadd by 1
+            
         return self.RecursiveAdd(currenti,currentj,NewLayout,RoomsToAdd) #recursively call the function again until there are no more rooms to add
     def GenerateLayout(self): #generates the whole map
         Rooms = []
